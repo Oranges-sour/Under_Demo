@@ -1,0 +1,17 @@
+{
+  "name": "under_ground_server",
+  "version": "1.0.0",
+  "description": "under_ground_server",
+  "main": "under_ground.js",
+  "scripts": {
+    "start": "node ts_out/under_ground.js"
+  },
+  "type": "commonjs",
+  "author": "SourOrange",
+  "license": "ISC",
+  "dependencies": {
+    "@types/ws": "^8.5.4",
+    "typescript": "^4.9.4",
+    "ws": "^8.11.0"
+  }
+}
