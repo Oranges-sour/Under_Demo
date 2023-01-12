@@ -33,8 +33,6 @@ class ConnectionStatue_StartGame implements IConnectionStatue {
             return;
         }
 
-        Tools.log(message);
-
         class MSG {
             type: string;
             constructor() {

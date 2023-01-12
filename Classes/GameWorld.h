@@ -69,6 +69,7 @@ public:
     Node* get_game_map_target() { return game_map_target; }
 
     Node* get_game_renderer_atrget() { return game_renderer_target; }
+
     // ÉãÏñ»ú¸úËæ
     void camera_follow(GameObject* object) { camera_follow_object = object; }
 

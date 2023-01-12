@@ -114,7 +114,7 @@ class GameStatue_Start implements IGameStatue {
             if (frame.frame.cnt != this.frame_cnt) {
                 this.frame = new Frame_MSG();
                 this.frame.frame.cnt = frame.frame.cnt;
-                
+
                 this.frame_cnt = frame.frame.cnt;
                 this.frame_player = 0;
             }
@@ -130,6 +130,8 @@ class GameStatue_Start implements IGameStatue {
             if (this.frame_player = game.get_player_cnt()) {
                 this.frame_player = 0;
 
+                Tools.log("Next frame: " + JSON.stringify(that.frame));
+                
                 game.visit_host(function (c) {
                     c.push_event(that.frame as any as EventBag);
                 });

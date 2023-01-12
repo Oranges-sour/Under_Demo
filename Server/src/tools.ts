@@ -26,7 +26,7 @@ class Tools {
 
         let result = "";
 
-        while (max_t > 0) {
+        while (max_t > 1) {
             if (t < max_t) {
                 result += "0";
             } else {

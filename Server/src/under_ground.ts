@@ -73,32 +73,3 @@ function update_games(interval_ms: number) {
         Tools.log(`Removed ${need_to_remove.length} game. uid: ${uids}`);
     }
 }
-
-
-
-class aa {
-    type: string;
-    param1: number;
-    constructor() {
-        this.type = "123";
-        this.param1 = 123;
-    }
-}
-
-
-class bb {
-    type: string;
-    constructor(){
-        this.type = "";
-    }
-}
-
-
-let a = new aa();
-let obj = a as Object;
-let b = obj as bb;
-let a1 = b as aa;
-
-console.log(a);
-console.log(b);
-console.log(a1);
