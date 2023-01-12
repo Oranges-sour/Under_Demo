@@ -970,8 +970,8 @@ void MapPhysicsComponent1::updateLogic(GameWorld* game_world) {
     quad.visit_in_rect(
         {-1, 500}, {500, -1}, [&](const iVec2& cor, GameObject* ob) {
             auto type = ob->getGameObjectType();
-            if (type != player && type != bullet && type != enemy &&
-                type != equipment) {
+            if (type != object_type_player && type != object_type_bullet &&
+                type != object_type_enemy && type != object_type_equipment) {
                 return;
             }
 
@@ -1025,7 +1025,7 @@ void MapGameObjectTileComponent::updateLogic(GameObject* ob) {
     }
 }
 
-void MapGameObjectTileComponent::receive(GameObject* ob, const json& event) {
+void MapGameObjectTileComponent::receiveEvent(GameObject* ob, const json& event) {
     string type = event["type"];
     if (type == "refresh") {
         cnt = 10;

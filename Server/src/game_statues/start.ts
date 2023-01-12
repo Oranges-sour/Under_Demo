@@ -4,7 +4,37 @@ import { Game } from "../game";
 import { IGameStatue } from "../game_statue";
 import { Tools } from "../tools";
 
+class Frame_MSG {
+    type: string;
+    frame: {
+        cnt: number,
+        player: string,
+        actions: Array<{
+            uid: string,
+            type: number,
+            param1: number,
+            param2: number,
+            param3: number,
+            param4: number,
+        }>,
+    }
+    constructor() {
+        this.type = "";
+        this.frame = { cnt: -1, player: "bad_id", actions: [] };
+    }
+}
+
 class GameStatue_Start implements IGameStatue {
+
+    frame_cnt: number;
+    frame: Frame_MSG;
+    frame_player: number;
+    constructor() {
+        this.frame_cnt = -1;
+        this.frame_player = 0;
+        this.frame = new Frame_MSG();
+    }
+
     process_event(game: Game, event: EventBag): void {
         if (event.type == "quit_game") {
             let uid = event.info_1;
@@ -57,35 +87,57 @@ class GameStatue_Start implements IGameStatue {
             }
         }
 
-        if (event.type == "player_move_start") {
-            let ev = new EventBag();
+        if (event.type == "frame") {
 
-            ev.type = "player_move_start";
-            ev.info_1 = event.info_1;//uid
-            ev.info_2 = event.info_2;//x
-            ev.info_3 = event.info_3;//y
+            class Frame_MSG {
+                type: string;
+                frame: {
+                    cnt: number,
+                    player: string,
+                    actions: Array<{
+                        uid: string,
+                        type: number,
+                        param1: number,
+                        param2: number,
+                        param3: number,
+                        param4: number,
+                    }>,
+                }
+                constructor() {
+                    this.type = "frame";
+                    this.frame = { cnt: -1, player: "bad_id", actions: [] };
+                }
+            }
 
-            game.visit_host(function (connection) {
-                connection.push_event(ev);
-            });
-            game.visit_all_player(function (connection) {
-                connection.push_event(ev);
-            });
-        }
-        if (event.type == "player_move_stop") {
-            let ev = new EventBag();
+            let frame = event as any as Frame_MSG;
 
-            ev.type = "player_move_stop";
-            ev.info_1 = event.info_1;//uid
-            ev.info_2 = event.info_2;//x
-            ev.info_3 = event.info_3;//y
+            if (frame.frame.cnt != this.frame_cnt) {
+                this.frame = new Frame_MSG();
+                this.frame.frame.cnt = frame.frame.cnt;
+                
+                this.frame_cnt = frame.frame.cnt;
+                this.frame_player = 0;
+            }
 
-            game.visit_host(function (connection) {
-                connection.push_event(ev);
+            let that = this;
+            frame.frame.actions.forEach(function (act) {
+                that.frame.frame.actions.push(act);
             });
-            game.visit_all_player(function (connection) {
-                connection.push_event(ev);
-            });
+            this.frame_player += 1;
+
+
+            //收集到了所有的帧，下发
+            if (this.frame_player = game.get_player_cnt()) {
+                this.frame_player = 0;
+
+                game.visit_host(function (c) {
+                    c.push_event(that.frame as any as EventBag);
+                });
+                game.visit_all_player(function (c) {
+                    c.push_event(that.frame as any as EventBag);
+                });
+            }
+
         }
 
     }

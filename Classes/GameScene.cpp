@@ -1,6 +1,7 @@
 #include "GameScene.h"
 
 #include "GameComponet.h"
+#include "GameFrame.h"
 #include "GameMap.h"
 #include "GameObject.h"
 #include "GameWorld.h"
@@ -80,6 +81,11 @@ void GameScene::init_game() {
     game_world->setGameRenderer(ren);
     ren->init(game_world->get_game_renderer_atrget());
 
+    auto frame = make_shared<GameFrameManager>();
+    game_world->setGameFrameManager(frame);
+
+    game_world->setConnection(this->connection);
+
     for (auto& it : player_uid) {
         ///
         auto ob = game_world->newObject(1, Vec2(300, 300));
@@ -91,7 +97,7 @@ void GameScene::init_game() {
         auto ai = make_shared<TestAi>();
         ob->addGameComponent(ai);
 
-        ob->setGameObjectType(player);
+        ob->setGameObjectType(object_type_player);
 
         ob->setLightRadius(600);
         ob->setLightColor(Color3B(255, 255, 255));
@@ -112,6 +118,11 @@ void GameScene::init_game() {
                                           Event* en) { keyUp(key); };
     auto _dis = Director::getInstance()->getEventDispatcher();
     _dis->addEventListenerWithSceneGraphPriority(keyboardListener, this);
+
+    //初始化完毕，要手动给一帧
+    json js = frame->generateJsonOfNextFrame(connection->get_uid());
+    frame->newNextFrame();
+    connection->push_statueEvent(js);
 }
 
 void GameScene::notice(const json& event) {
@@ -120,7 +131,6 @@ void GameScene::notice(const json& event) {
     }
 
     string type = event["type"];
-
     if (type == "quit_game_result") {
         string statue = event["statue"];
         if (statue == "success") {
@@ -129,69 +139,17 @@ void GameScene::notice(const json& event) {
             return;
         }
     }
-    if (type == "player_move_start") {
-        string uid = event["uid"];
-        auto iter = players.find(uid);
-        if (iter == players.end()) {
-            return;
-        }
-
-        json ev;
-        ev["type"] = "player_move_start";
-        string sx = event["x"];
-        string sy = event["y"];
-        ev["x"] = stof(sx);
-        ev["y"] = stof(sy);
-        iter->second->pushEvent(ev);
-    }
-    if (type == "player_move_stop") {
-        string uid = event["uid"];
-        auto iter = players.find(uid);
-        if (iter == players.end()) {
-            return;
-        }
-
-        json ev;
-        ev["type"] = "player_move_stop";
-        string sx = event["x"];
-        string sy = event["y"];
-        ev["x"] = stof(sx);
-        ev["y"] = stof(sy);
-        iter->second->pushEvent(ev);
-    }
 }
 
 void GameScene::keyDown(EventKeyboard::KeyCode key) {
     switch (key) {
         case EventKeyboard::KeyCode::KEY_W: {
-            time_0 = steady_clock::now();
-
-            json event;
-            event["type"] = "player_move_start";
-            event["x"] = to_string(0);
-            event["y"] = to_string(1);
-            connection->push_statueEvent(event);
         } break;
         case EventKeyboard::KeyCode::KEY_S: {
-            json event;
-            event["type"] = "player_move_start";
-            event["x"] = to_string(0);
-            event["y"] = to_string(-1);
-            connection->push_statueEvent(event);
         } break;
         case EventKeyboard::KeyCode::KEY_A: {
-            json event;
-            event["type"] = "player_move_start";
-            event["x"] = to_string(-1);
-            event["y"] = to_string(0);
-            connection->push_statueEvent(event);
         } break;
         case EventKeyboard::KeyCode::KEY_D: {
-            json event;
-            event["type"] = "player_move_start";
-            event["x"] = to_string(1);
-            event["y"] = to_string(0);
-            connection->push_statueEvent(event);
         } break;
     }
 }
@@ -199,36 +157,12 @@ void GameScene::keyDown(EventKeyboard::KeyCode key) {
 void GameScene::keyUp(EventKeyboard::KeyCode key) {
     switch (key) {
         case EventKeyboard::KeyCode::KEY_W: {
-            json event;
-            event["type"] = "player_move_stop";
-            event["x"] = to_string(0);
-            event["y"] = to_string(1);
-
-            connection->push_statueEvent(event);
         } break;
         case EventKeyboard::KeyCode::KEY_S: {
-            json event;
-            event["type"] = "player_move_stop";
-            event["x"] = to_string(0);
-            event["y"] = to_string(-1);
-
-            connection->push_statueEvent(event);
         } break;
         case EventKeyboard::KeyCode::KEY_A: {
-            json event;
-            event["type"] = "player_move_stop";
-            event["x"] = to_string(-1);
-            event["y"] = to_string(0);
-
-            connection->push_statueEvent(event);
         } break;
         case EventKeyboard::KeyCode::KEY_D: {
-            json event;
-            event["type"] = "player_move_stop";
-            event["x"] = to_string(1);
-            event["y"] = to_string(0);
-
-            connection->push_statueEvent(event);
         } break;
     }
 }
@@ -294,7 +228,9 @@ void TestAi::updateLogic(GameObject* ob) {
     ob->pushEvent(event);
 }
 
-void PhysicsComponent1::receive(GameObject* ob, const json& event) {
+void TestAi::receiveGameAct(GameObject* ob, const GameAct& event) {}
+
+void PhysicsComponent1::receiveEvent(GameObject* ob, const json& event) {
     string type = event["type"];
     if (type == "move") {
         float x = event["x"];
@@ -308,13 +244,29 @@ void PhysicsComponent1::receive(GameObject* ob, const json& event) {
         posNow += Vec2(x, y);
         return;
     }
-    if (type == "contact") {
-        /*long long data = event["object"];
-        GameObject* tar = (GameObject*)data;
-        auto t = tar->getGameObjectType();
-
-        ob->setVisible(false);
-
-        ob->removeFromParent();*/
-    }
 }
+
+// void PhysicsComponent1::receiveEvent(GameObject* ob, const json& event) {
+//     string type = event["type"];
+//     if (type == "move") {
+//         float x = event["x"];
+//         float y = event["y"];
+//         if (abs(y - 10) < 0.01) {
+//             time_1 = steady_clock::now();
+//             auto d = duration_cast<duration<float>>(time_1 - time_0);
+//             CCLOG("%f", d.count());
+//         }
+//
+//         posNow += Vec2(x, y);
+//         return;
+//     }
+//     if (type == "contact") {
+//         /*long long data = event["object"];
+//         GameObject* tar = (GameObject*)data;
+//         auto t = tar->getGameObjectType();
+//
+//         ob->setVisible(false);
+//
+//         ob->removeFromParent();*/
+//     }
+// }

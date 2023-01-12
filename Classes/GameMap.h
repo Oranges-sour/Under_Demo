@@ -212,7 +212,8 @@ public:
 
     virtual void updateLogic(GameObject* ob);
     virtual void updateDraw(GameObject* ob, float rate) {}
-    virtual void receive(GameObject* ob, const json& event);
+    virtual void receiveEvent(GameObject* ob, const json& event);
+    virtual void receiveGameAct(GameObject* ob, const GameAct& act) {}
 
 private:
     string uid;

@@ -1,5 +1,7 @@
 #include "GameWorld.h"
 
+#include "Connection.h"
+#include "GameFrame.h"
 #include "GameMap.h"
 #include "GameObject.h"
 #include "MyMath.h"
@@ -16,7 +18,10 @@ GameWorld* GameWorld::create() {
 
 bool GameWorld::init() {
     SpritePool::init(1200);
-    this->schedule([&](float) { main_update_logic(); }, 0.05f, "update_logic");
+    // 初始化全局随机数
+    this->_globalRandom = make_shared<Random>(31415);
+
+    this->schedule([&](float) { main_update_logic(); }, 0.1f, "update_logic");
     this->schedule([&](float) { main_update_draw(); }, "update_draw");
 
     this->_game_node = Node::create();
@@ -50,6 +55,19 @@ bool GameWorld::init() {
     return true;
 }
 
+void GameWorld::setConnection(shared_ptr<Connection> connection) {
+    this->_connection = connection;
+
+    auto listener = make_shared<ConnectionEventListener>(
+        [&](const json& event) { notice(event); });
+    this->_connection->regeist_event_listener(listener, "game_world");
+}
+
+void GameWorld::cleanup() {
+    this->_connection->remove_event_listener("game_world");
+    Node::cleanup();
+}
+
 GameObject* GameWorld::newObject(int layer, const Vec2& startPos) {
     auto ob = SpritePool::getSprite();
     assert(ob != nullptr);
@@ -60,6 +78,8 @@ GameObject* GameWorld::newObject(int layer, const Vec2& startPos) {
 
     auto p = this->_gameMap->_map_helper->convert_in_map(startPos);
 
+    ob->setUID(Tools::random_string(8, *_globalRandom));
+
     needToAdd.insert({ob, p});
 
     return ob;
@@ -68,15 +88,32 @@ GameObject* GameWorld::newObject(int layer, const Vec2& startPos) {
 void GameWorld::removeObject(GameObject* ob) { needToRemove.insert(ob); }
 
 void GameWorld::main_update_logic() {
+    // 处理帧消息
+    if (!_frameManager->hasNewFrame()) {
+        return;
+    }
+    auto frame = _frameManager->getNextFrame();
+    for (auto& it : frame->actions) {
+        auto iter = _game_objects.find(it.uid);
+        if (iter == _game_objects.end()) {
+            assert(1 == 2);
+            continue;
+        }
+        iter->second->pushGameAct(it);
+    }
+
     quad_tree.visit_in_rect(
         {-1, 500}, {500, -1},
         [&](const iVec2& cor, GameObject* ob) { ob->main_update(); });
 
     this->updateGameObjectPosition();
+
     _gameMap->updateLogic(this);
 
     // 添加
     for (auto& it : needToAdd) {
+        _game_objects.insert({it.first->getUID(), it.first});
+
         auto quad_node = quad_tree.insert(it.second, it.first);
         it.first->quad_node = quad_node;
     }
@@ -89,9 +126,16 @@ void GameWorld::main_update_logic() {
         }
         it->Sprite::removeFromParent();
         it->quad_node.container->remove(it->quad_node.uid);
+
+        _game_objects.erase(it->getUID());
         SpritePool::saveBack(it);
     }
     needToRemove.clear();
+
+    // 迅速将此帧传出
+    auto js = _frameManager->generateJsonOfNextFrame(_connection->get_uid());
+    _connection->push_statueEvent(js);
+    _frameManager->newNextFrame();
 }
 
 void GameWorld::main_update_draw() {
@@ -141,8 +185,8 @@ void GameWorld::updateGameObjectPosition() {
     quad_tree.visit_in_rect(
         {-1, 500}, {500, -1}, [&](const iVec2& cor, GameObject* ob) {
             auto type = ob->getGameObjectType();
-            if (type != player && type != bullet && type != enemy &&
-                type != equipment) {
+            if (type != object_type_player && type != object_type_bullet &&
+                type != object_type_enemy && type != object_type_equipment) {
                 return;
             }
 
@@ -159,6 +203,17 @@ void GameWorld::updateGameObjectPosition() {
         node.container->remove(node.uid);
 
         node = quad_tree.insert({it.second}, ob);
+    }
+}
+
+void GameWorld::notice(const json& event) {
+    if (!event.contains("type")) {
+        return;
+    }
+
+    string type = event["type"];
+    if (type == "frame") {
+        _frameManager->receiveFrameFromServer(event);
     }
 }
 

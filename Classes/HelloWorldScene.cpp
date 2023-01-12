@@ -5,6 +5,7 @@
 #include "GameScene.h"
 #include "SimpleAudioEngine.h"
 #include "json.h"
+#include "GameFrame.h"
 #include "ui/CocosGUI.h"
 
 USING_NS_CC;
@@ -20,12 +21,6 @@ static void problemLoading(const char* filename) {
         "'Resources/' in "
         "front of filenames in HelloWorldScene.cpp\n");
 }
-
-class AI1 : public GameComponent {
-public:
-    virtual void updateLogic(GameObject* ob) override {}
-    virtual void receive(GameObject* ob, const json& event) override {}
-};
 
 bool DemoScene::init() {
     if (!Scene::init()) {
@@ -65,7 +60,7 @@ void DemoScene::init_after_connect() {
     this->addChild(lobby, 2);
 
     // this->game = Game_Layer::create();
-    // game->set_connection(this->connection);
+    // game->set_connection(this->_connection);
     // this->addChild(game, 1);
 
     auto menu = Menu::create();

@@ -6,6 +6,26 @@ import { ServerDefault } from "../tools";
 import { EventBag } from "../event";
 import { ConnectionStatue_Normal } from "./normal";
 
+class Frame_MSG {
+    type: string;
+    frame: {
+        cnt: number,
+        player: string,
+        actions: Array<{
+            uid: string,
+            type: number,
+            param1: number,
+            param2: number,
+            param3: number,
+            param4: number,
+        }>,
+    }
+    constructor() {
+        this.type = "";
+        this.frame = { cnt: -1, player: "bad_id", actions: [] };
+    }
+}
+
 class ConnectionStatue_StartGame implements IConnectionStatue {
     process_message(connection: Connection, message: string): void {
         let obj = Tools.parse_JSON_safe(message);
@@ -13,56 +33,24 @@ class ConnectionStatue_StartGame implements IConnectionStatue {
             return;
         }
 
+        Tools.log(message);
+
         class MSG {
             type: string;
-            info_1: string;
-            info_2: string;
-            info_3: string;
-            info_4: string;
             constructor() {
                 this.type = "";
-                this.info_1 = "";
-                this.info_2 = "";
-                this.info_3 = "";
-                this.info_4 = "";
             }
         }
 
         let msg = obj as MSG;
-        if (msg.type == "player_move_start") {
+        if (msg.type == "frame") {
 
-            let ev = new EventBag();
-            ev.type = "player_move_start";
-            ev.info_1 = connection.get_uid();
-            ev.info_2 = String(msg.info_2);//x
-            ev.info_3 = String(msg.info_3);//y
-
-            Tools.log(`${msg.info_2}}`);
-
+            let frame_msg = obj as Frame_MSG;
             let game = connection.get_game();
-            if (game === null) {
-                return;
-            }
-            Tools.log("receive player_move_start");
-            game.push_event(ev);
-            return;
+            game.push_event(frame_msg as any as EventBag);
         }
-        if (msg.type == "player_move_stop") {
 
-            let ev = new EventBag();
-            ev.type = "player_move_stop";
-            ev.info_1 = connection.get_uid();
-            ev.info_2 = String(msg.info_2);//x
-            ev.info_3 = String(msg.info_3);//y
 
-            let game = connection.get_game();
-            if (game === null) {
-                return;
-            }
-            Tools.log("receive player_move_stop");
-            game.push_event(ev);
-            return;
-        }
     }
 
     process_event(connection: Connection, event: EventBag): void {
@@ -101,23 +89,11 @@ class ConnectionStatue_StartGame implements IConnectionStatue {
             connection.send_message(e);
             return;
         }
-        if (event.type == "player_move_start") {
-            let e = {
-                type: "player_move_start",
-                uid: event.info_1,
-                x: event.info_2,
-                y: event.info_3,
-            }
-            connection.send_message(e);
-        }
-        if (event.type == "player_move_stop") {
-            let e = {
-                type: "player_move_stop",
-                uid: event.info_1,
-                x: event.info_2,
-                y: event.info_3,
-            }
-            connection.send_message(e);
+        
+        if(event.type == "frame") {
+            let frame = event as any as Frame_MSG;
+            connection.send_message(frame);
+            return;
         }
 
     }
