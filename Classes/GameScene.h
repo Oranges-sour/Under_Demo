@@ -30,7 +30,7 @@ public:
     virtual bool init() override;
 
     void set_connection(shared_ptr<Connection> connection) {
-        this->schedule([&](float) { this->connection->update(25); }, 0.025,
+        this->schedule([&](float) { this->connection->update(50); }, 0.05,
                        "update_con");
         this->connection = connection;
 

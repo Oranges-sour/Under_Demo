@@ -119,7 +119,7 @@ void GameScene::init_game() {
     auto _dis = Director::getInstance()->getEventDispatcher();
     _dis->addEventListenerWithSceneGraphPriority(keyboardListener, this);
 
-    //初始化完毕，要手动给一帧
+    // 初始化完毕，要手动给一帧
     json js = frame->generateJsonOfNextFrame(connection->get_uid());
     frame->newNextFrame();
     connection->push_statueEvent(js);
@@ -144,6 +144,16 @@ void GameScene::notice(const json& event) {
 void GameScene::keyDown(EventKeyboard::KeyCode key) {
     switch (key) {
         case EventKeyboard::KeyCode::KEY_W: {
+            auto frame_man = game_world->getGameFrameManager();
+
+            GameAct act;
+            act.type = act_move_start;
+            act.uid = players.find(connection->get_uid())->second->getUID();
+            act.param1 = 0;
+            act.param2 = 1;
+
+            frame_man->pushGameAct(act);
+
         } break;
         case EventKeyboard::KeyCode::KEY_S: {
         } break;
@@ -157,6 +167,15 @@ void GameScene::keyDown(EventKeyboard::KeyCode key) {
 void GameScene::keyUp(EventKeyboard::KeyCode key) {
     switch (key) {
         case EventKeyboard::KeyCode::KEY_W: {
+            auto frame_man = game_world->getGameFrameManager();
+
+            GameAct act;
+            act.type = act_move_stop;
+            act.uid = players.find(connection->get_uid())->second->getUID();
+            act.param1 = 0;
+            act.param2 = 1;
+
+            frame_man->pushGameAct(act);
         } break;
         case EventKeyboard::KeyCode::KEY_S: {
         } break;
@@ -228,7 +247,20 @@ void TestAi::updateLogic(GameObject* ob) {
     ob->pushEvent(event);
 }
 
-void TestAi::receiveGameAct(GameObject* ob, const GameAct& event) {}
+void TestAi::receiveGameAct(GameObject* ob, const GameAct& event) {
+    if (event.type == act_move_start) {
+        if (ob->getUID() == event.uid) {
+            xx += event.param1 * 10;
+            yy += event.param2 * 10;
+        }
+    }
+    if (event.type == act_move_stop) {
+        if (ob->getUID() == event.uid) {
+            xx -= event.param1 * 10;
+            yy -= event.param2 * 10;
+        }
+    }
+}
 
 void PhysicsComponent1::receiveEvent(GameObject* ob, const json& event) {
     string type = event["type"];

@@ -11,10 +11,26 @@ bool Connection::init(const string& ip) {
         return false;
     }
     _is_init = true;
-    this->_ws->getReadyState();
 
     this->_statue = make_shared<ConnectionStatue_Default>();
 
+    this->_thread = make_shared<thread>([&]() {
+        while (true) {
+            unique_lock<mutex> lock(this->_mutex);
+            _cv.wait(lock);
+            if (statue_event_queue.empty()) {
+                break;
+            }
+
+            while (!statue_event_queue.empty()) {
+                auto& t = statue_event_queue.front();
+
+                this->_statue->processEvent(this, t);
+
+                statue_event_queue.pop();
+            }
+        }
+    });
     return true;
 }
 
@@ -72,12 +88,11 @@ void Connection::update(int interval_ms) {
 
         listener_event_queue.pop();
     }
+}
 
-    while (!statue_event_queue.empty()) {
-        auto& t = statue_event_queue.front();
+void Connection::push_statueEvent(const json& event) {
+    unique_lock<mutex> lock(_mutex);
 
-        this->_statue->processEvent(this, t);
-
-        statue_event_queue.pop();
-    }
+    statue_event_queue.push(event);
+    _cv.notify_one();
 }

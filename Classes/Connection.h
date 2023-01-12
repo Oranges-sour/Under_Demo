@@ -1,9 +1,11 @@
 #ifndef __CONNECTION_H__
 #define __CONNECTION_H__
 
+#include <condition_variable>
 #include <functional>
 #include <map>
 #include <memory>
+#include <mutex>
 #include <queue>
 #include <string>
 using namespace std;
@@ -30,7 +32,12 @@ private:
 class Connection : public WebSocket::Delegate {
 public:
     Connection() : _is_ready(false), _is_init(false) { uid = ""; }
-    ~Connection() { _ws->close(); }
+    ~Connection() {
+        _ws->close();
+        unique_lock<mutex> lock(_mutex);
+        _cv.notify_all();
+        _thread->join();
+    }
 
     bool init(const string &ip);
 
@@ -63,7 +70,7 @@ public:
     }
 
     // 将事件推给状态机
-    void push_statueEvent(const json &event) { statue_event_queue.push(event); }
+    void push_statueEvent(const json &event);
 
     void set_uid(const string &newid) { uid = newid; }
 
@@ -84,6 +91,10 @@ private:
 
     shared_ptr<ConnectionStatue> _statue;
     shared_ptr<WebSocket> _ws;
+
+    shared_ptr<thread> _thread;
+    mutex _mutex;
+    condition_variable _cv;
 };
 
 #endif
