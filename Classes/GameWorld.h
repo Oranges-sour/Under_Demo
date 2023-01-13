@@ -49,8 +49,6 @@ public:
         return this->_frameManager;
     }
 
-    void setConnection(shared_ptr<Connection> connection);
-
     virtual void cleanup() override;
 
     //////////////////////////////////////////////
@@ -101,7 +99,6 @@ private:
     shared_ptr<GameMap> _gameMap;
     shared_ptr<GameWorldRenderer> _gameRenderer;
     shared_ptr<GameFrameManager> _frameManager;
-    shared_ptr<Connection> _connection;
 
     // 游戏内的任何粒子创建，随机等，都必须用此随机引擎，保证一致性
     shared_ptr<Random> _globalRandom;

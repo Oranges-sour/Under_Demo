@@ -31,15 +31,16 @@ private:
 
 class Connection : public WebSocket::Delegate {
 public:
-    Connection() : _is_ready(false), _is_init(false) { uid = ""; }
-    ~Connection() {
-        _ws->close();
-        unique_lock<mutex> lock(_mutex);
-        _cv.notify_all();
-        _thread->join();
-    }
+    static shared_ptr<Connection> _instance;
+    static shared_ptr<Connection> instance();
 
-    bool init(const string &ip);
+public:
+    Connection();
+    ~Connection();
+
+    bool open(const string &ip);
+
+    void close();
 
     virtual void onOpen(WebSocket *ws);
     virtual void onMessage(WebSocket *ws, const WebSocket::Data &data);
@@ -49,7 +50,9 @@ public:
     void process_message(const string &message);
     void update(int interval_ms);
 
-    bool is_ready() { return _is_ready; }
+    bool is_open() { return _is_open; }
+
+    bool is_error() { return _is_error; }
 
     void switchStatue(shared_ptr<ConnectionStatue> newStatue) {
         _statue = newStatue;
@@ -78,8 +81,10 @@ public:
 
 private:
     string uid;
-    bool _is_init;
-    bool _is_ready;
+    bool _is_open;
+    bool _is_error;
+
+    bool _start;
 
     // 给监听者的事件队列（监听者处理事件
     queue<json> listener_event_queue;

@@ -26,6 +26,14 @@ bool GameScene::init() {
     loading_layer = LoadingLayer::create();
     this->addChild(loading_layer, 1);
 
+    this->schedule([&](float) { Connection::instance()->update(16); },
+                   "web_upd");
+
+    auto listener = make_shared<ConnectionEventListener>(
+        [&](const json& event) { notice(event); });
+    Connection::instance()->regeist_event_listener(listener,
+                                                   "GameScene_listener");
+
     return true;
 }
 
@@ -84,8 +92,6 @@ void GameScene::init_game() {
     auto frame = make_shared<GameFrameManager>();
     game_world->setGameFrameManager(frame);
 
-    game_world->setConnection(this->connection);
-
     for (auto& it : player_uid) {
         ///
         auto ob = game_world->newObject(1, Vec2(300, 300));
@@ -105,7 +111,7 @@ void GameScene::init_game() {
         PhysicsShapeCache::getInstance()->setBodyOnSprite("enemy_0", ob);
 
         players.insert({it, ob});
-        if (it == connection->get_uid()) {
+        if (it == Connection::instance()->get_uid()) {
             game_world->camera_follow(ob);
         }
     }
@@ -120,9 +126,9 @@ void GameScene::init_game() {
     _dis->addEventListenerWithSceneGraphPriority(keyboardListener, this);
 
     // 初始化完毕，要手动给一帧
-    json js = frame->generateJsonOfNextFrame(connection->get_uid());
+    json js = frame->generateJsonOfNextFrame(Connection::instance()->get_uid());
     frame->newNextFrame();
-    connection->push_statueEvent(js);
+    Connection::instance()->push_statueEvent(js);
 }
 
 void GameScene::notice(const json& event) {
@@ -148,7 +154,8 @@ void GameScene::keyDown(EventKeyboard::KeyCode key) {
 
             GameAct act;
             act.type = act_move_start;
-            act.uid = players.find(connection->get_uid())->second->getUID();
+            act.uid = players.find(Connection::instance()->get_uid())
+                          ->second->getUID();
             act.param1 = 0;
             act.param2 = 1;
 
@@ -171,7 +178,8 @@ void GameScene::keyUp(EventKeyboard::KeyCode key) {
 
             GameAct act;
             act.type = act_move_stop;
-            act.uid = players.find(connection->get_uid())->second->getUID();
+            act.uid = players.find(Connection::instance()->get_uid())
+                          ->second->getUID();
             act.param1 = 0;
             act.param2 = 1;
 

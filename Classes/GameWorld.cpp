@@ -52,19 +52,16 @@ bool GameWorld::init() {
     Director::getInstance()
         ->getEventDispatcher()
         ->addEventListenerWithSceneGraphPriority(conatctListener, this);
-    return true;
-}
-
-void GameWorld::setConnection(shared_ptr<Connection> connection) {
-    this->_connection = connection;
 
     auto listener = make_shared<ConnectionEventListener>(
         [&](const json& event) { notice(event); });
-    this->_connection->regeist_event_listener(listener, "game_world");
+    Connection::instance()->regeist_event_listener(listener,
+                                                   "game_world_listener");
+    return true;
 }
 
 void GameWorld::cleanup() {
-    this->_connection->remove_event_listener("game_world");
+    Connection::instance()->remove_event_listener("game_world_listener");
     Node::cleanup();
 }
 
@@ -133,8 +130,9 @@ void GameWorld::main_update_logic() {
     needToRemove.clear();
 
     // 迅速将此帧传出
-    auto js = _frameManager->generateJsonOfNextFrame(_connection->get_uid());
-    _connection->push_statueEvent(js);
+    auto js = _frameManager->generateJsonOfNextFrame(
+        Connection::instance()->get_uid());
+    Connection::instance()->push_statueEvent(js);
     _frameManager->newNextFrame();
 }
 

@@ -29,16 +29,6 @@ public:
 
     virtual bool init() override;
 
-    void set_connection(shared_ptr<Connection> connection) {
-        this->schedule([&](float) { this->connection->update(50); }, 0.05,
-                       "update_con");
-        this->connection = connection;
-
-        auto listener = make_shared<ConnectionEventListener>(
-            [&](const json& event) { notice(event); });
-        connection->regeist_event_listener(listener, "GameScene_listener");
-    }
-
     void start(unsigned seed, int player_cnt, const vector<string>& player_uid);
 
     void init_map(unsigned seed);
@@ -48,7 +38,7 @@ public:
     void notice(const json& event);
 
     virtual void cleanup() override {
-        connection->remove_event_listener("GameScene_listener");
+        Connection::instance()->remove_event_listener("GameScene_listener");
         Scene::cleanup();
     }
 
@@ -67,8 +57,6 @@ private:
     GameWorld* game_world;
     shared_ptr<GameMap> game_map;
     shared_ptr<MapPreRendererComponent1> game_map_pre_renderer;
-
-    shared_ptr<Connection> connection;
 
     LoadingLayer* loading_layer;
 };
