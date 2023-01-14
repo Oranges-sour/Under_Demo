@@ -12,7 +12,7 @@ Connection::Connection() : _is_open(false), _is_error(false), _start(true) {
 
     this->_thread = make_shared<thread>([&]() {
         while (_start) {
-            unique_lock<mutex> lock(this->_mutex);
+            unique_lock<mutex> lock(this->_statue_event_mutex);
             _cv.wait(lock);
 
             while (!statue_event_queue.empty()) {
@@ -78,6 +78,7 @@ void Connection::update(int interval_ms) {
 
     this->_statue->update(this, interval_ms);
 
+    unique_lock<mutex> loc(_listener_event_mutex);
     while (!listener_event_queue.empty()) {
         auto& t = listener_event_queue.front();
 
@@ -88,8 +89,13 @@ void Connection::update(int interval_ms) {
     }
 }
 
+void Connection::push_listenerEvent(const json& event) {
+    unique_lock<mutex> loc(_listener_event_mutex);
+    listener_event_queue.push(event);
+}
+
 void Connection::push_statueEvent(const json& event) {
-    unique_lock<mutex> lock(_mutex);
+    unique_lock<mutex> lock(_statue_event_mutex);
 
     statue_event_queue.push(event);
 

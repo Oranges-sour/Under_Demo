@@ -21,7 +21,7 @@ bool GameScene::init() {
     auto phyw = this->getPhysicsWorld();
     phyw->setGravity(Vec2::ZERO);
     phyw->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
-   // phyw->setUpdateRate(0.5);
+    // phyw->setUpdateRate(0.5);
 
     loading_layer = LoadingLayer::create();
     this->addChild(loading_layer, 1);
@@ -66,7 +66,7 @@ void GameScene::init_map(unsigned seed) {
                 this->unschedule("pre_render");
 
                 loading_layer->removeFromParent();
-                
+
                 init_game();
                 return;
             }
@@ -82,7 +82,7 @@ void GameScene::init_game() {
     this->addChild(game_world);
 
     game_map_pre_renderer->afterPreRender(game_world->get_game_map_target());
-    //ÊÍ·Å
+    // ÊÍ·Å
     game_map_pre_renderer.reset();
 
     game_world->setGameMap(game_map);
@@ -159,6 +159,9 @@ void GameScene::keyDown(EventKeyboard::KeyCode key) {
         case EventKeyboard::KeyCode::KEY_W: {
             act.param1 = 0;
             act.param2 = 1;
+
+            time_0 = steady_clock::now();
+
         } break;
         case EventKeyboard::KeyCode::KEY_S: {
             act.param1 = 0;
@@ -267,16 +270,24 @@ void TestAi::updateLogic(GameObject* ob) {
 }
 
 void TestAi::receiveGameAct(GameObject* ob, const GameAct& event) {
+    const float SPEED = 15;
+
     if (event.type == act_move_start) {
         if (ob->getUID() == event.uid) {
-            xx += event.param1 * 30;
-            yy += event.param2 * 30;
+            xx += event.param1 * SPEED;
+            yy += event.param2 * SPEED;
+
+            if (abs(yy - SPEED) < 0.01) {
+                time_1 = steady_clock::now();
+                auto d = duration_cast<duration<float>>(time_1 - time_0);
+                CCLOG("%f", d.count());
+            }
         }
     }
     if (event.type == act_move_stop) {
         if (ob->getUID() == event.uid) {
-            xx -= event.param1 * 30;
-            yy -= event.param2 * 30;
+            xx -= event.param1 * SPEED;
+            yy -= event.param2 * SPEED;
         }
     }
 }
@@ -286,11 +297,6 @@ void PhysicsComponent1::receiveEvent(GameObject* ob, const json& event) {
     if (type == "move") {
         float x = event["x"];
         float y = event["y"];
-        if (abs(y - 10) < 0.01) {
-            time_1 = steady_clock::now();
-            auto d = duration_cast<duration<float>>(time_1 - time_0);
-            CCLOG("%f", d.count());
-        }
 
         posNow += Vec2(x, y);
         return;

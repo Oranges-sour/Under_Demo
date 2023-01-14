@@ -14,8 +14,6 @@ class Game {
 
     _players: Map<string, Connection>;
 
-    _event_queue: Queue<EventBag>;
-
     _last_game: Game;
     _next_game: Game;
 
@@ -35,8 +33,6 @@ class Game {
         this._players = new Map<string, Connection>();
 
         this._uid = Tools.random_string(6);
-
-        this._event_queue = new Queue<EventBag>();
 
         this._last_game = null!;
         this._next_game = null!;
@@ -133,20 +129,10 @@ class Game {
 
     update(interval_ms: number) {
         this._statue.update(this, interval_ms);
-        let que = this._event_queue;
-        while (!que.empty()) {
-            let event = que.front();
-            que.pop();
-
-            if (event === undefined) {
-                continue;
-            }
-            this._statue.process_event(this, event);
-        }
     }
 
     push_event(event: EventBag) {
-        this._event_queue.push(event);
+        this._statue.process_event(this, event);
     }
 }
 

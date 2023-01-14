@@ -21,7 +21,10 @@ bool GameWorld::init() {
     // 初始化全局随机数
     this->_globalRandom = make_shared<Random>(31415);
 
-    this->schedule([&](float) { main_update_logic(); }, 0.1f, "update_logic");
+
+    
+    this->schedule([&](float) { main_update_logic(); }, 0.03333f,
+                   "update_logic");
     this->schedule([&](float) { main_update_draw(); }, "update_draw");
 
     this->_game_node = Node::create();
@@ -85,6 +88,7 @@ GameObject* GameWorld::newObject(int layer, const Vec2& startPos) {
 void GameWorld::removeObject(GameObject* ob) { needToRemove.insert(ob); }
 
 void GameWorld::main_update_logic() {
+
     // 处理帧消息
     if (!_frameManager->hasNewFrame()) {
         return;
@@ -276,7 +280,7 @@ void GameWorldRenderer1::update(const Vec2& left_bottom, const Size& size,
                        });
     // 0.2 可以让背景不是全黑
 
-    render->beginWithClear(0.2, 0.2, 0.2, 1);
+    render->beginWithClear(0.1, 0.1, 0.1, 1);
     for (int i = 0; i < cnt; ++i) {
         lights[i]->visit();
     }

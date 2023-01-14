@@ -80,6 +80,8 @@ private:
     void notice(const json& event);
 
 private:
+    float logic_update_dt;
+
     set<GameObject*> needToRemove;
     map<GameObject*, iVec2> needToAdd;
 

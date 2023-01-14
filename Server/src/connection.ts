@@ -21,8 +21,6 @@ class Connection {
 
     _uid: string;
 
-    _event_queue: Queue<EventBag>;
-
     _game: Game;
 
     constructor(web_socket: WebSocket) {
@@ -41,8 +39,6 @@ class Connection {
         this._uid = "";
 
         this._statue = new ConnectionStatue_Default();
-
-        this._event_queue = new Queue<EventBag>();
 
         let that = this;
         this._socket.on("message", function (e) {
@@ -147,21 +143,10 @@ class Connection {
 
     update(interval_ms: number) {
         this._statue.update(this, interval_ms);
-
-        let que = this._event_queue;
-        while (!que.empty()) {
-            let event = que.front();
-            que.pop();
-
-            if (event === undefined) {
-                continue;
-            }
-            this._statue.process_event(this, event);
-        }
     }
 
     push_event(event: EventBag) {
-        this._event_queue.push(event);
+        this._statue.process_event(this, event);
     }
 }
 

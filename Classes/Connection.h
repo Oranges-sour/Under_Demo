@@ -68,9 +68,7 @@ public:
     void remove_event_listener(const string &key) { event_listener.erase(key); }
 
     // 将事件推给监听者
-    void push_listenerEvent(const json &event) {
-        listener_event_queue.push(event);
-    }
+    void push_listenerEvent(const json &event);
 
     // 将事件推给状态机
     void push_statueEvent(const json &event);
@@ -98,7 +96,8 @@ private:
     shared_ptr<WebSocket> _ws;
 
     shared_ptr<thread> _thread;
-    mutex _mutex;
+    mutex _statue_event_mutex;
+    mutex _listener_event_mutex;
     condition_variable _cv;
 };
 
