@@ -21,14 +21,17 @@ bool GameWorld::init() {
     // 初始化全局随机数
     this->_globalRandom = make_shared<Random>(31415);
 
-
-    
-    this->schedule([&](float) { main_update_logic(); }, 0.03333f,
+    this->schedule([&](float) { main_update_logic(); }, 0.066f,
                    "update_logic");
     this->schedule([&](float) { main_update_draw(); }, "update_draw");
 
     this->_game_node = Node::create();
     this->addChild(_game_node, 0);
+
+    this->game_bk_target = Node::create();
+    game_bk_target->setAnchorPoint(Vec2(0, 0));
+    game_bk_target->setPosition(0, 0);
+    this->addChild(game_bk_target, -2);
 
     this->game_map_target = Node::create();
     game_map_target->setAnchorPoint(Vec2(0, 0));
@@ -88,7 +91,6 @@ GameObject* GameWorld::newObject(int layer, const Vec2& startPos) {
 void GameWorld::removeObject(GameObject* ob) { needToRemove.insert(ob); }
 
 void GameWorld::main_update_logic() {
-
     // 处理帧消息
     if (!_frameManager->hasNewFrame()) {
         return;
@@ -151,6 +153,8 @@ void GameWorld::main_update_draw() {
     auto screenCenter = Vec2(1920, 1080) / 2;
 
     _game_node->setPosition(-camera_pos + screenCenter);
+
+    game_bk_target->setPosition((-camera_pos + screenCenter) / 5);
 
     _gameRenderer->update(camera_pos - screenCenter, Size(1920, 1080), this);
 }

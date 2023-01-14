@@ -66,7 +66,9 @@ public:
 
     Node* get_game_map_target() { return game_map_target; }
 
-    Node* get_game_renderer_atrget() { return game_renderer_target; }
+    Node* get_game_renderer_target() { return game_renderer_target; }
+
+    Node* get_game_bk_target() { return game_bk_target; }
 
     // ÉãÏñ»ú¸úËæ
     void camera_follow(GameObject* object) { camera_follow_object = object; }
@@ -97,6 +99,7 @@ private:
     Node* game_map_target;
     Node* game_renderer_target;
     Node* _game_node;
+    Node* game_bk_target;
     Quad<GameObject*> quad_tree;
     shared_ptr<GameMap> _gameMap;
     shared_ptr<GameWorldRenderer> _gameRenderer;

@@ -4,7 +4,7 @@ import { Connection, connection_pool } from './connection';
 import { Game, game_pool } from './game';
 import { Tools } from './tools';
 
-let socket_server = new WebSocketServer({ port: 23483 });
+let socket_server = new WebSocketServer({ port: 23482 });
 
 socket_server.on("connection", function (ws) {
     Tools.log("New connection.");

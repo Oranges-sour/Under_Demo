@@ -15,6 +15,7 @@ enum GameActType {
     act_unknow,
     act_move_start,
     act_move_stop,
+    act_attack,
 };
 
 class GameAct {
@@ -44,7 +45,7 @@ public:
     // 生成next_frame的json
     json generateJsonOfNextFrame(const string& connection_uid);
 
-    //生成新的next_frame
+    // 生成新的next_frame
     void newNextFrame();
 
     // 是否有新的从服务器回来的帧

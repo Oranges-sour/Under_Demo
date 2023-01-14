@@ -58,7 +58,7 @@ void GameObject::main_update() {
 
     this->stopAction(&_actionEase);
 
-    _actionTween.initWithDuration(0.03333f, "phy", 0.0f, 1.0f);
+    _actionTween.initWithDuration(0.066f, "phy", 0.0f, 1.0f);
     _actionEase.initWithAction(&_actionTween, 1.2f);
 
     this->runAction(&_actionEase);

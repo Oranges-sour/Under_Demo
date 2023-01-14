@@ -89,11 +89,21 @@ void GameScene::init_game() {
 
     auto ren = make_shared<GameWorldRenderer1>();
     game_world->setGameRenderer(ren);
-    ren->init(game_world->get_game_renderer_atrget());
+    ren->init(game_world->get_game_renderer_target());
 
     auto frame = make_shared<GameFrameManager>();
     game_world->setGameFrameManager(frame);
 
+    auto game_bk = Sprite::create("game_bk.png");
+    game_bk->setAnchorPoint(Vec2(0, 0));
+    game_bk->setPosition(Vec2(0, 0));
+    Texture2D::TexParams texParams = {GL_LINEAR, GL_LINEAR, GL_REPEAT,
+                                      GL_REPEAT};
+    game_bk->getTexture()->setTexParameters(texParams);
+    game_bk->setTextureRect(Rect(0, 0, 64 * 256, 64 * 256));
+    game_world->get_game_bk_target()->addChild(game_bk);
+
+    // 创建玩家
     for (auto& it : player_uid) {
         ///
         auto ob = game_world->newObject(1, Vec2(300, 300));
@@ -124,8 +134,39 @@ void GameScene::init_game() {
 
     keyboardListener->onKeyReleased = [&](EventKeyboard::KeyCode key,
                                           Event* en) { keyUp(key); };
+
+    auto mouseListener = EventListenerMouse::create();
+    mouseListener->onMouseDown = [&](EventMouse* eventMouse) {
+        auto b = eventMouse->getMouseButton();
+        auto pos = eventMouse->getLocationInView();
+        if (b == EventMouse::MouseButton::BUTTON_RIGHT) {
+            auto frame_man = game_world->getGameFrameManager();
+            GameAct act;
+            act.type = act_attack;
+            act.uid = players.find(Connection::instance()->get_uid())
+                          ->second->getUID();
+
+            act.param1 = 1;
+            act.param2 = 0;
+            frame_man->pushGameAct(act);
+        }
+    };
+
+    mouseListener->onMouseUp = [&](EventMouse* eventMouse) {
+        // auto b = eventMouse->getMouseButton();
+        // auto pos = eventMouse->getLocationInView();
+        // if (b == EventMouse::MouseButton::BUTTON_RIGHT) {
+        //     mouseRUp(pos);
+        // }
+        // if (b == EventMouse::MouseButton::BUTTON_LEFT) {
+        //     mouseLUp(pos);
+        // }
+        // mousePosition = pos;
+    };
+
     auto _dis = Director::getInstance()->getEventDispatcher();
     _dis->addEventListenerWithSceneGraphPriority(keyboardListener, this);
+    _dis->addEventListenerWithSceneGraphPriority(mouseListener, this);
 
     // 初始化完毕，要手动给一帧
     json js = frame->generateJsonOfNextFrame(Connection::instance()->get_uid());
@@ -270,7 +311,7 @@ void TestAi::updateLogic(GameObject* ob) {
 }
 
 void TestAi::receiveGameAct(GameObject* ob, const GameAct& event) {
-    const float SPEED = 15;
+    const float SPEED = 30;
 
     if (event.type == act_move_start) {
         if (ob->getUID() == event.uid) {
@@ -290,6 +331,10 @@ void TestAi::receiveGameAct(GameObject* ob, const GameAct& event) {
             yy -= event.param2 * SPEED;
         }
     }
+    /*if (event.type == act_attack) {
+        
+    }*/
+
 }
 
 void PhysicsComponent1::receiveEvent(GameObject* ob, const json& event) {
