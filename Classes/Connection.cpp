@@ -33,9 +33,9 @@ Connection::~Connection() {
 
     _start = false;
 
-    unique_lock<mutex> lock(_mutex);
     _cv.notify_all();
     _thread->join();
+    CCLOG("123");
 }
 
 bool Connection::open(const string& ip) {

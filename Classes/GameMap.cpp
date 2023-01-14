@@ -535,6 +535,7 @@ void MapPreRendererComponent1::init(MapTile* map, unsigned seed) {
 
     _random = make_shared<Random>(seed);
 
+    mark1.resize((map->w + 1) * (map->h + 1), false);
     mark.resize((map->w + 1) * (map->h + 1), false);
 }
 
@@ -701,6 +702,8 @@ void MapPreRendererComponent1::createDecoration(int x, int y, MapTileType type,
     createDec2(x, y, type, bit_mask, pos, area, dst);
     createDec3(x, y, type, bit_mask, pos, area, dst);
     createDec4(x, y, type, bit_mask, pos, area, dst);
+    createDec5(x, y, type, bit_mask, pos, area, dst);
+    createDec6(x, y, type, bit_mask, pos, area, dst);
 }
 
 void MapPreRendererComponent1::createTileMask(MapTileType type, int bit_mask,
@@ -834,12 +837,12 @@ void MapPreRendererComponent1::createDec3(int x, int y, MapTileType type,
     const int dx3[] = {0, 0, 1, 1};
     const int dy3[] = {-1, -2, -1, -2};
 
-    if (type == dirt) {
+    if (type == dirt && mark1[y * _map->w + x] == false) {
         bool all_block = true;
         for (int k = 0; k < 2; ++k) {
             int nx = x + dx2[k];
             int ny = y + dy2[k];
-            if (!inside(nx, ny)) {
+            if (!inside(nx, ny) || mark1[ny * _map->w + nx]) {
                 all_block = false;
                 break;
             }
@@ -863,6 +866,9 @@ void MapPreRendererComponent1::createDec3(int x, int y, MapTileType type,
                 }
             }
             if (all_air) {
+                mark1[y * _map->w + x] = true;
+                mark1[y * _map->w + x + 1] = true;
+
                 auto g =
                     Sprite::createWithSpriteFrameName(grass_decoration3[0]);
                 g->setAnchorPoint(Vec2(0, 1));
@@ -894,12 +900,13 @@ void MapPreRendererComponent1::createDec4(int x, int y, MapTileType type,
     const int dx3[] = {0, 0, 1, 1};
     const int dy3[] = {-1, -2, -1, -2};
 
-    if (type == dirt) {
+    if (type == dirt && mark1[y * _map->w + x] == false) {
         bool all_block = true;
         for (int k = 0; k < 2; ++k) {
             int nx = x + dx2[k];
             int ny = y + dy2[k];
-            if (!inside(nx, ny)) {
+
+            if (!inside(nx, ny) || mark1[ny * _map->w + nx]) {
                 all_block = false;
                 break;
             }
@@ -923,11 +930,168 @@ void MapPreRendererComponent1::createDec4(int x, int y, MapTileType type,
                 }
             }
             if (all_air) {
+                mark1[y * _map->w + x] = true;
+                mark1[y * _map->w + (x - 1)] = true;
+
                 auto g =
                     Sprite::createWithSpriteFrameName(grass_decoration3[0]);
                 g->setScaleX(-1);
                 g->setAnchorPoint(Vec2(0, 1));
                 g->setPosition(pos + Vec2(128, 0));
+                dst.push_back(g);
+            }
+        }
+    }
+}
+
+void MapPreRendererComponent1::createDec5(int x, int y, MapTileType type,
+                                          int bit_mask, const Vec2& pos,
+                                          const MapArea& area,
+                                          vector<Node*>& dst) {
+    const auto inside = [&](int x, int y) {
+        if (x >= area.x && x <= area.x + area.w - 1 && y >= area.y &&
+            y <= area.y + area.h - 1) {
+            return true;
+        }
+        return false;
+    };
+
+    static const vector<string> grass_decoration{
+        "game_map_tile_grass_decorate_7.png",
+        "game_map_tile_grass_decorate_8.png"};
+
+    const int dx[] = {1};
+    const int dy[] = {0};
+
+    const int dx1[] = {0, 1, 0, 1};
+    const int dy1[] = {-1, -1, -2, -2};
+
+    const int dx2[] = {0, 1, 0, 1, 0, 1};
+    const int dy2[] = {-1, -1, -2, -2, -3, -3};
+
+    if ((*_map)[x][y] != air && mark1[y * _map->w + x] == false) {
+        bool step1 = true;
+        for (int k = 0; k < 1; ++k) {
+            int nx = x + dx[k];
+            int ny = y + dy[k];
+            if (!inside(nx, ny) || mark1[ny * _map->w + nx]) {
+                step1 = false;
+                break;
+            }
+            if ((*_map)[nx][ny] == air) {
+                step1 = false;
+            }
+        }
+
+        if (step1) {
+            int rand_range = 0;
+            bool suc = true;
+            for (int k = 0; k < 4; ++k) {
+                int nx = x + dx1[k];
+                int ny = y + dy1[k];
+                if (!inside(nx, ny)) {
+                    suc = false;
+                    break;
+                }
+                if ((*_map)[nx][ny] != air) {
+                    suc = false;
+                    break;
+                }
+            }
+            if (suc) {
+                bool suc1 = true;
+                rand_range += 1;
+                for (int k = 0; k < 6; ++k) {
+                    int nx = x + dx2[k];
+                    int ny = y + dy2[k];
+                    if (!inside(nx, ny)) {
+                        suc1 = false;
+                        break;
+                    }
+                    if ((*_map)[nx][ny] != air) {
+                        suc1 = false;
+                        break;
+                    }
+                }
+                rand_int r1(1, 10);
+                if (suc1) {
+                    // 有20%几率不生成
+                    if (r1(*_random) <= 2) {
+                        return;
+                    }
+                    mark1[y * _map->w + x] = true;
+                    mark1[y * _map->w + (x + 1)] = true;
+
+                    rand_range += 1;
+
+                    rand_int r(0, rand_range - 1);
+                    auto g = Sprite::createWithSpriteFrameName(
+                        grass_decoration[r(*_random)]);
+                    g->setAnchorPoint(Vec2(0, 1));
+                    g->setPosition(pos);
+                    dst.push_back(g);
+                }
+            }
+        }
+    }
+}
+
+void MapPreRendererComponent1::createDec6(int x, int y, MapTileType type,
+                                          int bit_mask, const Vec2& pos,
+                                          const MapArea& area,
+                                          vector<Node*>& dst) {
+    const auto inside = [&](int x, int y) {
+        if (x >= area.x && x <= area.x + area.w - 1 && y >= area.y &&
+            y <= area.y + area.h - 1) {
+            return true;
+        }
+        return false;
+    };
+
+    static const vector<string> grass_decoration{
+        "game_map_tile_grass_decorate_9.png"};
+
+    const int dx[] = {1, 2, 3};
+    const int dy[] = {0, 0, 0};
+
+    const int dx1[] = {0, 1, 2, 3, 0, 1, 2, 3};
+    const int dy1[] = {-1, -1, -1, -1, -2, -2, -2, -2};
+    if (type != air && mark1[y * _map->w + x] == false) {
+        bool step1 = true;
+        for (int k = 0; k < 3; ++k) {
+            int nx = x + dx[k];
+            int ny = y + dy[k];
+            if (!inside(nx, ny)) {
+                step1 = false;
+                break;
+            }
+            if ((*_map)[nx][ny] == air || mark1[ny * _map->w + nx]) {
+                step1 = false;
+            }
+        }
+        if (step1) {
+            bool suc = true;
+            for (int k = 0; k < 8; ++k) {
+                int nx = x + dx1[k];
+                int ny = y + dy1[k];
+                if (!inside(nx, ny)) {
+                    suc = false;
+                    break;
+                }
+                if ((*_map)[nx][ny] != air) {
+                    suc = false;
+                    break;
+                }
+            }
+            if (suc) {
+                mark1[y * _map->w + x] = true;
+                mark1[y * _map->w + x + 1] = true;
+                mark1[y * _map->w + x + 2] = true;
+                mark1[y * _map->w + x + 3] = true;
+
+                auto g = Sprite::createWithSpriteFrameName(grass_decoration[0]);
+                g->setAnchorPoint(Vec2(0, 1));
+                g->setPosition(pos);
                 dst.push_back(g);
             }
         }
@@ -1025,7 +1189,8 @@ void MapGameObjectTileComponent::updateLogic(GameObject* ob) {
     }
 }
 
-void MapGameObjectTileComponent::receiveEvent(GameObject* ob, const json& event) {
+void MapGameObjectTileComponent::receiveEvent(GameObject* ob,
+                                              const json& event) {
     string type = event["type"];
     if (type == "refresh") {
         cnt = 10;

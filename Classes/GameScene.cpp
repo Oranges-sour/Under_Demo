@@ -21,7 +21,7 @@ bool GameScene::init() {
     auto phyw = this->getPhysicsWorld();
     phyw->setGravity(Vec2::ZERO);
     phyw->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
-    phyw->setUpdateRate(1.0);
+   // phyw->setUpdateRate(0.5);
 
     loading_layer = LoadingLayer::create();
     this->addChild(loading_layer, 1);
@@ -66,7 +66,7 @@ void GameScene::init_map(unsigned seed) {
                 this->unschedule("pre_render");
 
                 loading_layer->removeFromParent();
-
+                
                 init_game();
                 return;
             }
@@ -82,6 +82,8 @@ void GameScene::init_game() {
     this->addChild(game_world);
 
     game_map_pre_renderer->afterPreRender(game_world->get_game_map_target());
+    //ÊÍ·Å
+    game_map_pre_renderer.reset();
 
     game_world->setGameMap(game_map);
 
@@ -148,50 +150,59 @@ void GameScene::notice(const json& event) {
 }
 
 void GameScene::keyDown(EventKeyboard::KeyCode key) {
+    auto frame_man = game_world->getGameFrameManager();
+    GameAct act;
+    act.type = act_move_start;
+    act.uid = players.find(Connection::instance()->get_uid())->second->getUID();
+
     switch (key) {
         case EventKeyboard::KeyCode::KEY_W: {
-            auto frame_man = game_world->getGameFrameManager();
-
-            GameAct act;
-            act.type = act_move_start;
-            act.uid = players.find(Connection::instance()->get_uid())
-                          ->second->getUID();
             act.param1 = 0;
             act.param2 = 1;
-
-            frame_man->pushGameAct(act);
-
         } break;
         case EventKeyboard::KeyCode::KEY_S: {
+            act.param1 = 0;
+            act.param2 = -1;
         } break;
         case EventKeyboard::KeyCode::KEY_A: {
+            act.param1 = -1;
+            act.param2 = 0;
         } break;
         case EventKeyboard::KeyCode::KEY_D: {
+            act.param1 = 1;
+            act.param2 = 0;
         } break;
     }
+
+    frame_man->pushGameAct(act);
 }
 
 void GameScene::keyUp(EventKeyboard::KeyCode key) {
+    auto frame_man = game_world->getGameFrameManager();
+    GameAct act;
+    act.type = act_move_stop;
+    act.uid = players.find(Connection::instance()->get_uid())->second->getUID();
+
     switch (key) {
         case EventKeyboard::KeyCode::KEY_W: {
-            auto frame_man = game_world->getGameFrameManager();
-
-            GameAct act;
-            act.type = act_move_stop;
-            act.uid = players.find(Connection::instance()->get_uid())
-                          ->second->getUID();
             act.param1 = 0;
             act.param2 = 1;
-
-            frame_man->pushGameAct(act);
         } break;
         case EventKeyboard::KeyCode::KEY_S: {
+            act.param1 = 0;
+            act.param2 = -1;
         } break;
         case EventKeyboard::KeyCode::KEY_A: {
+            act.param1 = -1;
+            act.param2 = 0;
         } break;
         case EventKeyboard::KeyCode::KEY_D: {
+            act.param1 = 1;
+            act.param2 = 0;
         } break;
     }
+
+    frame_man->pushGameAct(act);
 }
 
 bool LoadingLayer::init() {
@@ -258,14 +269,14 @@ void TestAi::updateLogic(GameObject* ob) {
 void TestAi::receiveGameAct(GameObject* ob, const GameAct& event) {
     if (event.type == act_move_start) {
         if (ob->getUID() == event.uid) {
-            xx += event.param1 * 10;
-            yy += event.param2 * 10;
+            xx += event.param1 * 30;
+            yy += event.param2 * 30;
         }
     }
     if (event.type == act_move_stop) {
         if (ob->getUID() == event.uid) {
-            xx -= event.param1 * 10;
-            yy -= event.param2 * 10;
+            xx -= event.param1 * 30;
+            yy -= event.param2 * 30;
         }
     }
 }

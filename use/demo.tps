@@ -250,6 +250,51 @@
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
+            <key type="filename">Res/game_map_tile_grass_decorate_7.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>32,48,64,96</rect>
+                <key>scale9Paddings</key>
+                <rect>32,48,64,96</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">Res/game_map_tile_grass_decorate_8.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>32,64,64,128</rect>
+                <key>scale9Paddings</key>
+                <rect>32,64,64,128</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">Res/game_map_tile_grass_decorate_9.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>64,32,128,64</rect>
+                <key>scale9Paddings</key>
+                <rect>64,32,128,64</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
             <key type="filename">Res/light.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
@@ -288,6 +333,9 @@
                     <filename>Res/game_map_tile_grass_decorate_4.png</filename>
                     <filename>Res/game_map_tile_grass_decorate_5.png</filename>
                     <filename>Res/game_map_tile_grass_decorate_6.png</filename>
+                    <filename>Res/game_map_tile_grass_decorate_7.png</filename>
+                    <filename>Res/game_map_tile_grass_decorate_8.png</filename>
+                    <filename>Res/game_map_tile_grass_decorate_9.png</filename>
                 </array>
             </struct>
         </map>

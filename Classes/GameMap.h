@@ -168,10 +168,18 @@ private:
     void createDec4(int x, int y, MapTileType type, int bit_mask,
                     const Vec2& pos, const MapArea& area, vector<Node*>& dst);
 
+    void createDec5(int x, int y, MapTileType type, int bit_mask,
+                    const Vec2& pos, const MapArea& area, vector<Node*>& dst);
+
+    void createDec6(int x, int y, MapTileType type, int bit_mask,
+                    const Vec2& pos, const MapArea& area, vector<Node*>& dst);
+
 private:
     shared_ptr<Random> _random;
 
+    vector<bool> mark1;
     vector<bool> mark;
+    
 
     MapTile* _map = nullptr;
     bool _isPreRenderFinish = false;
