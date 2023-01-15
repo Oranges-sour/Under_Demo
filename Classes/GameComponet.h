@@ -20,7 +20,8 @@ public:
 
 class PhysicsComponent : public GameComponent {
 public:
-    PhysicsComponent() : scaleNow(Vec2(1.0, 1.0)), opacityNow(1.0) {}
+    PhysicsComponent()
+        : scaleNow(Vec2(1.0, 1.0)), opacityNow(1.0), rotationNow(0.0) {}
     virtual void updateLogic(GameObject* ob) override;
     virtual void updateDraw(GameObject* ob, float rate) override;
     virtual void receiveGameAct(GameObject* ob, const GameAct& event) override {
@@ -32,12 +33,12 @@ protected:
     EaseInOut action_ease;
 
     Vec2 scaleNow;
-    Vec3 rotationNow;
+    float rotationNow;
     float opacityNow;
     Vec2 posNow;
 
     Vec2 scaleOld;
-    Vec3 rotationOld;
+    float rotationOld;
     float opacityOld;
     Vec2 posOld;
 };

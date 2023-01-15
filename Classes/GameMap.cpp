@@ -1163,7 +1163,9 @@ void MapPhysicsComponent1::updateLogic(GameWorld* game_world) {
                                     (yy - 1) * 64 + 5) /*保证落在格子里*/);
                         sp->initWithSpriteFrameName(
                             "game_map_tile_physics.png");
-                        // sp->setVisible(false);
+                        sp->setVisible(false);
+
+                        sp->setGameObjectType(object_type_wall);
                         sp->setAnchorPoint(Vec2(0, 0));
                         sp->setPosition(Vec2((xx - 1) * 64, (yy - 1) * 64));
 

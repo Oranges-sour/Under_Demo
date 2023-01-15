@@ -161,10 +161,12 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)\Resources\" /D /E /I /F /Y
     <ClCompile Include="..\Classes\GameScene.cpp" />
     <ClCompile Include="..\Classes\GameWorld.cpp" />
     <ClCompile Include="..\Classes\HelloWorldScene.cpp" />
+    <ClCompile Include="..\Classes\Joystick.cpp" />
     <ClCompile Include="..\Classes\MyMath.cpp" />
     <ClCompile Include="..\Classes\PhysicsShapeCache.cpp" />
     <ClCompile Include="..\Classes\Random.cpp" />
     <ClCompile Include="..\Classes\SpritePool.cpp" />
+    <ClCompile Include="..\Classes\TouchesPool.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -180,6 +182,7 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)\Resources\" /D /E /I /F /Y
     <ClInclude Include="..\Classes\GameWorld.h" />
     <ClInclude Include="..\Classes\HelloWorldScene.h" />
     <ClInclude Include="..\Classes\iVec2.h" />
+    <ClInclude Include="..\Classes\Joystick.h" />
     <ClInclude Include="..\Classes\json.h" />
     <ClInclude Include="..\Classes\MyMath.h" />
     <ClInclude Include="..\Classes\PhysicsShapeCache.h" />
@@ -187,6 +190,7 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)\Resources\" /D /E /I /F /Y
     <ClInclude Include="..\Classes\Random.h" />
     <ClInclude Include="..\Classes\SpritePool.h" />
     <ClInclude Include="..\Classes\Tools.h" />
+    <ClInclude Include="..\Classes\TouchesPool.h" />
     <ClInclude Include="main.h" />
   </ItemGroup>
   <ItemGroup>

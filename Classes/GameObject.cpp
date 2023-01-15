@@ -2,6 +2,16 @@
 
 #include "GameComponet.h"
 
+GameObject* GameObject::create() {
+    auto ob = new GameObject();
+    if (ob) {
+        ob->autorelease();
+        return ob;
+    }
+
+    return nullptr;
+}
+
 bool GameObject::init(GameWorld* game_world) {
     this->game_world = game_world;
     return true;

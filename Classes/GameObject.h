@@ -9,10 +9,10 @@ using namespace cocos2d;
 #include <queue>
 using namespace std;
 
+#include "GameFrame.h"
 #include "GameWorld.h"
 #include "QuadTree.h"
 #include "json.h"
-#include "GameFrame.h"
 
 class PhysicsComponent;
 class GameComponent;
@@ -24,11 +24,14 @@ enum GameObjectType {
     object_type_enemy,
     object_type_equipment,
     object_type_decorate,
+    object_type_wall,  // 地图的块
     object_type_unknow,
 };
 
 class GameObject : public Sprite, public ActionTweenDelegate {
 public:
+    static GameObject* create();
+
     // 由GameWorld调用
     bool init(GameWorld* game_world);
 

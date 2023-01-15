@@ -17,7 +17,8 @@ GameWorld* GameWorld::create() {
 }
 
 bool GameWorld::init() {
-    SpritePool::init(1200);
+    //SpritePool::init(1200);
+    
     // 初始化全局随机数
     this->_globalRandom = make_shared<Random>(31415);
 
@@ -72,7 +73,7 @@ void GameWorld::cleanup() {
 }
 
 GameObject* GameWorld::newObject(int layer, const Vec2& startPos) {
-    auto ob = SpritePool::getSprite();
+    auto ob = GameObject::create();
     assert(ob != nullptr);
 
     ob->init(this);
@@ -127,11 +128,13 @@ void GameWorld::main_update_logic() {
         if (it == camera_follow_object) {
             camera_follow_object = nullptr;
         }
-        it->Sprite::removeFromParent();
+        
         it->quad_node.container->remove(it->quad_node.uid);
 
         _game_objects.erase(it->getUID());
-        SpritePool::saveBack(it);
+
+        it->Sprite::removeFromParent();
+        //SpritePool::saveBack(it);
     }
     needToRemove.clear();
 
@@ -284,7 +287,7 @@ void GameWorldRenderer1::update(const Vec2& left_bottom, const Size& size,
                        });
     // 0.2 可以让背景不是全黑
 
-    render->beginWithClear(0.1, 0.1, 0.1, 1);
+    render->beginWithClear(0.2, 0.2, 0.2, 1);
     for (int i = 0; i < cnt; ++i) {
         lights[i]->visit();
     }
