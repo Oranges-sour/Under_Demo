@@ -38,7 +38,7 @@ private:
 class rand_int {
 public:
     rand_int(int min, int max) {
-        r = std::make_unique<std::uniform_int_distribution<int>>(min, max);
+        r = std::make_shared<std::uniform_int_distribution<int>>(min, max);
     }
     ~rand_int() {}
     int operator()() const {
@@ -51,13 +51,13 @@ public:
     }
 
 private:
-    std::unique_ptr<std::uniform_int_distribution<int>> r;
+    std::shared_ptr<std::uniform_int_distribution<int>> r;
 };
 
 class rand_float {
 public:
     rand_float(float min, float max) {
-        r = std::make_unique<std::uniform_real_distribution<float>>(min, max);
+        r = std::make_shared<std::uniform_real_distribution<float>>(min, max);
     }
     ~rand_float() {}
     float operator()() const {
@@ -70,13 +70,13 @@ public:
     }
 
 private:
-    std::unique_ptr<std::uniform_real_distribution<float>> r;
+    std::shared_ptr<std::uniform_real_distribution<float>> r;
 };
 
 class rand_bool {
 public:
     rand_bool() {
-        r = std::make_unique<std::uniform_int_distribution<int>>(0, 1);
+        r = std::make_shared<std::uniform_int_distribution<int>>(0, 1);
     }
     ~rand_bool() {}
     bool operator()() const {
@@ -89,7 +89,7 @@ public:
     }
 
 private:
-    std::unique_ptr<std::uniform_int_distribution<int>> r;
+    std::shared_ptr<std::uniform_int_distribution<int>> r;
 };
 
 template <class T>

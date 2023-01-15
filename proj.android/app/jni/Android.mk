@@ -8,7 +8,22 @@ LOCAL_MODULE_FILENAME := libMyGame
 
 LOCAL_SRC_FILES := $(LOCAL_PATH)/hellocpp/main.cpp \
                    $(LOCAL_PATH)/../../../Classes/AppDelegate.cpp \
-                   $(LOCAL_PATH)/../../../Classes/HelloWorldScene.cpp
+                   $(LOCAL_PATH)/../../../Classes/Connection.cpp \
+                   $(LOCAL_PATH)/../../../Classes/ConnectionStatue.cpp \
+                   $(LOCAL_PATH)/../../../Classes/GameComponent.cpp \
+                   $(LOCAL_PATH)/../../../Classes/GameComponet.cpp \
+                   $(LOCAL_PATH)/../../../Classes/GameFrame.cpp \
+                   $(LOCAL_PATH)/../../../Classes/GameMap.cpp \
+                   $(LOCAL_PATH)/../../../Classes/GameObject.cpp \
+                   $(LOCAL_PATH)/../../../Classes/GameScene.cpp \
+                   $(LOCAL_PATH)/../../../Classes/GameWorld.cpp \
+                   $(LOCAL_PATH)/../../../Classes/HelloWorldScene.cpp \
+                   $(LOCAL_PATH)/../../../Classes/MyMath.cpp \
+                   $(LOCAL_PATH)/../../../Classes/PhysicsShapeCache.cpp \
+                   $(LOCAL_PATH)/../../../Classes/Random.cpp \
+                   $(LOCAL_PATH)/../../../Classes/SpritePool.cpp \
+                   $(LOCAL_PATH)/../../../Classes/TouchesPool.cpp
+
 
 LOCAL_C_INCLUDES := $(LOCAL_PATH)/../../../Classes
 

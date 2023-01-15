@@ -5,11 +5,6 @@ void PhysicsComponent::updateLogic(GameObject* ob) {
     rotationOld = rotationNow;
     opacityOld = opacityNow;
     scaleOld = scaleNow;
-
-    posNow += ob->getPositionVelocity();
-    rotationNow += ob->getRotationVelocity();
-    opacityNow += ob->getOpacityVelocity();
-    scaleNow += ob->getScaleVelocity();
 }
 
 void PhysicsComponent::updateDraw(GameObject* ob, float rate) {
