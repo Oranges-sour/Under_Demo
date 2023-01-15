@@ -216,6 +216,8 @@ void ConnectionStatue_InGame::processEvent(Connection* connection,
     }
 }
 
+//////////////////////////////////////////////////////////////////
+
 void ConnectionStatue_StartGame::processMessage(Connection* connection,
                                                 const string& message) {
     json js;
@@ -244,21 +246,9 @@ void ConnectionStatue_StartGame::processMessage(Connection* connection,
             connection->switchStatue(make_shared<ConnectionStatue_Normal>());
         }
     }
-    if (type == "player_move_start") {
-        json event;
-        event["type"] = "player_move_start";
-        event["uid"] = js["uid"];
-        event["x"] = js["x"];
-        event["y"] = js["y"];
-        connection->push_listenerEvent(event);
-    }
-    if (type == "player_move_stop") {
-        json event;
-        event["type"] = "player_move_stop";
-        event["uid"] = js["uid"];
-        event["x"] = js["x"];
-        event["y"] = js["y"];
-        connection->push_listenerEvent(event);
+
+    if (type == "frame") {
+        connection->push_listenerEvent(js);
     }
 }
 
@@ -268,24 +258,7 @@ void ConnectionStatue_StartGame::update(Connection* connection,
 void ConnectionStatue_StartGame::processEvent(Connection* connection,
                                               const json& event) {
     string type = event["type"];
-    if (type == "player_move_start") {
-        json js;
-        js["type"] = "player_move_start";
-        js["info_1"] = "";
-        js["info_2"] = event["x"];
-        js["info_3"] = event["y"];
-        js["info_4"] = "";
-
-        connection->sendMessage(to_string(js));
-    }
-    if (type == "player_move_stop") {
-        json js;
-        js["type"] = "player_move_stop";
-        js["info_1"] = "";
-        js["info_2"] = event["x"];
-        js["info_3"] = event["y"];
-        js["info_4"] = "";
-
-        connection->sendMessage(to_string(js));
+    if (type == "frame") {
+        connection->sendMessage(to_string(event));
     }
 }

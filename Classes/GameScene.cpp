@@ -1,6 +1,7 @@
 #include "GameScene.h"
 
 #include "GameComponet.h"
+#include "GameFrame.h"
 #include "GameMap.h"
 #include "GameObject.h"
 #include "GameWorld.h"
@@ -20,10 +21,18 @@ bool GameScene::init() {
     auto phyw = this->getPhysicsWorld();
     phyw->setGravity(Vec2::ZERO);
     phyw->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
-    phyw->setUpdateRate(1.0);
+    // phyw->setUpdateRate(0.5);
 
     loading_layer = LoadingLayer::create();
     this->addChild(loading_layer, 1);
+
+    this->schedule([&](float) { Connection::instance()->update(16); },
+                   "web_upd");
+
+    auto listener = make_shared<ConnectionEventListener>(
+        [&](const json& event) { notice(event); });
+    Connection::instance()->regeist_event_listener(listener,
+                                                   "GameScene_listener");
 
     return true;
 }
@@ -73,13 +82,28 @@ void GameScene::init_game() {
     this->addChild(game_world);
 
     game_map_pre_renderer->afterPreRender(game_world->get_game_map_target());
+    // 释放
+    game_map_pre_renderer.reset();
 
     game_world->setGameMap(game_map);
 
     auto ren = make_shared<GameWorldRenderer1>();
     game_world->setGameRenderer(ren);
-    ren->init(game_world->get_game_renderer_atrget());
+    ren->init(game_world->get_game_renderer_target());
 
+    auto frame = make_shared<GameFrameManager>();
+    game_world->setGameFrameManager(frame);
+
+    auto game_bk = Sprite::create("game_bk.png");
+    game_bk->setAnchorPoint(Vec2(0, 0));
+    game_bk->setPosition(Vec2(0, 0));
+    Texture2D::TexParams texParams = {GL_LINEAR, GL_LINEAR, GL_REPEAT,
+                                      GL_REPEAT};
+    game_bk->getTexture()->setTexParameters(texParams);
+    game_bk->setTextureRect(Rect(0, 0, 64 * 256, 64 * 256));
+    game_world->get_game_bk_target()->addChild(game_bk);
+
+    // 创建玩家
     for (auto& it : player_uid) {
         ///
         auto ob = game_world->newObject(1, Vec2(300, 300));
@@ -91,7 +115,7 @@ void GameScene::init_game() {
         auto ai = make_shared<TestAi>();
         ob->addGameComponent(ai);
 
-        ob->setGameObjectType(player);
+        ob->setGameObjectType(object_type_player);
 
         ob->setLightRadius(600);
         ob->setLightColor(Color3B(255, 255, 255));
@@ -99,7 +123,7 @@ void GameScene::init_game() {
         PhysicsShapeCache::getInstance()->setBodyOnSprite("enemy_0", ob);
 
         players.insert({it, ob});
-        if (it == connection->get_uid()) {
+        if (it == Connection::instance()->get_uid()) {
             game_world->camera_follow(ob);
         }
     }
@@ -110,8 +134,44 @@ void GameScene::init_game() {
 
     keyboardListener->onKeyReleased = [&](EventKeyboard::KeyCode key,
                                           Event* en) { keyUp(key); };
+
+    auto mouseListener = EventListenerMouse::create();
+    mouseListener->onMouseDown = [&](EventMouse* eventMouse) {
+        auto b = eventMouse->getMouseButton();
+        auto pos = eventMouse->getLocationInView();
+        if (b == EventMouse::MouseButton::BUTTON_RIGHT) {
+            auto frame_man = game_world->getGameFrameManager();
+            GameAct act;
+            act.type = act_attack;
+            act.uid = players.find(Connection::instance()->get_uid())
+                          ->second->getUID();
+
+            act.param1 = 1;
+            act.param2 = 0;
+            frame_man->pushGameAct(act);
+        }
+    };
+
+    mouseListener->onMouseUp = [&](EventMouse* eventMouse) {
+        // auto b = eventMouse->getMouseButton();
+        // auto pos = eventMouse->getLocationInView();
+        // if (b == EventMouse::MouseButton::BUTTON_RIGHT) {
+        //     mouseRUp(pos);
+        // }
+        // if (b == EventMouse::MouseButton::BUTTON_LEFT) {
+        //     mouseLUp(pos);
+        // }
+        // mousePosition = pos;
+    };
+
     auto _dis = Director::getInstance()->getEventDispatcher();
     _dis->addEventListenerWithSceneGraphPriority(keyboardListener, this);
+    _dis->addEventListenerWithSceneGraphPriority(mouseListener, this);
+
+    // 初始化完毕，要手动给一帧
+    json js = frame->generateJsonOfNextFrame(Connection::instance()->get_uid());
+    frame->newNextFrame();
+    Connection::instance()->push_statueEvent(js);
 }
 
 void GameScene::notice(const json& event) {
@@ -120,7 +180,6 @@ void GameScene::notice(const json& event) {
     }
 
     string type = event["type"];
-
     if (type == "quit_game_result") {
         string statue = event["statue"];
         if (statue == "success") {
@@ -129,108 +188,65 @@ void GameScene::notice(const json& event) {
             return;
         }
     }
-    if (type == "player_move_start") {
-        string uid = event["uid"];
-        auto iter = players.find(uid);
-        if (iter == players.end()) {
-            return;
-        }
-
-        json ev;
-        ev["type"] = "player_move_start";
-        string sx = event["x"];
-        string sy = event["y"];
-        ev["x"] = stof(sx);
-        ev["y"] = stof(sy);
-        iter->second->pushEvent(ev);
-    }
-    if (type == "player_move_stop") {
-        string uid = event["uid"];
-        auto iter = players.find(uid);
-        if (iter == players.end()) {
-            return;
-        }
-
-        json ev;
-        ev["type"] = "player_move_stop";
-        string sx = event["x"];
-        string sy = event["y"];
-        ev["x"] = stof(sx);
-        ev["y"] = stof(sy);
-        iter->second->pushEvent(ev);
-    }
 }
 
 void GameScene::keyDown(EventKeyboard::KeyCode key) {
+    auto frame_man = game_world->getGameFrameManager();
+    GameAct act;
+    act.type = act_move_start;
+    act.uid = players.find(Connection::instance()->get_uid())->second->getUID();
+
     switch (key) {
         case EventKeyboard::KeyCode::KEY_W: {
+            act.param1 = 0;
+            act.param2 = 1;
+
             time_0 = steady_clock::now();
 
-            json event;
-            event["type"] = "player_move_start";
-            event["x"] = to_string(0);
-            event["y"] = to_string(1);
-            connection->push_statueEvent(event);
         } break;
         case EventKeyboard::KeyCode::KEY_S: {
-            json event;
-            event["type"] = "player_move_start";
-            event["x"] = to_string(0);
-            event["y"] = to_string(-1);
-            connection->push_statueEvent(event);
+            act.param1 = 0;
+            act.param2 = -1;
         } break;
         case EventKeyboard::KeyCode::KEY_A: {
-            json event;
-            event["type"] = "player_move_start";
-            event["x"] = to_string(-1);
-            event["y"] = to_string(0);
-            connection->push_statueEvent(event);
+            act.param1 = -1;
+            act.param2 = 0;
         } break;
         case EventKeyboard::KeyCode::KEY_D: {
-            json event;
-            event["type"] = "player_move_start";
-            event["x"] = to_string(1);
-            event["y"] = to_string(0);
-            connection->push_statueEvent(event);
+            act.param1 = 1;
+            act.param2 = 0;
         } break;
     }
+
+    frame_man->pushGameAct(act);
 }
 
 void GameScene::keyUp(EventKeyboard::KeyCode key) {
+    auto frame_man = game_world->getGameFrameManager();
+    GameAct act;
+    act.type = act_move_stop;
+    act.uid = players.find(Connection::instance()->get_uid())->second->getUID();
+
     switch (key) {
         case EventKeyboard::KeyCode::KEY_W: {
-            json event;
-            event["type"] = "player_move_stop";
-            event["x"] = to_string(0);
-            event["y"] = to_string(1);
-
-            connection->push_statueEvent(event);
+            act.param1 = 0;
+            act.param2 = 1;
         } break;
         case EventKeyboard::KeyCode::KEY_S: {
-            json event;
-            event["type"] = "player_move_stop";
-            event["x"] = to_string(0);
-            event["y"] = to_string(-1);
-
-            connection->push_statueEvent(event);
+            act.param1 = 0;
+            act.param2 = -1;
         } break;
         case EventKeyboard::KeyCode::KEY_A: {
-            json event;
-            event["type"] = "player_move_stop";
-            event["x"] = to_string(-1);
-            event["y"] = to_string(0);
-
-            connection->push_statueEvent(event);
+            act.param1 = -1;
+            act.param2 = 0;
         } break;
         case EventKeyboard::KeyCode::KEY_D: {
-            json event;
-            event["type"] = "player_move_stop";
-            event["x"] = to_string(1);
-            event["y"] = to_string(0);
-
-            connection->push_statueEvent(event);
+            act.param1 = 1;
+            act.param2 = 0;
         } break;
     }
+
+    frame_man->pushGameAct(act);
 }
 
 bool LoadingLayer::init() {
@@ -294,27 +310,65 @@ void TestAi::updateLogic(GameObject* ob) {
     ob->pushEvent(event);
 }
 
-void PhysicsComponent1::receive(GameObject* ob, const json& event) {
+void TestAi::receiveGameAct(GameObject* ob, const GameAct& event) {
+    const float SPEED = 30;
+
+    if (event.type == act_move_start) {
+        if (ob->getUID() == event.uid) {
+            xx += event.param1 * SPEED;
+            yy += event.param2 * SPEED;
+
+            if (abs(yy - SPEED) < 0.01) {
+                time_1 = steady_clock::now();
+                auto d = duration_cast<duration<float>>(time_1 - time_0);
+                CCLOG("%f", d.count());
+            }
+        }
+    }
+    if (event.type == act_move_stop) {
+        if (ob->getUID() == event.uid) {
+            xx -= event.param1 * SPEED;
+            yy -= event.param2 * SPEED;
+        }
+    }
+    /*if (event.type == act_attack) {
+        
+    }*/
+
+}
+
+void PhysicsComponent1::receiveEvent(GameObject* ob, const json& event) {
     string type = event["type"];
     if (type == "move") {
         float x = event["x"];
         float y = event["y"];
-        if (abs(y - 10) < 0.01) {
-            time_1 = steady_clock::now();
-            auto d = duration_cast<duration<float>>(time_1 - time_0);
-            CCLOG("%f", d.count());
-        }
 
         posNow += Vec2(x, y);
         return;
     }
-    if (type == "contact") {
-        /*long long data = event["object"];
-        GameObject* tar = (GameObject*)data;
-        auto t = tar->getGameObjectType();
-
-        ob->setVisible(false);
-
-        ob->removeFromParent();*/
-    }
 }
+
+// void PhysicsComponent1::receiveEvent(GameObject* ob, const json& event) {
+//     string type = event["type"];
+//     if (type == "move") {
+//         float x = event["x"];
+//         float y = event["y"];
+//         if (abs(y - 10) < 0.01) {
+//             time_1 = steady_clock::now();
+//             auto d = duration_cast<duration<float>>(time_1 - time_0);
+//             CCLOG("%f", d.count());
+//         }
+//
+//         posNow += Vec2(x, y);
+//         return;
+//     }
+//     if (type == "contact") {
+//         /*long long data = event["object"];
+//         GameObject* tar = (GameObject*)data;
+//         auto t = tar->getGameObjectType();
+//
+//         ob->setVisible(false);
+//
+//         ob->removeFromParent();*/
+//     }
+// }

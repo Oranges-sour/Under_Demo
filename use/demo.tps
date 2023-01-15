@@ -194,6 +194,7 @@
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
+            <key type="filename">Res/enemy_bullet_1.png</key>
             <key type="filename">Res/game_map_tile_cover0.png</key>
             <key type="filename">Res/game_map_tile_cover1.png</key>
             <key type="filename">Res/game_map_tile_cover2.png</key>
@@ -216,6 +217,21 @@
                 <rect>16,16,32,32</rect>
                 <key>scale9Paddings</key>
                 <rect>16,16,32,32</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">Res/enemy_bullet_1_par.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>2,2,5,5</rect>
+                <key>scale9Paddings</key>
+                <rect>2,2,5,5</rect>
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
@@ -247,6 +263,51 @@
                 <rect>32,32,64,64</rect>
                 <key>scale9Paddings</key>
                 <rect>32,32,64,64</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">Res/game_map_tile_grass_decorate_7.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>32,48,64,96</rect>
+                <key>scale9Paddings</key>
+                <rect>32,48,64,96</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">Res/game_map_tile_grass_decorate_8.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>32,64,64,128</rect>
+                <key>scale9Paddings</key>
+                <rect>32,64,64,128</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">Res/game_map_tile_grass_decorate_9.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>64,32,128,64</rect>
+                <key>scale9Paddings</key>
+                <rect>64,32,128,64</rect>
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
@@ -288,6 +349,11 @@
                     <filename>Res/game_map_tile_grass_decorate_4.png</filename>
                     <filename>Res/game_map_tile_grass_decorate_5.png</filename>
                     <filename>Res/game_map_tile_grass_decorate_6.png</filename>
+                    <filename>Res/game_map_tile_grass_decorate_7.png</filename>
+                    <filename>Res/game_map_tile_grass_decorate_8.png</filename>
+                    <filename>Res/game_map_tile_grass_decorate_9.png</filename>
+                    <filename>Res/enemy_bullet_1.png</filename>
+                    <filename>Res/enemy_bullet_1_par.png</filename>
                 </array>
             </struct>
         </map>

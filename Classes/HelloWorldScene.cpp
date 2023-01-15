@@ -1,6 +1,7 @@
 #include "HelloWorldScene.h"
 
 #include "GameComponet.h"
+#include "GameFrame.h"
 #include "GameObject.h"
 #include "GameScene.h"
 #include "SimpleAudioEngine.h"
@@ -21,22 +22,14 @@ static void problemLoading(const char* filename) {
         "front of filenames in HelloWorldScene.cpp\n");
 }
 
-class AI1 : public GameComponent {
-public:
-    virtual void updateLogic(GameObject* ob) override {}
-    virtual void receive(GameObject* ob, const json& event) override {}
-};
-
 bool DemoScene::init() {
     if (!Scene::init()) {
         return false;
     }
 
     //
-    this->connection = make_shared<Connection>();
-    this->connection->init("ws://127.0.0.1:23483");
-    this->schedule([&](float) { this->connection->update(25); }, 0.025,
-                   "update_con");
+    // Connection::instance()->open("ws://101.43.196.171:23482");
+    Connection::instance()->open("ws://127.0.0.1:23482");
 
     auto visibleSize = Director::getInstance()->getVisibleSize();
 
@@ -46,9 +39,11 @@ bool DemoScene::init() {
 
     this->schedule(
         [&, la](float) {
-            if (this->connection->is_ready()) {
+            if (Connection::instance()->is_error()) {
+                // Connection::instance()->open("ws://101.43.196.171:23482");
+                Connection::instance()->open("ws://127.0.0.1:23482");
+            } else if (Connection::instance()->is_open()) {
                 this->unschedule("check_server_online");
-
                 this->init_after_connect();
                 la->setVisible(false);
             }
@@ -61,33 +56,24 @@ bool DemoScene::init() {
 void DemoScene::init_after_connect() {
     //
     this->lobby = Lobby_Layer::create();
-    lobby->set_connection(this->connection);
     this->addChild(lobby, 2);
-
-    // this->game = Game_Layer::create();
-    // game->set_connection(this->connection);
-    // this->addChild(game, 1);
 
     auto menu = Menu::create();
     menu->setPosition(Vec2::ZERO);
     this->addChild(menu, 1);
 
-    /* auto sp = SpritePool::getSprite();
-     sp->init();
-     sp->initWithFile("HelloWorld.png");
-     auto phy = make_shared<PhysicsComponent>();
-     auto ai = make_shared<AI1>();
-
-     sp->addPhysicsComponent(phy);
-     sp->addGameComponent(ai);*/
-
-    // this->addChild(sp);
+    this->schedule([&](float) { Connection::instance()->update(16); },
+                   "web_upd");
 }
 
 bool Lobby_Layer::init() {
     if (!Layer::init()) {
         return false;
     }
+    auto listener = make_shared<ConnectionEventListener>(
+        [&](const json& event) { notice(event); });
+    Connection::instance()->regeist_event_listener(listener,
+                                                   "Lobby_Layer_listener");
 
     this->schedule(
         [&](float) {
@@ -126,7 +112,7 @@ bool Lobby_Layer::init() {
             json event;
             event["type"] = "create_game";
             event["info"] = text->getString();
-            connection->push_statueEvent(event);
+            Connection::instance()->push_statueEvent(event);
         });
 
         button->setPosition(400, visibleSize.height - 100);
@@ -175,7 +161,7 @@ bool Lobby_Layer::init() {
                 event["type"] = "chat_connection_say";
                 event["info_1"] = str;
                 event["info_2"] = "";
-                connection->push_statueEvent(event);
+                Connection::instance()->push_statueEvent(event);
             });
             button->setPosition(Vec2(400, visibleSize.height - 500));
             menu->addChild(button);
@@ -187,9 +173,9 @@ bool Lobby_Layer::init() {
             auto button = MenuItemLabel::create(l, [&, text](Ref*) {
                 json event;
                 event["type"] = "quit_game";
-                event["info_1"] = connection->get_uid();
+                event["info_1"] = Connection::instance()->get_uid();
                 event["info_2"] = "";
-                connection->push_statueEvent(event);
+                Connection::instance()->push_statueEvent(event);
             });
             button->setPosition(Vec2(400, visibleSize.height - 600));
             menu->addChild(button);
@@ -205,7 +191,7 @@ bool Lobby_Layer::init() {
                 json event;
                 event["type"] = "start_game";
                 event["info_1"] = to_string(1004);  // seed
-                connection->push_statueEvent(event);
+                Connection::instance()->push_statueEvent(event);
             });
             button->setPosition(Vec2(400, visibleSize.height - 700));
             menu->addChild(button);
@@ -254,7 +240,7 @@ void Lobby_Layer::notice(const json& event) {
     if (type == "create_game_result" || type == "join_game_result") {
         string statue = event["statue"];
         if (statue == "success") {
-            this->my_uid->setString(connection->get_uid());
+            this->my_uid->setString(Connection::instance()->get_uid());
             this->is_in_game = true;
             if (type == "create_game_result") {
                 this->is_host = true;
@@ -285,7 +271,6 @@ void Lobby_Layer::notice(const json& event) {
         auto s = GameScene::createScene();
         Director::getInstance()->replaceScene(s);
 
-        s->set_connection(connection);
         string sseed = event["seed"];
         string s_player_cnt = event["player_cnt"];
         int seed = stof(sseed);
@@ -320,7 +305,7 @@ bool Lobby_Layer::GameInfo::init() {
         event["type"] = "join_game";
         event["info"] = uid;
 
-        connection->push_statueEvent(event);
+        Connection::instance()->push_statueEvent(event);
     });
     button->setPosition(0, 0);
     menu->addChild(button);

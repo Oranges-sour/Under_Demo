@@ -1,5 +1,7 @@
 #include "GameWorld.h"
 
+#include "Connection.h"
+#include "GameFrame.h"
 #include "GameMap.h"
 #include "GameObject.h"
 #include "MyMath.h"
@@ -16,11 +18,20 @@ GameWorld* GameWorld::create() {
 
 bool GameWorld::init() {
     SpritePool::init(1200);
-    this->schedule([&](float) { main_update_logic(); }, 0.05f, "update_logic");
+    // 初始化全局随机数
+    this->_globalRandom = make_shared<Random>(31415);
+
+    this->schedule([&](float) { main_update_logic(); }, 0.066f,
+                   "update_logic");
     this->schedule([&](float) { main_update_draw(); }, "update_draw");
 
     this->_game_node = Node::create();
     this->addChild(_game_node, 0);
+
+    this->game_bk_target = Node::create();
+    game_bk_target->setAnchorPoint(Vec2(0, 0));
+    game_bk_target->setPosition(0, 0);
+    this->addChild(game_bk_target, -2);
 
     this->game_map_target = Node::create();
     game_map_target->setAnchorPoint(Vec2(0, 0));
@@ -47,7 +58,17 @@ bool GameWorld::init() {
     Director::getInstance()
         ->getEventDispatcher()
         ->addEventListenerWithSceneGraphPriority(conatctListener, this);
+
+    auto listener = make_shared<ConnectionEventListener>(
+        [&](const json& event) { notice(event); });
+    Connection::instance()->regeist_event_listener(listener,
+                                                   "game_world_listener");
     return true;
+}
+
+void GameWorld::cleanup() {
+    Connection::instance()->remove_event_listener("game_world_listener");
+    Node::cleanup();
 }
 
 GameObject* GameWorld::newObject(int layer, const Vec2& startPos) {
@@ -60,6 +81,8 @@ GameObject* GameWorld::newObject(int layer, const Vec2& startPos) {
 
     auto p = this->_gameMap->_map_helper->convert_in_map(startPos);
 
+    ob->setUID(Tools::random_string(8, *_globalRandom));
+
     needToAdd.insert({ob, p});
 
     return ob;
@@ -68,15 +91,32 @@ GameObject* GameWorld::newObject(int layer, const Vec2& startPos) {
 void GameWorld::removeObject(GameObject* ob) { needToRemove.insert(ob); }
 
 void GameWorld::main_update_logic() {
+    // 处理帧消息
+    if (!_frameManager->hasNewFrame()) {
+        return;
+    }
+    auto frame = _frameManager->getNextFrame();
+    for (auto& it : frame->actions) {
+        auto iter = _game_objects.find(it.uid);
+        if (iter == _game_objects.end()) {
+            assert(1 == 2);
+            continue;
+        }
+        iter->second->pushGameAct(it);
+    }
+
     quad_tree.visit_in_rect(
         {-1, 500}, {500, -1},
         [&](const iVec2& cor, GameObject* ob) { ob->main_update(); });
 
     this->updateGameObjectPosition();
+
     _gameMap->updateLogic(this);
 
     // 添加
     for (auto& it : needToAdd) {
+        _game_objects.insert({it.first->getUID(), it.first});
+
         auto quad_node = quad_tree.insert(it.second, it.first);
         it.first->quad_node = quad_node;
     }
@@ -89,9 +129,17 @@ void GameWorld::main_update_logic() {
         }
         it->Sprite::removeFromParent();
         it->quad_node.container->remove(it->quad_node.uid);
+
+        _game_objects.erase(it->getUID());
         SpritePool::saveBack(it);
     }
     needToRemove.clear();
+
+    // 迅速将此帧传出
+    auto js = _frameManager->generateJsonOfNextFrame(
+        Connection::instance()->get_uid());
+    Connection::instance()->push_statueEvent(js);
+    _frameManager->newNextFrame();
 }
 
 void GameWorld::main_update_draw() {
@@ -105,6 +153,8 @@ void GameWorld::main_update_draw() {
     auto screenCenter = Vec2(1920, 1080) / 2;
 
     _game_node->setPosition(-camera_pos + screenCenter);
+
+    game_bk_target->setPosition((-camera_pos + screenCenter) / 5);
 
     _gameRenderer->update(camera_pos - screenCenter, Size(1920, 1080), this);
 }
@@ -141,8 +191,8 @@ void GameWorld::updateGameObjectPosition() {
     quad_tree.visit_in_rect(
         {-1, 500}, {500, -1}, [&](const iVec2& cor, GameObject* ob) {
             auto type = ob->getGameObjectType();
-            if (type != player && type != bullet && type != enemy &&
-                type != equipment) {
+            if (type != object_type_player && type != object_type_bullet &&
+                type != object_type_enemy && type != object_type_equipment) {
                 return;
             }
 
@@ -159,6 +209,17 @@ void GameWorld::updateGameObjectPosition() {
         node.container->remove(node.uid);
 
         node = quad_tree.insert({it.second}, ob);
+    }
+}
+
+void GameWorld::notice(const json& event) {
+    if (!event.contains("type")) {
+        return;
+    }
+
+    string type = event["type"];
+    if (type == "frame") {
+        _frameManager->receiveFrameFromServer(event);
     }
 }
 
@@ -223,7 +284,7 @@ void GameWorldRenderer1::update(const Vec2& left_bottom, const Size& size,
                        });
     // 0.2 可以让背景不是全黑
 
-    render->beginWithClear(0.2, 0.2, 0.2, 1);
+    render->beginWithClear(0.1, 0.1, 0.1, 1);
     for (int i = 0; i < cnt; ++i) {
         lights[i]->visit();
     }

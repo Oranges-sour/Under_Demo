@@ -11,6 +11,7 @@ using namespace cocos2d::network;
 
 #include "Connection.h"
 #include "GameComponet.h"
+#include "GameFrame.h"
 #include "Random.h"
 class GameWorld;
 
@@ -28,16 +29,6 @@ public:
 
     virtual bool init() override;
 
-    void set_connection(shared_ptr<Connection> connection) {
-        this->schedule([&](float) { this->connection->update(25); }, 0.025,
-                       "update_con");
-        this->connection = connection;
-
-        auto listener = make_shared<ConnectionEventListener>(
-            [&](const json& event) { notice(event); });
-        connection->regeist_event_listener(listener, "GameScene_listener");
-    }
-
     void start(unsigned seed, int player_cnt, const vector<string>& player_uid);
 
     void init_map(unsigned seed);
@@ -47,7 +38,7 @@ public:
     void notice(const json& event);
 
     virtual void cleanup() override {
-        connection->remove_event_listener("GameScene_listener");
+        Connection::instance()->remove_event_listener("GameScene_listener");
         Scene::cleanup();
     }
 
@@ -66,8 +57,6 @@ private:
     GameWorld* game_world;
     shared_ptr<GameMap> game_map;
     shared_ptr<MapPreRendererComponent1> game_map_pre_renderer;
-
-    shared_ptr<Connection> connection;
 
     LoadingLayer* loading_layer;
 };
@@ -98,34 +87,18 @@ private:
 class PhysicsComponent1 : public PhysicsComponent {
 public:
     PhysicsComponent1(const Vec2& pos) { this->posNow = pos; }
-    virtual void updateLogic(GameObject* ob) {
-        PhysicsComponent::updateLogic(ob);
 
-        // this->posNow += Vec2(20, 0);
-    }
-    virtual void receive(GameObject* ob, const json& event) override;
+    virtual void receiveGameAct(GameObject* ob, const GameAct& act) override {}
+    virtual void receiveEvent(GameObject* ob, const json& event) override;
 };
 
 class TestAi : public GameComponent {
 public:
     TestAi() {}
-    virtual void updateLogic(GameObject* ob);
-    virtual void updateDraw(GameObject* ob, float rate) {}
-    virtual void receive(GameObject* ob, const json& event) {
-        string type = event["type"];
-        if (type == "player_move_start") {
-            int x = event["x"];
-            int y = event["y"];
-            xx += x * 10;
-            yy += y * 10;
-        }
-        if (type == "player_move_stop") {
-            int x = event["x"];
-            int y = event["y"];
-            xx -= x * 10;
-            yy -= y * 10;
-        }
-    }
+    virtual void updateLogic(GameObject* ob) override;
+    virtual void updateDraw(GameObject* ob, float rate) override {}
+    virtual void receiveGameAct(GameObject* ob, const GameAct& event) override;
+    virtual void receiveEvent(GameObject* ob, const json& event) override {}
 
 private:
     int xx = 0;

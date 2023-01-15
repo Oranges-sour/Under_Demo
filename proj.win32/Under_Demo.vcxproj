@@ -155,6 +155,7 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)\Resources\" /D /E /I /F /Y
     <ClCompile Include="..\Classes\Connection.cpp" />
     <ClCompile Include="..\Classes\ConnectionStatue.cpp" />
     <ClCompile Include="..\Classes\GameComponent.cpp" />
+    <ClCompile Include="..\Classes\GameFrame.cpp" />
     <ClCompile Include="..\Classes\GameMap.cpp" />
     <ClCompile Include="..\Classes\GameObject.cpp" />
     <ClCompile Include="..\Classes\GameScene.cpp" />
@@ -172,6 +173,7 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)\Resources\" /D /E /I /F /Y
     <ClInclude Include="..\Classes\Connection.h" />
     <ClInclude Include="..\Classes\ConnectionStatue.h" />
     <ClInclude Include="..\Classes\GameComponet.h" />
+    <ClInclude Include="..\Classes\GameFrame.h" />
     <ClInclude Include="..\Classes\GameMap.h" />
     <ClInclude Include="..\Classes\GameObject.h" />
     <ClInclude Include="..\Classes\GameScene.h" />

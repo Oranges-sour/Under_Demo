@@ -27,8 +27,6 @@ public:
 
 private:
     Lobby_Layer* lobby = nullptr;
-    // Game_Layer* game = nullptr;
-    shared_ptr<Connection> connection;
 };
 
 class Lobby_Layer : public Layer {
@@ -43,25 +41,13 @@ private:
         MenuItemLabel* button;
 
         string uid;
-
-        shared_ptr<Connection> connection;
     };
 
 public:
     virtual bool init();
 
-    void set_connection(shared_ptr<Connection> connection) {
-        this->connection = connection;
-        for (auto& it : game_info) {
-            it->connection = connection;
-        }
-        auto listener = make_shared<ConnectionEventListener>(
-            [&](const json& event) { notice(event); });
-        connection->regeist_event_listener(listener, "Lobby_Layer_listener");
-    }
-
     virtual void cleanup() override {
-        connection->remove_event_listener("Lobby_Layer_listener");
+        Connection::instance()->remove_event_listener("Lobby_Layer_listener");
         Layer::cleanup();
     }
 
@@ -79,7 +65,6 @@ private:
     vector<GameInfo*> game_info;
 
     vector<Label*> in_game_message;
-    shared_ptr<Connection> connection;
 };
 
 #endif  // __HELLOWORLD_SCENE_H__

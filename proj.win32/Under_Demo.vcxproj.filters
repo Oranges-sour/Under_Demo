@@ -63,6 +63,9 @@
     <ClCompile Include="..\Classes\MyMath.cpp">
       <Filter>src\tools</Filter>
     </ClCompile>
+    <ClCompile Include="..\Classes\GameFrame.cpp">
+      <Filter>src\game</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -121,6 +124,9 @@
     </ClInclude>
     <ClInclude Include="..\Classes\MyMath.h">
       <Filter>src\tools</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\GameFrame.h">
+      <Filter>src\game</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

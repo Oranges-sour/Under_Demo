@@ -26,7 +26,7 @@ class Tools {
 
         let result = "";
 
-        while (max_t > 0) {
+        while (max_t > 1) {
             if (t < max_t) {
                 result += "0";
             } else {
@@ -53,7 +53,7 @@ class Tools {
 
         let date = new Date();
         let month = apz(date.getMonth() + 1, 2);
-        let day = apz(date.getDay(), 2);
+        let day = apz(date.getDate(), 2);
         let hour = apz(date.getHours(), 2);
         let minute = apz(date.getMinutes(), 2);
         let second = apz(date.getSeconds(), 2);

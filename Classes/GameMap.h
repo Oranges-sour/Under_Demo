@@ -168,10 +168,18 @@ private:
     void createDec4(int x, int y, MapTileType type, int bit_mask,
                     const Vec2& pos, const MapArea& area, vector<Node*>& dst);
 
+    void createDec5(int x, int y, MapTileType type, int bit_mask,
+                    const Vec2& pos, const MapArea& area, vector<Node*>& dst);
+
+    void createDec6(int x, int y, MapTileType type, int bit_mask,
+                    const Vec2& pos, const MapArea& area, vector<Node*>& dst);
+
 private:
     shared_ptr<Random> _random;
 
+    vector<bool> mark1;
     vector<bool> mark;
+    
 
     MapTile* _map = nullptr;
     bool _isPreRenderFinish = false;
@@ -212,7 +220,8 @@ public:
 
     virtual void updateLogic(GameObject* ob);
     virtual void updateDraw(GameObject* ob, float rate) {}
-    virtual void receive(GameObject* ob, const json& event);
+    virtual void receiveEvent(GameObject* ob, const json& event);
+    virtual void receiveGameAct(GameObject* ob, const GameAct& act) {}
 
 private:
     string uid;

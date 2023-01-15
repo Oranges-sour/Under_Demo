@@ -51,8 +51,8 @@ class ConnectionStatue_Normal implements IConnectionStatue {
     update(connection: Connection, interval_ms: number): void {
         this.time += interval_ms;
 
-        //500ms 发送当前的game状态
-        if (this.time >= 500) {
+        //100ms 发送当前的game状态
+        if (this.time >= 100) {
             this.time = 0;
 
             let game_statue = {
