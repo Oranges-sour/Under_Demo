@@ -11,7 +11,7 @@ using namespace cocos2d;
 #include <vector>
 using namespace std;
 
-#include "GameComponet.h"
+#include "GameComponent.h"
 #include "Random.h"
 #include "iVec2.h"
 

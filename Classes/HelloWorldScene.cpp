@@ -1,47 +1,57 @@
 #include "HelloWorldScene.h"
 
-#include "GameComponet.h"
+#include "GameComponent.h"
 #include "GameFrame.h"
 #include "GameObject.h"
 #include "GameScene.h"
+#include "PhysicsShapeCache.h"
 #include "SimpleAudioEngine.h"
 #include "json.h"
 #include "ui/CocosGUI.h"
 
 USING_NS_CC;
 
-Scene* DemoScene::createScene() { return DemoScene::create(); }
+cocos2d::Scene* TestScene::createScene() { return TestScene::create(); }
 
-// Print useful error message instead of segfaulting when files are not
-// there.
-static void problemLoading(const char* filename) {
-    printf("Error while loading: %s\n", filename);
-    printf(
-        "Depending on how you compiled you might have to add "
-        "'Resources/' in "
-        "front of filenames in HelloWorldScene.cpp\n");
+bool TestScene::init() {
+    if (!Scene::init()) {
+        return false;
+    }
+    return true;
 }
+
+Scene* DemoScene::createScene() { return DemoScene::create(); }
 
 bool DemoScene::init() {
     if (!Scene::init()) {
         return false;
     }
 
+    SpriteFrameCache::getInstance()->addSpriteFramesWithFile("demo-1.plist");
+    SpriteFrameCache::getInstance()->addSpriteFramesWithFile(
+        "loadingPage.plist");
+
+    PhysicsShapeCache::getInstance()->addShapesWithFile("demo_physics.plist");
+
     //
-    // Connection::instance()->open("ws://101.43.196.171:23482");
-    Connection::instance()->open("ws://127.0.0.1:23482");
+    auto ins = Connection::instance();
+    if (ins != nullptr) {
+        ins->open("ws://101.43.196.171:23482");
+    }
+
+    // Connection::instance()->open("ws://127.0.0.1:23482");
 
     auto visibleSize = Director::getInstance()->getVisibleSize();
 
-    auto la = Label::create("Connecting...", "FiraCode", 48);
+    auto la = Label::createWithTTF("Connecting...", "font_normal.otf", 48);
     la->setPosition(400, visibleSize.height - 200);
     this->addChild(la);
 
     this->schedule(
         [&, la](float) {
             if (Connection::instance()->is_error()) {
-                // Connection::instance()->open("ws://101.43.196.171:23482");
-                Connection::instance()->open("ws://127.0.0.1:23482");
+                Connection::instance()->open("ws://101.43.196.171:23482");
+                // Connection::instance()->open("ws://127.0.0.1:23482");
             } else if (Connection::instance()->is_open()) {
                 this->unschedule("check_server_online");
                 this->init_after_connect();
@@ -101,13 +111,14 @@ bool Lobby_Layer::init() {
         menu->setPosition(0, 0);
         not_in_game->addChild(menu);
 
-        auto text = ui::TextField::create("input description", "FiraCode", 32);
+        auto text =
+            ui::TextField::create("input description", "font_normal.otf", 32);
         text->setMaxLengthEnabled(true);
         text->setMaxLength(10);
         text->setPosition(Vec2(500, visibleSize.height - 200));
         not_in_game->addChild(text);
 
-        auto l = Label::createWithSystemFont("create game", "FiraCode", 32);
+        auto l = Label::createWithTTF("create game", "font_normal.otf", 32);
         auto button = MenuItemLabel::create(l, [&, text](Ref*) {
             json event;
             event["type"] = "create_game";
@@ -135,11 +146,12 @@ bool Lobby_Layer::init() {
         menu->setPosition(0, 0);
         in_game->addChild(menu);
 
-        this->my_uid = Label::create("", "FiraCode", 48);
+        this->my_uid = Label::createWithTTF("", "font_normal.otf", 48);
         my_uid->setPosition(400, visibleSize.height - 200);
         in_game->addChild(my_uid);
 
-        auto text = ui::TextField::create("input message", "FiraCode", 32);
+        auto text =
+            ui::TextField::create("input message", "font_normal.otf", 32);
         text->setMaxLengthEnabled(true);
         text->setMaxLength(20);
         text->setPosition(Vec2(500, visibleSize.height - 400));
@@ -148,7 +160,7 @@ bool Lobby_Layer::init() {
         // 发送聊天消息
         {
             auto l =
-                Label::createWithSystemFont("send message", "FiraCode", 32);
+                Label::createWithTTF("send message", "font_normal.otf", 32);
             auto button = MenuItemLabel::create(l, [&, text](Ref*) {
                 auto str = text->getString();
                 if (str == "") {
@@ -169,7 +181,7 @@ bool Lobby_Layer::init() {
 
         // 退出当前房间
         {
-            auto l = Label::createWithSystemFont("quit game", "FiraCode", 32);
+            auto l = Label::createWithTTF("quit game", "font_normal.otf", 32);
             auto button = MenuItemLabel::create(l, [&, text](Ref*) {
                 json event;
                 event["type"] = "quit_game";
@@ -183,7 +195,7 @@ bool Lobby_Layer::init() {
 
         // 开始游戏
         {
-            auto l = Label::createWithSystemFont("start game", "FiraCode", 32);
+            auto l = Label::createWithTTF("start game", "font_normal.otf", 32);
             auto button = MenuItemLabel::create(l, [&, text](Ref*) {
                 if (!this->is_host) {
                     return;
@@ -198,7 +210,7 @@ bool Lobby_Layer::init() {
         }
 
         for (int i = 0; i < 6; ++i) {
-            auto info = Label::create("", "FiraCode", 32);
+            auto info = Label::createWithTTF("", "font_normal.otf", 32);
             in_game->addChild(info);
             info->setPosition(200, visibleSize.height - (i * 80 + 100));
 
@@ -291,11 +303,11 @@ bool Lobby_Layer::GameInfo::init() {
     menu->setPosition(0, 0);
     this->addChild(menu);
 
-    this->info = Label::createWithSystemFont("", "FiraCode", 32);
+    this->info = Label::createWithTTF("", "font_normal.otf", 32);
     info->setPosition(0, 32);
     this->addChild(info);
 
-    auto b = Label::createWithSystemFont("join", "FiraCode", 32);
+    auto b = Label::createWithTTF("join", "font_normal.otf", 32);
     this->button = MenuItemLabel::create(b, [&](Ref* node) {
         if (uid == "bad_id") {
             return;

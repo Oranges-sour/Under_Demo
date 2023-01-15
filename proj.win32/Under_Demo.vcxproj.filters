@@ -89,9 +89,6 @@
     <ClInclude Include="..\Classes\ConnectionStatue.h">
       <Filter>src\web</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\GameComponet.h">
-      <Filter>src\game</Filter>
-    </ClInclude>
     <ClInclude Include="..\Classes\GameMap.h">
       <Filter>src\game</Filter>
     </ClInclude>
@@ -139,6 +136,9 @@
     </ClInclude>
     <ClInclude Include="..\Classes\Joystick.h">
       <Filter>src\tools</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\GameComponent.h">
+      <Filter>src\game</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

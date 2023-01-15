@@ -1,7 +1,6 @@
 #include "AppDelegate.h"
 
 #include "HelloWorldScene.h"
-
 #include "PhysicsShapeCache.h"
 
 // #define USE_AUDIO_ENGINE 1
@@ -40,16 +39,7 @@ void AppDelegate::initGLContextAttrs() {
     GLView::setGLContextAttrs(glContextAttrs);
 }
 
-
-static int register_all_packages() {
-
-    SpriteFrameCache::getInstance()->addSpriteFramesWithFile("demo-1.plist");
-    SpriteFrameCache::getInstance()->addSpriteFramesWithFile(
-        "loadingPage.plist");
-
-    PhysicsShapeCache::getInstance()->addShapesWithFile("demo_physics.plist");
-    return 0;
-}
+static int register_all_packages() { return 0; }
 
 bool AppDelegate::applicationDidFinishLaunching() {
     // initialize director

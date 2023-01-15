@@ -1,4 +1,4 @@
-#include "GameComponet.h"
+#include "GameComponent.h"
 #include "GameObject.h"
 
 void PhysicsComponent::updateLogic(GameObject* ob) {

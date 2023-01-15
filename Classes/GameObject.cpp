@@ -1,6 +1,6 @@
 #include "GameObject.h"
 
-#include "GameComponet.h"
+#include "GameComponent.h"
 
 GameObject* GameObject::create() {
     auto ob = new GameObject();

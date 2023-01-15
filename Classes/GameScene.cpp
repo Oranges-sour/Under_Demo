@@ -1,6 +1,6 @@
 #include "GameScene.h"
 
-#include "GameComponet.h"
+#include "GameComponent.h"
 #include "GameFrame.h"
 #include "GameMap.h"
 #include "GameObject.h"

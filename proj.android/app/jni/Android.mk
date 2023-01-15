@@ -11,7 +11,6 @@ LOCAL_SRC_FILES := $(LOCAL_PATH)/hellocpp/main.cpp \
                    $(LOCAL_PATH)/../../../Classes/Connection.cpp \
                    $(LOCAL_PATH)/../../../Classes/ConnectionStatue.cpp \
                    $(LOCAL_PATH)/../../../Classes/GameComponent.cpp \
-                   $(LOCAL_PATH)/../../../Classes/GameComponet.cpp \
                    $(LOCAL_PATH)/../../../Classes/GameFrame.cpp \
                    $(LOCAL_PATH)/../../../Classes/GameMap.cpp \
                    $(LOCAL_PATH)/../../../Classes/GameObject.cpp \
@@ -22,6 +21,7 @@ LOCAL_SRC_FILES := $(LOCAL_PATH)/hellocpp/main.cpp \
                    $(LOCAL_PATH)/../../../Classes/PhysicsShapeCache.cpp \
                    $(LOCAL_PATH)/../../../Classes/Random.cpp \
                    $(LOCAL_PATH)/../../../Classes/SpritePool.cpp \
+                   $(LOCAL_PATH)/../../../Classes/Joystick.cpp \
                    $(LOCAL_PATH)/../../../Classes/TouchesPool.cpp
 
 

@@ -10,7 +10,7 @@ using namespace cocos2d;
 using namespace cocos2d::network;
 
 #include "Connection.h"
-#include "GameComponet.h"
+#include "GameComponent.h"
 #include "GameFrame.h"
 #include "Random.h"
 
