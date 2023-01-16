@@ -333,7 +333,7 @@ struct MapAlg2 {
     }
 };
 
-void MapGeneratorComponent1::init(unsigned seed) {
+void MapGeneratorComponent1::init(unsigned int seed) {
     random = make_shared<Random>(seed);
 }
 
@@ -502,6 +502,20 @@ void MapGeneratorComponent1::generate(int w, int h, MapTile& map) {
             map[x][y] = air;
         }
     }
+
+    // HASH —È÷§
+    const auto hash = [&](int key) {
+        const int P = 1e9 + 7;
+        return key % P;
+    };
+
+    int k = 1;
+    for (int i = 1; i <= w; ++i) {
+        for (int j = 1; j <= h; ++j) {
+            k = hash((int)map[i][j] * 13 + k);
+        }
+    }
+    CCLOG("GameMap HASH: %d", k);
 }
 
 void MapGeneratorComponent2::init(unsigned seed) {}
@@ -525,7 +539,7 @@ void MapGeneratorComponent2::generate(int w, int h, MapTile& map) {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-void MapPreRendererComponent1::init(MapTile* map, unsigned seed) {
+void MapPreRendererComponent1::init(MapTile* map, unsigned int seed) {
     this->_map = map;
     x_max = map->w / 16;
     x_now = 0;

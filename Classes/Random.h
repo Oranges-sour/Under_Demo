@@ -7,7 +7,7 @@
 
 #include "assert.h"
 
-using rand_engine = std::default_random_engine;
+using rand_engine = std::mt19937;
 
 class rand_bool;
 class rand_int;
@@ -19,7 +19,10 @@ public:
         seed = rd();
         e.seed(seed);
     }
-    Random(unsigned int seed) { e.seed(seed); }
+    Random(unsigned int seed) {
+        this->seed = seed;
+        e.seed(seed);
+    }
 
     static Random* getDefault() { return defaultEngine; }
 
@@ -103,7 +106,7 @@ public:
     ~RandWithRate() {}
     struct Elem {
         T value;
-        unsigned rate;
+        unsigned int rate;
     };
     T operator()();
     T operator()(Random& random);

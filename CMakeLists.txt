@@ -50,10 +50,44 @@ endif()
 list(APPEND GAME_SOURCE
      Classes/AppDelegate.cpp
      Classes/HelloWorldScene.cpp
+     Classes/Connection.cpp
+     Classes/ConnectionStatue.cpp
+     Classes/GameComponent.cpp
+     Classes/GameFrame.cpp
+     Classes/GameMap.cpp
+     Classes/GameObject.cpp
+     Classes/GameScene.cpp
+     Classes/GameWorld.cpp
+     Classes/Joystick.cpp
+     Classes/MyMath.cpp
+     Classes/PhysicsShapeCache.cpp
+     Classes/Random.cpp
+     Classes/SpritePool.cpp
+     Classes/TouchesPool.cpp
      )
 list(APPEND GAME_HEADER
      Classes/AppDelegate.h
      Classes/HelloWorldScene.h
+     Classes/addon_json.hpp
+     Classes/Connection.h
+     Classes/ConnectionStatue.h
+     Classes/GameComponent.h
+     Classes/GameFrame.h
+     Classes/GameMap.h
+     Classes/GameObject.h
+     Classes/GameScene.h
+     Classes/GameWorld.h
+     Classes/iVec2.h
+     Classes/iVec2.inl
+     Classes/Joystick.h
+     Classes/json.h
+     Classes/MyMath.h
+     Classes/PhysicsShapeCache.h
+     Classes/QuadTree.h
+     Classes/Random.h
+     Classes/SpritePool.h
+     Classes/Tools.h
+     Classes/TouchesPool.h
      )
 
 if(ANDROID)

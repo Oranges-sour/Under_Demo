@@ -17,13 +17,12 @@ GameWorld* GameWorld::create() {
 }
 
 bool GameWorld::init() {
-    //SpritePool::init(1200);
-    
+    // SpritePool::init(1200);
+
     // 初始化全局随机数
     this->_globalRandom = make_shared<Random>(31415);
 
-    this->schedule([&](float) { main_update_logic(); }, 0.066f,
-                   "update_logic");
+    this->schedule([&](float) { main_update_logic(); }, 0.066f, "update_logic");
     this->schedule([&](float) { main_update_draw(); }, "update_draw");
 
     this->_game_node = Node::create();
@@ -128,13 +127,13 @@ void GameWorld::main_update_logic() {
         if (it == camera_follow_object) {
             camera_follow_object = nullptr;
         }
-        
+
         it->quad_node.container->remove(it->quad_node.uid);
 
         _game_objects.erase(it->getUID());
 
         it->Sprite::removeFromParent();
-        //SpritePool::saveBack(it);
+        // SpritePool::saveBack(it);
     }
     needToRemove.clear();
 
@@ -238,10 +237,13 @@ GameWorldRenderer1::~GameWorldRenderer1() {
 }
 
 void GameWorldRenderer1::init(Node* target) {
-    this->light = new Sprite();
-    light->setAnchorPoint(Vec2(0, 0));
-    light->setPosition(1920, 0);
-    light->setScaleX(-1);
+    this->light = Sprite::create();
+
+
+    const auto visibleSize = Director::getInstance()->getVisibleSize();
+    light->setPosition(visibleSize / 2);
+    light->setScaleY(-1);
+
     target->addChild(light);
 
     this->render = RenderTexture::create(1920, 1080);

@@ -17,7 +17,7 @@ public:
                                   '9', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h',
                                   'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q',
                                   'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'};
-        static rand_int r(0, 35);
+        rand_int r(0, 35);
         string str = "";
 
         for (int i = 1; i <= len; ++i) {

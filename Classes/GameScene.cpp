@@ -109,6 +109,9 @@ void GameScene::init_game() {
     for (auto& it : player_uid) {
         ///
         auto ob = game_world->newObject(1, Vec2(300, 300));
+        // Íæ¼ÒÓÐÌØÊâuid
+        ob->setUID(it);
+
         ob->initWithSpriteFrameName("enemy_0.png");
         ob->setPosition(300, 300);
         auto phy = make_shared<PlayerPhysicsComponent>(Vec2(300, 300));
@@ -197,8 +200,7 @@ void GameScene::init_game() {
 
                 GameAct act;
                 act.type = act_move_stop;
-                act.uid = players.find(Connection::instance()->get_uid())
-                              ->second->getUID();
+                act.uid = Connection::instance()->get_uid();
                 act.param1 = vec.x;
                 act.param2 = vec.y;
                 frame_man->pushGameAct(act);
@@ -210,8 +212,7 @@ void GameScene::init_game() {
             }
             GameAct act;
             act.type = act_move_start;
-            act.uid = players.find(Connection::instance()->get_uid())
-                          ->second->getUID();
+            act.uid = Connection::instance()->get_uid();
             act.param1 = vec.x;
             act.param2 = vec.y;
             frame_man->pushGameAct(act);
@@ -230,8 +231,7 @@ void GameScene::init_game() {
             auto frame_man = game_world->getGameFrameManager();
             GameAct act;
             act.type = act_attack;
-            act.uid = players.find(Connection::instance()->get_uid())
-                          ->second->getUID();
+            act.uid = Connection::instance()->get_uid();
 
             act.param1 = vec.x;
             act.param2 = vec.y;
@@ -265,7 +265,7 @@ void GameScene::keyDown(EventKeyboard::KeyCode key) {
     auto frame_man = game_world->getGameFrameManager();
     GameAct act;
     act.type = act_move_start;
-    act.uid = players.find(Connection::instance()->get_uid())->second->getUID();
+    act.uid = Connection::instance()->get_uid();
 
     switch (key) {
         case EventKeyboard::KeyCode::KEY_W: {
@@ -296,7 +296,7 @@ void GameScene::keyUp(EventKeyboard::KeyCode key) {
     auto frame_man = game_world->getGameFrameManager();
     GameAct act;
     act.type = act_move_stop;
-    act.uid = players.find(Connection::instance()->get_uid())->second->getUID();
+    act.uid = Connection::instance()->get_uid();
 
     switch (key) {
         case EventKeyboard::KeyCode::KEY_W: {
