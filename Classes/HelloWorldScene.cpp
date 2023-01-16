@@ -27,25 +27,6 @@ bool DemoScene::init() {
         return false;
     }
 
-    auto _rr = make_shared<Random>(1006);
-    rand_float r(0.0f, 1.0f);
-
-    const auto hash = [&](int key) {
-        const int P = 1e9 + 7;
-        return key % P;
-    };
-
-    int k = 1;
-    for (int i = 1; i <= 1000; ++i) {
-        union {
-            float t;
-            int a;
-        } kkk;
-        kkk.t = r(*_rr);
-        k = hash(kkk.a + k);
-    }
-    CCLOG("Hash: %d", k);
-
     SpriteFrameCache::getInstance()->addSpriteFramesWithFile("demo-1.plist");
     SpriteFrameCache::getInstance()->addSpriteFramesWithFile(
         "loadingPage.plist");

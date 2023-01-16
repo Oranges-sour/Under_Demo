@@ -41,7 +41,7 @@ private:
 class rand_int {
 public:
     rand_int(int min, int max) {
-        r = std::make_shared<std::uniform_int_distribution<int>>(min, max);
+        r = std::make_shared<std::uniform_real_distribution<float>>(min, max);
     }
     ~rand_int() {}
     int operator()() const {
@@ -54,7 +54,7 @@ public:
     }
 
 private:
-    std::shared_ptr<std::uniform_int_distribution<int>> r;
+    std::shared_ptr<std::uniform_real_distribution<float>> r;
 };
 
 class rand_float {
@@ -79,7 +79,7 @@ private:
 class rand_bool {
 public:
     rand_bool() {
-        r = std::make_shared<std::uniform_int_distribution<int>>(0, 1);
+        r = std::make_shared<std::uniform_real_distribution<float>>(-1, 1);
     }
     ~rand_bool() {}
     bool operator()() const {
@@ -88,11 +88,15 @@ public:
     }
     bool operator()(Random& random) const {
         auto& engine = random.getEngine();
-        return static_cast<bool>((*r)(engine));
+        float f = (*r)(engine);
+        if (f < 0) {
+            return false;
+        }
+        return true;
     }
 
 private:
-    std::shared_ptr<std::uniform_int_distribution<int>> r;
+    std::shared_ptr<std::uniform_real_distribution<float>> r;
 };
 
 template <class T>
