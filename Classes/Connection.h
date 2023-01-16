@@ -31,8 +31,8 @@ private:
 
 class Connection : public WebSocket::Delegate {
 public:
-    static shared_ptr<Connection> _instance;
-    static shared_ptr<Connection> instance();
+    static Connection* _instance;
+    static Connection* instance();
 
 public:
     Connection();

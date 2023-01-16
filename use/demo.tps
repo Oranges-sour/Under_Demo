@@ -311,6 +311,96 @@
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
+            <key type="filename">Res/joystick_attack.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>35,35,69,69</rect>
+                <key>scale9Paddings</key>
+                <rect>35,35,69,69</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">Res/joystick_attack_bk.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>60,60,119,119</rect>
+                <key>scale9Paddings</key>
+                <rect>60,60,119,119</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">Res/joystick_attack_bk_effect.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>65,65,130,130</rect>
+                <key>scale9Paddings</key>
+                <rect>65,65,130,130</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">Res/joystick_large.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>59,59,117,117</rect>
+                <key>scale9Paddings</key>
+                <rect>59,59,117,117</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">Res/joystick_large_effect.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>66,66,133,133</rect>
+                <key>scale9Paddings</key>
+                <rect>66,66,133,133</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">Res/joystick_small.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>17,17,33,33</rect>
+                <key>scale9Paddings</key>
+                <rect>17,17,33,33</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
             <key type="filename">Res/light.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
@@ -354,6 +444,12 @@
                     <filename>Res/game_map_tile_grass_decorate_9.png</filename>
                     <filename>Res/enemy_bullet_1.png</filename>
                     <filename>Res/enemy_bullet_1_par.png</filename>
+                    <filename>Res/joystick_attack.png</filename>
+                    <filename>Res/joystick_attack_bk.png</filename>
+                    <filename>Res/joystick_large.png</filename>
+                    <filename>Res/joystick_small.png</filename>
+                    <filename>Res/joystick_attack_bk_effect.png</filename>
+                    <filename>Res/joystick_large_effect.png</filename>
                 </array>
             </struct>
         </map>

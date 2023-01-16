@@ -97,6 +97,7 @@
       <CompileAs>CompileAsCpp</CompileAs>
       <PrecompiledHeaderFile>precheader.h</PrecompiledHeaderFile>
       <ForcedIncludeFiles>precheader.h</ForcedIncludeFiles>
+      <LanguageStandard>stdcpp14</LanguageStandard>
     </ClCompile>
     <PreLinkEvent>
       <Command>if not exist "$(OutDir)" mkdir "$(OutDir)"

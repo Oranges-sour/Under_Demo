@@ -11,7 +11,7 @@ using namespace cocos2d;
 #include <vector>
 using namespace std;
 
-#include "GameComponet.h"
+#include "GameComponent.h"
 #include "Random.h"
 #include "iVec2.h"
 
@@ -109,7 +109,7 @@ public:
 
 class MapGeneratorComponent1 : public MapGeneratorComponent {
 public:
-    void init(unsigned seed);
+    void init(unsigned int seed);
 
     virtual void generate(int w, int h, MapTile& map);
 
@@ -134,9 +134,7 @@ private:
     };
 
 public:
-    virtual void init(MapTile* map) { this->init(map, 0); }
-
-    void init(MapTile* map, unsigned seed);
+    void init(MapTile* map, unsigned int seed);
 
     virtual bool isPreRenderFinish();
 
@@ -146,6 +144,8 @@ public:
     virtual Size afterPreRender(Node* target);
 
 private:
+    virtual void init(MapTile* map) override {}
+
     Texture2D* render(const MapArea& area);
 
     void createTile(MapTileType type, int bit_mask, const Vec2& pos,
@@ -179,7 +179,6 @@ private:
 
     vector<bool> mark1;
     vector<bool> mark;
-    
 
     MapTile* _map = nullptr;
     bool _isPreRenderFinish = false;

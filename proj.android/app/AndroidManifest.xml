@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="con.under.demo.orange"
+    package="com.orange.under.demo"
     android:installLocation="auto">
 
     <uses-permission android:name="android.permission.INTERNET"/>

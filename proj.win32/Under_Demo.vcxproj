@@ -115,6 +115,9 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)\Resources\" /D /E /I /F /Y
       <Outputs>$(TargetName).cab</Outputs>
       <Inputs>$(TargetFileName)</Inputs>
     </CustomBuildStep>
+    <ClCompile>
+      <LanguageStandard Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">stdcpp14</LanguageStandard>
+    </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -161,10 +164,12 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)\Resources\" /D /E /I /F /Y
     <ClCompile Include="..\Classes\GameScene.cpp" />
     <ClCompile Include="..\Classes\GameWorld.cpp" />
     <ClCompile Include="..\Classes\HelloWorldScene.cpp" />
+    <ClCompile Include="..\Classes\Joystick.cpp" />
     <ClCompile Include="..\Classes\MyMath.cpp" />
     <ClCompile Include="..\Classes\PhysicsShapeCache.cpp" />
     <ClCompile Include="..\Classes\Random.cpp" />
     <ClCompile Include="..\Classes\SpritePool.cpp" />
+    <ClCompile Include="..\Classes\TouchesPool.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -172,7 +177,7 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)\Resources\" /D /E /I /F /Y
     <ClInclude Include="..\Classes\AppDelegate.h" />
     <ClInclude Include="..\Classes\Connection.h" />
     <ClInclude Include="..\Classes\ConnectionStatue.h" />
-    <ClInclude Include="..\Classes\GameComponet.h" />
+    <ClInclude Include="..\Classes\GameComponent.h" />
     <ClInclude Include="..\Classes\GameFrame.h" />
     <ClInclude Include="..\Classes\GameMap.h" />
     <ClInclude Include="..\Classes\GameObject.h" />
@@ -180,6 +185,7 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)\Resources\" /D /E /I /F /Y
     <ClInclude Include="..\Classes\GameWorld.h" />
     <ClInclude Include="..\Classes\HelloWorldScene.h" />
     <ClInclude Include="..\Classes\iVec2.h" />
+    <ClInclude Include="..\Classes\Joystick.h" />
     <ClInclude Include="..\Classes\json.h" />
     <ClInclude Include="..\Classes\MyMath.h" />
     <ClInclude Include="..\Classes\PhysicsShapeCache.h" />
@@ -187,6 +193,7 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)\Resources\" /D /E /I /F /Y
     <ClInclude Include="..\Classes\Random.h" />
     <ClInclude Include="..\Classes\SpritePool.h" />
     <ClInclude Include="..\Classes\Tools.h" />
+    <ClInclude Include="..\Classes\TouchesPool.h" />
     <ClInclude Include="main.h" />
   </ItemGroup>
   <ItemGroup>

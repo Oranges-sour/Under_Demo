@@ -3,9 +3,9 @@
 #include "ConnectionStatue.h"
 #include "cocos2d.h"
 
-shared_ptr<Connection> Connection::_instance = make_shared<Connection>();
+Connection* Connection::_instance = new (std::nothrow) Connection();
 
-shared_ptr<Connection> Connection::instance() { return Connection::_instance; }
+Connection* Connection::instance() { return Connection::_instance; }
 
 Connection::Connection() : _is_open(false), _is_error(false), _start(true) {
     this->uid = "";
@@ -45,6 +45,7 @@ bool Connection::open(const string& ip) {
     }
     _is_error = false;
     this->_statue = make_shared<ConnectionStatue_Default>();
+    return true;
 }
 
 void Connection::close() {

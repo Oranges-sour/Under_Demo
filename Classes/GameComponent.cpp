@@ -1,4 +1,4 @@
-#include "GameComponet.h"
+#include "GameComponent.h"
 #include "GameObject.h"
 
 void PhysicsComponent::updateLogic(GameObject* ob) {
@@ -13,7 +13,7 @@ void PhysicsComponent::updateDraw(GameObject* ob, float rate) {
     ob->setPosition(posOld + deltaPos * rate);
 
     auto deltaRotation = rotationNow - rotationOld;
-    ob->setRotation3D(rotationOld + deltaRotation * rate);
+    ob->setRotation(rotationOld + deltaRotation * rate);
 
     auto deltaOpacity = opacityNow - opacityOld;
     ob->setOpacity((opacityOld + deltaOpacity * rate) * 255);

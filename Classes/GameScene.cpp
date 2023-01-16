@@ -1,12 +1,14 @@
 #include "GameScene.h"
 
-#include "GameComponet.h"
+#include "GameComponent.h"
 #include "GameFrame.h"
 #include "GameMap.h"
 #include "GameObject.h"
 #include "GameWorld.h"
 #include "HelloWorldScene.h"
+#include "Joystick.h"
 #include "PhysicsShapeCache.h"
+#include "TouchesPool.h"
 
 steady_clock::time_point time_0;
 steady_clock::time_point time_1;
@@ -107,12 +109,15 @@ void GameScene::init_game() {
     for (auto& it : player_uid) {
         ///
         auto ob = game_world->newObject(1, Vec2(300, 300));
+        // 玩家有特殊uid
+        ob->setUID(it);
+
         ob->initWithSpriteFrameName("enemy_0.png");
         ob->setPosition(300, 300);
-        auto phy = make_shared<PhysicsComponent1>(Vec2(300, 300));
+        auto phy = make_shared<PlayerPhysicsComponent>(Vec2(300, 300));
         ob->addGameComponent(phy);
 
-        auto ai = make_shared<TestAi>();
+        auto ai = make_shared<PlayerAI>();
         ob->addGameComponent(ai);
 
         ob->setGameObjectType(object_type_player);
@@ -139,7 +144,7 @@ void GameScene::init_game() {
     mouseListener->onMouseDown = [&](EventMouse* eventMouse) {
         auto b = eventMouse->getMouseButton();
         auto pos = eventMouse->getLocationInView();
-        if (b == EventMouse::MouseButton::BUTTON_RIGHT) {
+        if (b == EventMouse::MouseButton::BUTTON_LEFT) {
             auto frame_man = game_world->getGameFrameManager();
             GameAct act;
             act.type = act_attack;
@@ -152,21 +157,87 @@ void GameScene::init_game() {
         }
     };
 
-    mouseListener->onMouseUp = [&](EventMouse* eventMouse) {
-        // auto b = eventMouse->getMouseButton();
-        // auto pos = eventMouse->getLocationInView();
-        // if (b == EventMouse::MouseButton::BUTTON_RIGHT) {
-        //     mouseRUp(pos);
-        // }
-        // if (b == EventMouse::MouseButton::BUTTON_LEFT) {
-        //     mouseLUp(pos);
-        // }
-        // mousePosition = pos;
+    mouseListener->onMouseUp = [&](EventMouse* eventMouse) {};
+
+    auto touchListener = EventListenerTouchAllAtOnce::create();
+    touchListener->onTouchesBegan = [&](vector<Touch*> touch, Event*) -> void {
+        for (auto& t : touch) {
+            TouchesPool::instance->addToPool(t);
+        }
+    };
+
+    touchListener->onTouchesEnded = [&](vector<Touch*> touch, Event*) -> void {
+        for (auto& t : touch) {
+            TouchesPool::instance->removeFromPool(t);
+        }
     };
 
     auto _dis = Director::getInstance()->getEventDispatcher();
     _dis->addEventListenerWithSceneGraphPriority(keyboardListener, this);
     _dis->addEventListenerWithSceneGraphPriority(mouseListener, this);
+    _dis->addEventListenerWithSceneGraphPriority(touchListener, this);
+
+    this->joystick_move =
+        Joystick::create("joystick_large.png", "joystick_small.png",
+                         "joystick_large_effect.png");
+    joystick_move->setOriginalPosition(Vec2(300, 300));
+    this->addChild(joystick_move, 1);
+
+    this->joystick_attack =
+        Joystick::create("joystick_attack_bk.png", "joystick_attack.png",
+                         "joystick_attack_bk_effect.png");
+    joystick_attack->setOriginalPosition(Vec2(1620, 300));
+    this->addChild(joystick_attack, 1);
+
+    this->schedule(
+        [&](float) {
+            static stack<Vec2> st;
+            auto frame_man = game_world->getGameFrameManager();
+
+            while (!st.empty()) {
+                auto vec = st.top();
+                st.pop();
+
+                GameAct act;
+                act.type = act_move_stop;
+                act.uid = Connection::instance()->get_uid();
+                act.param1 = vec.x;
+                act.param2 = vec.y;
+                frame_man->pushGameAct(act);
+            }
+
+            auto vec = joystick_move->getMoveVec();
+            if (vec == Vec2::ZERO) {
+                return;
+            }
+            GameAct act;
+            act.type = act_move_start;
+            act.uid = Connection::instance()->get_uid();
+            act.param1 = vec.x;
+            act.param2 = vec.y;
+            frame_man->pushGameAct(act);
+
+            st.push(vec);
+        },
+        0.0333f, "move_upd");
+
+    this->schedule(
+        [&](float) {
+            auto vec = joystick_attack->getMoveVec();
+            if (vec == Vec2::ZERO) {
+                return;
+            }
+
+            auto frame_man = game_world->getGameFrameManager();
+            GameAct act;
+            act.type = act_attack;
+            act.uid = Connection::instance()->get_uid();
+
+            act.param1 = vec.x;
+            act.param2 = vec.y;
+            frame_man->pushGameAct(act);
+        },
+        0.4f, "attack_upd");
 
     // 初始化完毕，要手动给一帧
     json js = frame->generateJsonOfNextFrame(Connection::instance()->get_uid());
@@ -194,7 +265,7 @@ void GameScene::keyDown(EventKeyboard::KeyCode key) {
     auto frame_man = game_world->getGameFrameManager();
     GameAct act;
     act.type = act_move_start;
-    act.uid = players.find(Connection::instance()->get_uid())->second->getUID();
+    act.uid = Connection::instance()->get_uid();
 
     switch (key) {
         case EventKeyboard::KeyCode::KEY_W: {
@@ -225,7 +296,7 @@ void GameScene::keyUp(EventKeyboard::KeyCode key) {
     auto frame_man = game_world->getGameFrameManager();
     GameAct act;
     act.type = act_move_stop;
-    act.uid = players.find(Connection::instance()->get_uid())->second->getUID();
+    act.uid = Connection::instance()->get_uid();
 
     switch (key) {
         case EventKeyboard::KeyCode::KEY_W: {
@@ -301,7 +372,7 @@ bool LoadingLayer::init() {
     return true;
 }
 
-void TestAi::updateLogic(GameObject* ob) {
+void PlayerAI::updateLogic(GameObject* ob) {
     json event;
     event["type"] = "move";
     event["x"] = xx;
@@ -310,7 +381,7 @@ void TestAi::updateLogic(GameObject* ob) {
     ob->pushEvent(event);
 }
 
-void TestAi::receiveGameAct(GameObject* ob, const GameAct& event) {
+void PlayerAI::receiveGameAct(GameObject* ob, const GameAct& event) {
     const float SPEED = 30;
 
     if (event.type == act_move_start) {
@@ -331,13 +402,24 @@ void TestAi::receiveGameAct(GameObject* ob, const GameAct& event) {
             yy -= event.param2 * SPEED;
         }
     }
-    /*if (event.type == act_attack) {
-        
-    }*/
+    if (event.type == act_attack) {
+        auto sp = ob->get_game_world()->newObject(2, ob->getPosition());
+        sp->initWithSpriteFrameName("enemy_bullet_1.png");
+        sp->setGameObjectType(object_type_bullet);
 
+        auto ai = make_shared<BulletAi>(event.param1, event.param2);
+        auto phy = make_shared<BulletPhysicsComponent1>(ob->getPosition());
+        sp->addGameComponent(ai);
+        sp->addGameComponent(phy);
+
+        sp->setLightRadius(140);
+        sp->setLightColor(Color3B(194, 120, 194));
+
+        PhysicsShapeCache::getInstance()->setBodyOnSprite("enemy_bullet_1", sp);
+    }
 }
 
-void PhysicsComponent1::receiveEvent(GameObject* ob, const json& event) {
+void PlayerPhysicsComponent::receiveEvent(GameObject* ob, const json& event) {
     string type = event["type"];
     if (type == "move") {
         float x = event["x"];
@@ -348,27 +430,113 @@ void PhysicsComponent1::receiveEvent(GameObject* ob, const json& event) {
     }
 }
 
-// void PhysicsComponent1::receiveEvent(GameObject* ob, const json& event) {
-//     string type = event["type"];
-//     if (type == "move") {
-//         float x = event["x"];
-//         float y = event["y"];
-//         if (abs(y - 10) < 0.01) {
-//             time_1 = steady_clock::now();
-//             auto d = duration_cast<duration<float>>(time_1 - time_0);
-//             CCLOG("%f", d.count());
-//         }
-//
-//         posNow += Vec2(x, y);
-//         return;
-//     }
-//     if (type == "contact") {
-//         /*long long data = event["object"];
-//         GameObject* tar = (GameObject*)data;
-//         auto t = tar->getGameObjectType();
-//
-//         ob->setVisible(false);
-//
-//         ob->removeFromParent();*/
-//     }
-// }
+void BulletAi::updateLogic(GameObject* ob) {
+    {
+        json event;
+        event["type"] = "move";
+        event["x"] = xx * 40;
+        event["y"] = yy * 40;
+
+        ob->pushEvent(event);
+    }
+    {
+        json event;
+        event["type"] = "rotate";
+        event["r"] = 40;
+
+        ob->pushEvent(event);
+    }
+}
+
+void BulletPhysicsComponent1::receiveEvent(GameObject* ob, const json& event) {
+    string type = event["type"];
+    if (type == "move") {
+        float x = event["x"];
+        float y = event["y"];
+
+        posNow += Vec2(x, y);
+        return;
+    }
+    if (type == "rotate") {
+        float r = event["r"];
+
+        rotationNow += r;
+        return;
+    }
+    if (type == "contact") {
+        long long data = event["object"];
+        GameObject* tar = (GameObject*)data;
+        auto t = tar->getGameObjectType();
+        if (t == object_type_wall) {
+            if (is_dead) {
+                return;
+            }
+            is_dead = true;
+            ob->setVisible(false);
+            ob->removeFromParent();
+
+            // 创建粒子
+            for (int i = 0; i < 5; ++i) {
+                auto world = ob->get_game_world();
+                auto sp = world->newObject(2, ob->getPosition());
+                sp->initWithSpriteFrameName("enemy_bullet_1_par.png");
+                sp->setGameObjectType(object_type_particle);
+
+                rand_float r(0, 3.14 * 2);
+
+                float a = r(*world->getGlobalRandom());
+
+                auto ai = make_shared<ParticleAi>(cos(a), sin(a));
+                auto phy =
+                    make_shared<ParticlePhysicsComponent>(ob->getPosition());
+                sp->addGameComponent(ai);
+                sp->addGameComponent(phy);
+
+                sp->setLightRadius(140);
+                sp->setLightColor(Color3B(194, 120, 194));
+            }
+        }
+    }
+}
+
+void ParticleAi::updateLogic(GameObject* ob) {
+    {
+        json event;
+        event["type"] = "move";
+        event["x"] = xx * 60;
+        event["y"] = yy * 60;
+
+        ob->pushEvent(event);
+    }
+    {
+        json event;
+        event["type"] = "rotate";
+        event["r"] = 40;
+
+        ob->pushEvent(event);
+    }
+
+    ob->setLightRadius(ob->getLightRadius() / 2.0f);
+
+    cnt += 1;
+    if (cnt >= 5) {
+        ob->removeFromParent();
+    }
+}
+
+void ParticlePhysicsComponent::receiveEvent(GameObject* ob, const json& event) {
+    string type = event["type"];
+    if (type == "move") {
+        float x = event["x"];
+        float y = event["y"];
+
+        posNow += Vec2(x, y);
+        return;
+    }
+    if (type == "rotate") {
+        float r = event["r"];
+
+        rotationNow += r;
+        return;
+    }
+}

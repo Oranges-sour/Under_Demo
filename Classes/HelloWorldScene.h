@@ -14,6 +14,17 @@ using namespace cocos2d::network;
 class Lobby_Layer;
 class Game_Layer;
 
+class TestScene : public cocos2d::Scene {
+public:
+    static cocos2d::Scene* createScene();
+
+    virtual bool init();
+
+    // implement the "static create()" method manually
+    CREATE_FUNC(TestScene);
+
+};
+
 class DemoScene : public cocos2d::Scene {
 public:
     static cocos2d::Scene* createScene();

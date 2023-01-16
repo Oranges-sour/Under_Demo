@@ -17,12 +17,12 @@ GameWorld* GameWorld::create() {
 }
 
 bool GameWorld::init() {
-    SpritePool::init(1200);
+    // SpritePool::init(1200);
+
     // 初始化全局随机数
     this->_globalRandom = make_shared<Random>(31415);
 
-    this->schedule([&](float) { main_update_logic(); }, 0.066f,
-                   "update_logic");
+    this->schedule([&](float) { main_update_logic(); }, 0.066f, "update_logic");
     this->schedule([&](float) { main_update_draw(); }, "update_draw");
 
     this->_game_node = Node::create();
@@ -72,7 +72,7 @@ void GameWorld::cleanup() {
 }
 
 GameObject* GameWorld::newObject(int layer, const Vec2& startPos) {
-    auto ob = SpritePool::getSprite();
+    auto ob = GameObject::create();
     assert(ob != nullptr);
 
     ob->init(this);
@@ -127,11 +127,13 @@ void GameWorld::main_update_logic() {
         if (it == camera_follow_object) {
             camera_follow_object = nullptr;
         }
-        it->Sprite::removeFromParent();
+
         it->quad_node.container->remove(it->quad_node.uid);
 
         _game_objects.erase(it->getUID());
-        SpritePool::saveBack(it);
+
+        it->Sprite::removeFromParent();
+        // SpritePool::saveBack(it);
     }
     needToRemove.clear();
 
@@ -235,10 +237,13 @@ GameWorldRenderer1::~GameWorldRenderer1() {
 }
 
 void GameWorldRenderer1::init(Node* target) {
-    this->light = new Sprite();
-    light->setAnchorPoint(Vec2(0, 0));
-    light->setPosition(1920, 0);
-    light->setScaleX(-1);
+    this->light = Sprite::create();
+
+
+    const auto visibleSize = Director::getInstance()->getVisibleSize();
+    light->setPosition(visibleSize / 2);
+    light->setScaleY(-1);
+
     target->addChild(light);
 
     this->render = RenderTexture::create(1920, 1080);
@@ -284,7 +289,7 @@ void GameWorldRenderer1::update(const Vec2& left_bottom, const Size& size,
                        });
     // 0.2 可以让背景不是全黑
 
-    render->beginWithClear(0.1, 0.1, 0.1, 1);
+    render->beginWithClear(0.2, 0.2, 0.2, 1);
     for (int i = 0; i < cnt; ++i) {
         lights[i]->visit();
     }
