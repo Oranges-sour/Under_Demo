@@ -41,7 +41,9 @@ private:
 class rand_int {
 public:
     rand_int(int min, int max) {
-        r = std::make_shared<std::uniform_real_distribution<float>>(min, max);
+        //max+1 之后小数向下取整，保证[min, max]之间的数概率一样
+        r = std::make_shared<std::uniform_real_distribution<float>>(min,
+                                                                    max + 1);
     }
     ~rand_int() {}
     int operator()() const {
