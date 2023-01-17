@@ -87,9 +87,12 @@ class ConnectionStatue_StartGame implements IConnectionStatue {
             connection.send_message(e);
             return;
         }
-        
-        if(event.type == "frame") {
+
+        if (event.type == "frame") {
             let frame = event as any as Frame_MSG;
+            if (frame.frame.player == connection.get_uid()) {
+                return;
+            }
             connection.send_message(frame);
             return;
         }

@@ -21,7 +21,7 @@ bool GameWorld::init() {
     // 初始化全局随机数
     this->_globalRandom = make_shared<Random>(31415);
 
-    this->schedule([&](float) { main_update_logic(); }, 0.066f, "update_logic");
+    this->schedule([&](float) { main_update_logic(); }, 0.05f, "update_logic");
     this->schedule([&](float) { main_update_draw(); }, "update_draw");
 
     this->_game_node = Node::create();
@@ -62,9 +62,7 @@ bool GameWorld::init() {
 
 void GameWorld::pushGameAct(const GameAct& act) { _game_act_que.push(act); }
 
-void GameWorld::cleanup() {
-    Node::cleanup();
-}
+void GameWorld::cleanup() { Node::cleanup(); }
 
 GameObject* GameWorld::newObject(int layer, const Vec2& startPos) {
     auto ob = GameObject::create();
@@ -91,8 +89,9 @@ void GameWorld::main_update_logic() {
         _game_act_que.pop();
 
         auto iter = _game_objects.find(p.uid);
-        assert(iter != _game_objects.end());
-        iter->second->pushGameAct(p);
+        if (iter != _game_objects.end()) {
+            iter->second->pushGameAct(p);
+        }
     }
 
     quad_tree.visit_in_rect(

@@ -223,6 +223,23 @@ void GameScene::init_game() {
 
     this->schedule(
         [&](float) {
+            for (auto& it : players) {
+                auto ob = it.second;
+                if (ob->getUID() == Connection::instance()->get_uid()) {
+                    GameAct act;
+                    act.type = act_position_force_set;
+                    act.uid = ob->getUID();
+                    act.param1 = ob->getPosition().x;
+                    act.param2 = ob->getPosition().y;
+
+                    _frame_manager->pushGameAct(act, false);
+                }
+            }
+        },
+        0.0333f, "position_force_set");
+
+    this->schedule(
+        [&](float) {
             auto vec = joystick_attack->getMoveVec();
             if (vec == Vec2::ZERO) {
                 return;
@@ -409,6 +426,14 @@ void PlayerAI::receiveGameAct(GameObject* ob, const GameAct& event) {
 
         PhysicsShapeCache::getInstance()->setBodyOnSprite("enemy_bullet_1", sp);
     }
+    if (event.type == act_position_force_set) {
+        json ee;
+        ee["type"] = "position_force_set";
+        ee["x"] = event.param1;
+        ee["y"] = event.param2;
+
+        ob->pushEvent(ee);
+    }
 }
 
 void PlayerPhysicsComponent::receiveEvent(GameObject* ob, const json& event) {
@@ -418,6 +443,13 @@ void PlayerPhysicsComponent::receiveEvent(GameObject* ob, const json& event) {
         float y = event["y"];
 
         posNow += Vec2(x, y);
+        return;
+    }
+    if (type == "position_force_set") {
+        float x = event["x"];
+        float y = event["y"];
+
+        posNow = Vec2(x, y);
         return;
     }
 }

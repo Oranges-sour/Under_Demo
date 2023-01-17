@@ -34,9 +34,9 @@ bool DemoScene::init() {
     PhysicsShapeCache::getInstance()->addShapesWithFile("demo_physics.plist");
 
     //
-    // Connection::instance()->open("ws://101.43.196.171:23482");
+    Connection::instance()->open("ws://101.43.196.171:23482");
 
-    Connection::instance()->open("ws://127.0.0.1:23482");
+    //  Connection::instance()->open("ws://127.0.0.1:23482");
 
     auto visibleSize = Director::getInstance()->getVisibleSize();
 
@@ -47,8 +47,8 @@ bool DemoScene::init() {
     this->schedule(
         [&, la](float) {
             if (Connection::instance()->is_error()) {
-                // Connection::instance()->open("ws://101.43.196.171:23482");
-                Connection::instance()->open("ws://127.0.0.1:23482");
+                Connection::instance()->open("ws://101.43.196.171:23482");
+                // Connection::instance()->open("ws://127.0.0.1:23482");
             } else if (Connection::instance()->is_open()) {
                 this->unschedule("check_server_online");
                 this->init_after_connect();
@@ -77,6 +77,7 @@ bool Lobby_Layer::init() {
     if (!Layer::init()) {
         return false;
     }
+
     auto listener = make_shared<ConnectionEventListener>(
         [&](const json& event) { notice(event); });
     Connection::instance()->regeist_event_listener(listener,
@@ -95,6 +96,10 @@ bool Lobby_Layer::init() {
         "check_is_in_game");
 
     auto visibleSize = Director::getInstance()->getVisibleSize();
+
+    auto sp = Sprite::create("blue_bk.png");
+    sp->setPosition(visibleSize / 2);
+    this->addChild(sp);
 
     this->not_in_game = new Node();
     this->addChild(not_in_game, 1);

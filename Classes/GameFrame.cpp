@@ -94,8 +94,10 @@ json GameFrameManager::generate_json(shared_ptr<GameFrame> game_frame) {
     return js;
 }
 
-void GameFrameManager::pushGameAct(const GameAct& act) {
+void GameFrameManager::pushGameAct(const GameAct& act, bool role_back) {
     _next_frame->actions.push_back(act);
-    //立即发回
-    _game_world->pushGameAct(act);
+    if (role_back) {
+        // 立即发回
+        _game_world->pushGameAct(act);
+    }
 }
