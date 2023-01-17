@@ -72,7 +72,7 @@ GameObject* GameWorld::newObject(int layer, const Vec2& startPos) {
     ob->setPosition(startPos);
     _game_node->addChild(ob, layer);
 
-    auto p = this->_gameMap->_map_helper->convert_in_map(startPos);
+    auto p = this->_gameMap->getMapHelper()->convert_in_map(startPos);
 
     ob->setUID(Tools::random_string(8, *_globalRandom));
 
@@ -181,7 +181,7 @@ void GameWorld::updateGameObjectPosition() {
                 return;
             }
 
-            auto p = this->getGameMap()->_map_helper->convert_in_map(
+            auto p = this->getGameMap()->getMapHelper()->convert_in_map(
                 ob->getPosition());
             if (cor.x != p.x || cor.y != p.x) {
                 need_to_update.push_back({ob, {p.x, p.y}});
@@ -230,12 +230,12 @@ void GameWorldRenderer1::init(Node* target) {
 void GameWorldRenderer1::update(const Vec2& left_bottom, const Size& size,
                                 GameWorld* gameworld) {
     auto gameMap = gameworld->getGameMap();
-    auto pp = gameMap->_map_helper->convert_in_map(left_bottom);
+    auto pp = gameMap->getMapHelper()->convert_in_map(left_bottom);
     int xx = pp.x;
     int yy = pp.y;
 
     auto pp1 =
-        gameMap->_map_helper->convert_in_map(Vec2(size.width, size.height));
+        gameMap->getMapHelper()->convert_in_map(Vec2(size.width, size.height));
     int ww = pp1.x;
     int hh = pp1.y;
 

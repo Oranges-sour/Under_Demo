@@ -1154,9 +1154,9 @@ void MapPhysicsComponent1::updateLogic(GameWorld* game_world) {
             }
 
             auto box = ob->getBoundingBox();
-            auto left_bottom = _map->_map_helper->convert_in_map(box.origin);
+            auto left_bottom = _map->getMapHelper()->convert_in_map(box.origin);
             auto right_top =
-                _map->_map_helper->convert_in_map(box.origin + box.size);
+                _map->getMapHelper()->convert_in_map(box.origin + box.size);
 
             for (int xx = left_bottom.x; xx <= right_top.x; ++xx) {
                 for (int yy = left_bottom.y; yy <= right_top.y; ++yy) {

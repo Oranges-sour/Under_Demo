@@ -62,10 +62,15 @@ public:
 
     void updateLogic(GameWorld* game_world);
 
-    shared_ptr<MapHelperComponent> _map_helper;
-    shared_ptr<MapPhysicsComponent> _map_physics;
+    shared_ptr<MapHelperComponent> getMapHelper() { return this->_map_helper; }
+
+    shared_ptr<MapPhysicsComponent> getMapPhysics() {
+        return this->_map_physics;
+    }
 
 private:
+    shared_ptr<MapHelperComponent> _map_helper;
+    shared_ptr<MapPhysicsComponent> _map_physics;
     int w, h;
     // 方便对应，不使用下标0
     MapTile map;
