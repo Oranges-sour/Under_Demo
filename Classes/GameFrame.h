@@ -17,6 +17,7 @@ enum GameActType {
     act_unknow,
     act_move_start,
     act_move_stop,
+    act_jump,
     act_attack,
     act_position_force_set,
 };
@@ -52,7 +53,8 @@ public:
     void update();
 
     // 推动作到next_frame
-    void pushGameAct(const GameAct& act, bool role_back = true /*是否作用到自己*/);
+    void pushGameAct(const GameAct& act,
+                     bool role_back = true /*是否作用到自己*/);
 
 private:
     shared_ptr<GameFrame> generate_frame(const json& event);

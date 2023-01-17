@@ -10,9 +10,6 @@
 #include "PhysicsShapeCache.h"
 #include "TouchesPool.h"
 
-steady_clock::time_point time_0;
-steady_clock::time_point time_1;
-
 GameScene* GameScene::createScene() { return GameScene::create(); }
 
 bool GameScene::init() {
@@ -194,6 +191,8 @@ void GameScene::init_game() {
         [&](float) {
             static stack<Vec2> st;
 
+            static bool can_jump = true;
+
             while (!st.empty()) {
                 auto vec = st.top();
                 st.pop();
@@ -202,7 +201,6 @@ void GameScene::init_game() {
                 act.type = act_move_stop;
                 act.uid = Connection::instance()->get_uid();
                 act.param1 = vec.x;
-                act.param2 = vec.y;
                 _frame_manager->pushGameAct(act);
             }
 
@@ -214,10 +212,22 @@ void GameScene::init_game() {
             act.type = act_move_start;
             act.uid = Connection::instance()->get_uid();
             act.param1 = vec.x;
-            act.param2 = vec.y;
             _frame_manager->pushGameAct(act);
 
             st.push(vec);
+
+            if (vec.y < 0.8) {
+                can_jump = true;
+            }
+
+            if (vec.y > 0.8 && can_jump) {
+                can_jump = false;
+                GameAct act;
+                act.type = act_jump;
+                act.uid = Connection::instance()->get_uid();
+                // act.param1 = vec.x;
+                _frame_manager->pushGameAct(act);
+            }
         },
         0.0333f, "move_upd");
 
@@ -279,15 +289,12 @@ void GameScene::keyDown(EventKeyboard::KeyCode key) {
 
     switch (key) {
         case EventKeyboard::KeyCode::KEY_W: {
-            act.param1 = 0;
-            act.param2 = 1;
-
-            time_0 = steady_clock::now();
-
+            GameAct act;
+            act.type = act_jump;
+            act.uid = Connection::instance()->get_uid();
+            _frame_manager->pushGameAct(act);
         } break;
         case EventKeyboard::KeyCode::KEY_S: {
-            act.param1 = 0;
-            act.param2 = -1;
         } break;
         case EventKeyboard::KeyCode::KEY_A: {
             act.param1 = -1;
@@ -309,20 +316,14 @@ void GameScene::keyUp(EventKeyboard::KeyCode key) {
 
     switch (key) {
         case EventKeyboard::KeyCode::KEY_W: {
-            act.param1 = 0;
-            act.param2 = 1;
         } break;
         case EventKeyboard::KeyCode::KEY_S: {
-            act.param1 = 0;
-            act.param2 = -1;
         } break;
         case EventKeyboard::KeyCode::KEY_A: {
             act.param1 = -1;
-            act.param2 = 0;
         } break;
         case EventKeyboard::KeyCode::KEY_D: {
             act.param1 = 1;
-            act.param2 = 0;
         } break;
     }
 
@@ -385,14 +386,11 @@ void PlayerAI::updateLogic(GameObject* ob) {
     json event;
     event["type"] = "move";
     event["x"] = xx;
-    event["y"] = yy;
 
     ob->pushEvent(event);
 }
 
-void PlayerAI::receiveEvent(GameObject* ob, const json& event) {
-
-}
+void PlayerAI::receiveEvent(GameObject* ob, const json& event) {}
 
 void PlayerAI::receiveGameAct(GameObject* ob, const GameAct& event) {
     const float SPEED = 30;
@@ -400,20 +398,18 @@ void PlayerAI::receiveGameAct(GameObject* ob, const GameAct& event) {
     if (event.type == act_move_start) {
         if (ob->getUID() == event.uid) {
             xx += event.param1 * SPEED;
-            yy += event.param2 * SPEED;
-
-            if (abs(yy - SPEED) < 0.01) {
-                time_1 = steady_clock::now();
-                auto d = duration_cast<duration<float>>(time_1 - time_0);
-                CCLOG("%f", d.count());
-            }
         }
     }
     if (event.type == act_move_stop) {
         if (ob->getUID() == event.uid) {
             xx -= event.param1 * SPEED;
-            yy -= event.param2 * SPEED;
         }
+    }
+    if (event.type == act_jump) {
+        json event;
+        event["type"] = "jump";
+
+        ob->pushEvent(event);
     }
     if (event.type == act_attack) {
         auto sp = ob->get_game_world()->newObject(2, ob->getPosition());
@@ -444,9 +440,11 @@ void PlayerPhysicsComponent::receiveEvent(GameObject* ob, const json& event) {
     string type = event["type"];
     if (type == "move") {
         float x = event["x"];
-        float y = event["y"];
 
-        posNow += Vec2(x, y);
+        posNow += Vec2(x, 0);
+    }
+    if (type == "jump") {
+        fall_speed_y = 50;
     }
     if (type == "position_force_set") {
         float x = event["x"];
@@ -454,6 +452,13 @@ void PlayerPhysicsComponent::receiveEvent(GameObject* ob, const json& event) {
 
         posNow = Vec2(x, y);
     }
+
+    fall_speed_y -= 6;
+
+    fall_speed_y = max<float>(-60, fall_speed_y);
+    fall_speed_y = min<float>(60, fall_speed_y);
+
+    posNow.y += fall_speed_y;
 
     this->wall_contact_check(ob);
 }
@@ -497,7 +502,7 @@ void PlayerPhysicsComponent::wall_contact_check(GameObject* ob) {
             if (t != MapTileType::air) {
                 // 会进去,要减少速度
                 if (p1.x + speed.x > ip1.x * 64) {
-                    speed.x = ip1.x * 64 - p1.x - 1;
+                    speed.x = ip1.x * 64 - p1.x - 0.5;
                 }
             }
         }
@@ -508,7 +513,7 @@ void PlayerPhysicsComponent::wall_contact_check(GameObject* ob) {
             if (t != MapTileType::air) {
                 // 会进去,要减少速度
                 if (p0.x + speed.x < (ip0.x - 1) * 64) {
-                    speed.x = (ip0.x - 1) * 64 - p0.x + 1;
+                    speed.x = (ip0.x - 1) * 64 - p0.x + 0.5;
                 }
             }
         }
@@ -521,7 +526,7 @@ void PlayerPhysicsComponent::wall_contact_check(GameObject* ob) {
             if (t != MapTileType::air) {
                 // 会进去,要减少速度
                 if (p1.y + speed.y > ip1.y * 64) {
-                    speed.y = ip1.y * 64 - p1.y - 1;
+                    speed.y = ip1.y * 64 - p1.y - 0.5;
                 }
             }
         }
@@ -532,7 +537,8 @@ void PlayerPhysicsComponent::wall_contact_check(GameObject* ob) {
             if (t != MapTileType::air) {
                 // 会进去,要减少速度
                 if (p0.y + speed.y < (ip0.y - 1) * 64) {
-                    speed.y = (ip0.y - 1) * 64 - p0.y + 1;
+                    speed.y = (ip0.y - 1) * 64 - p0.y + 0.5;
+                    fall_speed_y = 0;
                 }
             }
         }

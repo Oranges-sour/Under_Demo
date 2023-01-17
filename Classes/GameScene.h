@@ -115,8 +115,6 @@ public:
     virtual void receiveEvent(GameObject* ob, const json& event) override;
 
 private:
-    float fall_speed_y = 0;
-
     int xx = 0;
     int yy = 0;
 };
