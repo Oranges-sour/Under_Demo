@@ -41,12 +41,6 @@ public:
 
     virtual void removeFromParent() override;
 
-    GameObject* getNext() const;
-    void setNext(GameObject* game_object);
-
-    bool isInUse();
-    void setInUse(bool state);
-
     void addGameComponent(shared_ptr<GameComponent> componet);
 
     void pushEvent(const json& event);
@@ -85,9 +79,6 @@ private:
 
     Color3B light_color;
     float light_radius;
-
-    bool _inUse;
-    GameObject* _next;
 
     vector<shared_ptr<GameComponent>> _componets;
 

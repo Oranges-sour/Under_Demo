@@ -10,8 +10,8 @@ using namespace cocos2d;
 
 #include "QuadTree.h"
 #include "iVec2.h"
-
 #include "json.h"
+#include "GameFrame.h"
 
 class GameObject;
 class GameMap;
@@ -41,13 +41,7 @@ public:
         return this->_gameRenderer;
     }
 
-    void setGameFrameManager(shared_ptr<GameFrameManager> frameManager) {
-        this->_frameManager = frameManager;
-    }
-
-    shared_ptr<GameFrameManager> getGameFrameManager() {
-        return this->_frameManager;
-    }
+    void pushGameAct(const GameAct& act);
 
     virtual void cleanup() override;
 
@@ -103,7 +97,8 @@ private:
     Quad<GameObject*> quad_tree;
     shared_ptr<GameMap> _gameMap;
     shared_ptr<GameWorldRenderer> _gameRenderer;
-    shared_ptr<GameFrameManager> _frameManager;
+
+    queue<GameAct> _game_act_que;
 
     // 游戏内的任何粒子创建，随机等，都必须用此随机引擎，保证一致性
     shared_ptr<Random> _globalRandom;

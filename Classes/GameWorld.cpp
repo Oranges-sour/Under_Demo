@@ -1,7 +1,6 @@
 #include "GameWorld.h"
 
 #include "Connection.h"
-#include "GameFrame.h"
 #include "GameMap.h"
 #include "GameObject.h"
 #include "MyMath.h"
@@ -58,16 +57,12 @@ bool GameWorld::init() {
     Director::getInstance()
         ->getEventDispatcher()
         ->addEventListenerWithSceneGraphPriority(conatctListener, this);
-
-    auto listener = make_shared<ConnectionEventListener>(
-        [&](const json& event) { notice(event); });
-    Connection::instance()->regeist_event_listener(listener,
-                                                   "game_world_listener");
     return true;
 }
 
+void GameWorld::pushGameAct(const GameAct& act) { _game_act_que.push(act); }
+
 void GameWorld::cleanup() {
-    Connection::instance()->remove_event_listener("game_world_listener");
     Node::cleanup();
 }
 
@@ -91,18 +86,13 @@ GameObject* GameWorld::newObject(int layer, const Vec2& startPos) {
 void GameWorld::removeObject(GameObject* ob) { needToRemove.insert(ob); }
 
 void GameWorld::main_update_logic() {
-    // 处理帧消息
-    if (!_frameManager->hasNewFrame()) {
-        return;
-    }
-    auto frame = _frameManager->getNextFrame();
-    for (auto& it : frame->actions) {
-        auto iter = _game_objects.find(it.uid);
-        if (iter == _game_objects.end()) {
-            assert(1 == 2);
-            continue;
-        }
-        iter->second->pushGameAct(it);
+    while (!_game_act_que.empty()) {
+        auto p = _game_act_que.front();
+        _game_act_que.pop();
+
+        auto iter = _game_objects.find(p.uid);
+        assert(iter != _game_objects.end());
+        iter->second->pushGameAct(p);
     }
 
     quad_tree.visit_in_rect(
@@ -136,12 +126,6 @@ void GameWorld::main_update_logic() {
         // SpritePool::saveBack(it);
     }
     needToRemove.clear();
-
-    // 迅速将此帧传出
-    auto js = _frameManager->generateJsonOfNextFrame(
-        Connection::instance()->get_uid());
-    Connection::instance()->push_statueEvent(js);
-    _frameManager->newNextFrame();
 }
 
 void GameWorld::main_update_draw() {
@@ -214,17 +198,6 @@ void GameWorld::updateGameObjectPosition() {
     }
 }
 
-void GameWorld::notice(const json& event) {
-    if (!event.contains("type")) {
-        return;
-    }
-
-    string type = event["type"];
-    if (type == "frame") {
-        _frameManager->receiveFrameFromServer(event);
-    }
-}
-
 ///////////////////////////////////////////////////////////////////////////////////////
 
 GameWorldRenderer1::~GameWorldRenderer1() {
@@ -238,7 +211,6 @@ GameWorldRenderer1::~GameWorldRenderer1() {
 
 void GameWorldRenderer1::init(Node* target) {
     this->light = Sprite::create();
-
 
     const auto visibleSize = Director::getInstance()->getVisibleSize();
     light->setPosition(visibleSize / 2);

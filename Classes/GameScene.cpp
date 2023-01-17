@@ -83,6 +83,11 @@ void GameScene::init_game() {
     this->game_world = GameWorld::create();
     this->addChild(game_world);
 
+    this->_frame_manager = make_shared<GameFrameManager>();
+    _frame_manager->init(game_world);
+    this->schedule([&](float) { _frame_manager->update(); },
+                   "frame_manager_upd");
+
     game_map_pre_renderer->afterPreRender(game_world->get_game_map_target());
     // 释放
     game_map_pre_renderer.reset();
@@ -92,9 +97,6 @@ void GameScene::init_game() {
     auto ren = make_shared<GameWorldRenderer1>();
     game_world->setGameRenderer(ren);
     ren->init(game_world->get_game_renderer_target());
-
-    auto frame = make_shared<GameFrameManager>();
-    game_world->setGameFrameManager(frame);
 
     auto game_bk = Sprite::create("game_bk.png");
     game_bk->setAnchorPoint(Vec2(0, 0));
@@ -145,7 +147,6 @@ void GameScene::init_game() {
         auto b = eventMouse->getMouseButton();
         auto pos = eventMouse->getLocationInView();
         if (b == EventMouse::MouseButton::BUTTON_LEFT) {
-            auto frame_man = game_world->getGameFrameManager();
             GameAct act;
             act.type = act_attack;
             act.uid = players.find(Connection::instance()->get_uid())
@@ -153,7 +154,7 @@ void GameScene::init_game() {
 
             act.param1 = 1;
             act.param2 = 0;
-            frame_man->pushGameAct(act);
+            _frame_manager->pushGameAct(act);
         }
     };
 
@@ -192,7 +193,6 @@ void GameScene::init_game() {
     this->schedule(
         [&](float) {
             static stack<Vec2> st;
-            auto frame_man = game_world->getGameFrameManager();
 
             while (!st.empty()) {
                 auto vec = st.top();
@@ -203,7 +203,7 @@ void GameScene::init_game() {
                 act.uid = Connection::instance()->get_uid();
                 act.param1 = vec.x;
                 act.param2 = vec.y;
-                frame_man->pushGameAct(act);
+                _frame_manager->pushGameAct(act);
             }
 
             auto vec = joystick_move->getMoveVec();
@@ -215,7 +215,7 @@ void GameScene::init_game() {
             act.uid = Connection::instance()->get_uid();
             act.param1 = vec.x;
             act.param2 = vec.y;
-            frame_man->pushGameAct(act);
+            _frame_manager->pushGameAct(act);
 
             st.push(vec);
         },
@@ -228,21 +228,15 @@ void GameScene::init_game() {
                 return;
             }
 
-            auto frame_man = game_world->getGameFrameManager();
             GameAct act;
             act.type = act_attack;
             act.uid = Connection::instance()->get_uid();
 
             act.param1 = vec.x;
             act.param2 = vec.y;
-            frame_man->pushGameAct(act);
+            _frame_manager->pushGameAct(act);
         },
         0.4f, "attack_upd");
-
-    // 初始化完毕，要手动给一帧
-    json js = frame->generateJsonOfNextFrame(Connection::instance()->get_uid());
-    frame->newNextFrame();
-    Connection::instance()->push_statueEvent(js);
 }
 
 void GameScene::notice(const json& event) {
@@ -262,7 +256,6 @@ void GameScene::notice(const json& event) {
 }
 
 void GameScene::keyDown(EventKeyboard::KeyCode key) {
-    auto frame_man = game_world->getGameFrameManager();
     GameAct act;
     act.type = act_move_start;
     act.uid = Connection::instance()->get_uid();
@@ -289,11 +282,10 @@ void GameScene::keyDown(EventKeyboard::KeyCode key) {
         } break;
     }
 
-    frame_man->pushGameAct(act);
+    _frame_manager->pushGameAct(act);
 }
 
 void GameScene::keyUp(EventKeyboard::KeyCode key) {
-    auto frame_man = game_world->getGameFrameManager();
     GameAct act;
     act.type = act_move_stop;
     act.uid = Connection::instance()->get_uid();
@@ -317,7 +309,7 @@ void GameScene::keyUp(EventKeyboard::KeyCode key) {
         } break;
     }
 
-    frame_man->pushGameAct(act);
+    _frame_manager->pushGameAct(act);
 }
 
 bool LoadingLayer::init() {

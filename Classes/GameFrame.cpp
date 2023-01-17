@@ -1,26 +1,55 @@
 #include "GameFrame.h"
 
-GameFrameManager::GameFrameManager() {
-    for (int i = 0; i < 36000; ++i) {
-        frames.push_back(GameFrame());
-    }
+#include "GameWorld.h"
 
-    // 队列为空
-    head = 0;
-    tail = -1;
+GameFrameManager::GameFrameManager() { _next_frame = make_shared<GameFrame>(); }
 
-    _next_frame = make_shared<GameFrame>();
+void GameFrameManager::init(GameWorld* game_world) {
+    this->_game_world = game_world;
+
+    auto listener = make_shared<ConnectionEventListener>(
+        [&](const json& event) { this->noitce(event); });
+
+    Connection::instance()->regeist_event_listener(listener,
+                                                   "frame_manager_listener");
 }
 
-void GameFrameManager::receiveFrameFromServer(const json& frame_event) {
-    auto game_frame = make_shared<GameFrame>();
+void GameFrameManager::release() {
+    Connection::instance()->remove_event_listener("frame_manager_listener");
+}
 
+void GameFrameManager::noitce(const json& frame_event) {
     string type = frame_event["type"];
     if (type != "frame") {
         return;
     }
+    auto frame = this->generate_frame(frame_event);
 
-    json frame = frame_event["frame"];
+    for (auto& it : frame->actions) {
+        _game_world->pushGameAct(it);
+    }
+}
+
+void GameFrameManager::update() {
+    if (_next_frame->actions.size() == 0) {
+        return;
+    }
+
+    auto js = this->generate_json(_next_frame);
+    Connection::instance()->push_statueEvent(js);
+
+    _next_frame = make_shared<GameFrame>();
+}
+
+shared_ptr<GameFrame> GameFrameManager::generate_frame(const json& event) {
+    auto game_frame = make_shared<GameFrame>();
+
+    string type = event["type"];
+    if (type != "frame") {
+        return game_frame;
+    }
+
+    json frame = event["frame"];
 
     vector<json> vec = frame["actions"];
     for (auto& it : vec) {
@@ -36,17 +65,15 @@ void GameFrameManager::receiveFrameFromServer(const json& frame_event) {
         game_frame->actions.push_back(act);
     }
 
-    tail += 1;
-    this->frames[tail] = *game_frame;
+    return game_frame;
 }
 
-json GameFrameManager::generateJsonOfNextFrame(const string& connection_uid) {
+json GameFrameManager::generate_json(shared_ptr<GameFrame> game_frame) {
     json js;
     js["type"] = "frame";
 
     json frame;
-    frame["cnt"] = tail + 1;
-    frame["player"] = connection_uid;
+    frame["player"] = Connection::instance()->get_uid();
 
     vector<json> vec;
     for (auto& it : _next_frame->actions) {
@@ -67,23 +94,8 @@ json GameFrameManager::generateJsonOfNextFrame(const string& connection_uid) {
     return js;
 }
 
-void GameFrameManager::newNextFrame() {
-    this->_next_frame = make_shared<GameFrame>();
-}
-
-bool GameFrameManager::hasNewFrame() { return (head <= tail); }
-
-GameFrame* GameFrameManager::getNextFrame() {
-    if (!hasNewFrame()) {
-        return nullptr;
-    }
-
-    auto p = &frames[head];
-    head += 1;
-
-    return p;
-}
-
 void GameFrameManager::pushGameAct(const GameAct& act) {
     _next_frame->actions.push_back(act);
+    //立即发回
+    _game_world->pushGameAct(act);
 }
