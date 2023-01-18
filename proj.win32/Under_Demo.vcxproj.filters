@@ -46,6 +46,9 @@
     <Filter Include="src\game\game_map\implements">
       <UniqueIdentifier>{6086b1c8-055a-45a4-abc4-67cc63cfffbf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\game\game_world\implements">
+      <UniqueIdentifier>{763c5350-5067-482a-bdf6-b88bc264ceaf}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -96,20 +99,23 @@
     <ClCompile Include="..\Classes\scene\StartScene.cpp">
       <Filter>src\scene</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\game\game_map\inplements\MapGenerator1.cpp">
+    <ClCompile Include="..\Classes\game\game_map\implements\MapGenerator1.cpp">
       <Filter>src\game\game_map\implements</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\game\game_map\inplements\MapGenerator2.cpp">
+    <ClCompile Include="..\Classes\game\game_map\implements\MapGenerator2.cpp">
       <Filter>src\game\game_map\implements</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\game\game_map\inplements\MapPreRenderer1.cpp">
+    <ClCompile Include="..\Classes\game\game_map\implements\MapHelper1.cpp">
       <Filter>src\game\game_map\implements</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\game\game_map\inplements\MapHelper1.cpp">
+    <ClCompile Include="..\Classes\game\game_map\implements\MapPhysics1.cpp">
       <Filter>src\game\game_map\implements</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\game\game_map\inplements\MapPhysics1.cpp">
+    <ClCompile Include="..\Classes\game\game_map\implements\MapPreRenderer1.cpp">
       <Filter>src\game\game_map\implements</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\game\game_world\implements\WorldRenderer1.cpp">
+      <Filter>src\game\game_world\implements</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -176,20 +182,23 @@
     <ClInclude Include="..\Classes\scene\StartScene.h">
       <Filter>src\scene</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\game\game_map\inplements\MapGenerator1.h">
+    <ClInclude Include="..\Classes\game\game_map\implements\MapGenerator1.h">
       <Filter>src\game\game_map\implements</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\game\game_map\inplements\MapGenerator2.h">
+    <ClInclude Include="..\Classes\game\game_map\implements\MapGenerator2.h">
       <Filter>src\game\game_map\implements</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\game\game_map\inplements\MapPreRenderer1.h">
+    <ClInclude Include="..\Classes\game\game_map\implements\MapHelper1.h">
       <Filter>src\game\game_map\implements</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\game\game_map\inplements\MapHelper1.h">
+    <ClInclude Include="..\Classes\game\game_map\implements\MapPhysics1.h">
       <Filter>src\game\game_map\implements</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\game\game_map\inplements\MapPhysics1.h">
+    <ClInclude Include="..\Classes\game\game_map\implements\MapPreRenderer1.h">
       <Filter>src\game\game_map\implements</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\game\game_world\implements\WorldRenderer1.h">
+      <Filter>src\game\game_world\implements</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
