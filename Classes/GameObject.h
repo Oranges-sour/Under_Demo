@@ -28,6 +28,28 @@ enum GameObjectType {
     object_type_unknow,
 };
 
+struct WorldLight {
+    enum WorldLightType {
+        world_light_type1,
+        world_light_type2,
+        world_light_type3
+    };
+
+    WorldLight()
+        : lightColor(Color3B(255, 255, 255)),
+          radius(100.0f),
+          opacity(1.0f),
+          type(world_light_type1) {}
+    WorldLight(const Color3B& color, float radius, float opacity,
+               WorldLightType type)
+        : lightColor(color), radius(radius), opacity(opacity), type(type) {}
+
+    Color3B lightColor;
+    float radius;
+    float opacity;
+    WorldLightType type;
+};
+
 class GameObject : public Sprite, public ActionTweenDelegate {
 public:
     static GameObject* create();
@@ -49,13 +71,21 @@ public:
     virtual void updateTweenAction(float rate, const std::string& key) override;
 
     // ตฦนโ
-    void setLightColor(const Color3B& color) { this->light_color = color; }
+    void addWorldLight(const WorldLight& light, const string& key) {
+        _world_light.insert({key, light});
+    }
 
-    const Color3B& getLightColor() { return this->light_color; }
+    void removeWorldLight(const string& key) { _world_light.erase(key); }
 
-    void setLightRadius(float r) { this->light_radius = r; }
+    WorldLight* getWorldLight(const string& key) {
+        auto iter = _world_light.find(key);
+        if (iter == _world_light.end()) {
+            return nullptr;
+        }
+        return &(iter->second);
+    }
 
-    float getLightRadius() { return this->light_radius; }
+    const map<string, WorldLight>& getAllWorldLight() { return _world_light; }
     //////////////////////////////////
 
     void main_update();
@@ -77,8 +107,7 @@ private:
 
     GameObjectType _game_object_type = object_type_unknow;
 
-    Color3B light_color;
-    float light_radius;
+    map<string, WorldLight> _world_light;
 
     vector<shared_ptr<GameComponent>> _componets;
 

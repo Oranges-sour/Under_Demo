@@ -121,8 +121,10 @@ void GameScene::init_game() {
 
         ob->setGameObjectType(object_type_player);
 
-        ob->setLightRadius(600);
-        ob->setLightColor(Color3B(255, 255, 255));
+        WorldLight light(Color3B(255, 255, 255), 600, 1.0,
+                         WorldLight::world_light_type1);
+
+        ob->addWorldLight(light, "main_light");
 
         PhysicsShapeCache::getInstance()->setBodyOnSprite("enemy_0", ob);
 
@@ -421,8 +423,10 @@ void PlayerAI::receiveGameAct(GameObject* ob, const GameAct& event) {
         sp->addGameComponent(ai);
         sp->addGameComponent(phy);
 
-        sp->setLightRadius(140);
-        sp->setLightColor(Color3B(194, 120, 194));
+        WorldLight light(Color3B(194, 120, 194), 140, 1.0,
+                         WorldLight::world_light_type2);
+
+        sp->addWorldLight(light, "main_light");
 
         PhysicsShapeCache::getInstance()->setBodyOnSprite("enemy_bullet_1", sp);
     }
@@ -611,8 +615,10 @@ void BulletPhysicsComponent1::receiveEvent(GameObject* ob, const json& event) {
                 sp->addGameComponent(ai);
                 sp->addGameComponent(phy);
 
-                sp->setLightRadius(140);
-                sp->setLightColor(Color3B(194, 120, 194));
+                WorldLight light(Color3B(194, 120, 194), 140, 1.0,
+                                 WorldLight::world_light_type2);
+
+                sp->addWorldLight(light, "main_light");
             }
         }
     }
@@ -635,7 +641,8 @@ void ParticleAi::updateLogic(GameObject* ob) {
         ob->pushEvent(event);
     }
 
-    ob->setLightRadius(ob->getLightRadius() / 2.0f);
+    auto light = ob->getWorldLight("main_light");
+    light->radius = light->radius / 2.0f;
 
     cnt += 1;
     if (cnt >= 5) {

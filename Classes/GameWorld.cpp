@@ -16,8 +16,6 @@ GameWorld* GameWorld::create() {
 }
 
 bool GameWorld::init() {
-    // SpritePool::init(1200);
-
     // 初始化全局随机数
     this->_globalRandom = make_shared<Random>(31415);
 
@@ -62,7 +60,12 @@ bool GameWorld::init() {
 
 void GameWorld::pushGameAct(const GameAct& act) { _game_act_que.push(act); }
 
-void GameWorld::cleanup() { Node::cleanup(); }
+void GameWorld::cleanup() {
+    if (_gameRenderer) {
+        _gameRenderer->release();
+    }
+    Node::cleanup();
+}
 
 GameObject* GameWorld::newObject(int layer, const Vec2& startPos) {
     auto ob = GameObject::create();
@@ -199,15 +202,6 @@ void GameWorld::updateGameObjectPosition() {
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-GameWorldRenderer1::~GameWorldRenderer1() {
-    if (render) {
-        render->release();
-    }
-    for (auto& it : lights) {
-        it->release();
-    }
-}
-
 void GameWorldRenderer1::init(Node* target) {
     this->light = Sprite::create();
 
@@ -220,49 +214,66 @@ void GameWorldRenderer1::init(Node* target) {
     this->render = RenderTexture::create(1920, 1080);
     this->render->retain();
 
-    lights.resize(100);
-    for (auto& it : lights) {
-        it = Sprite::createWithSpriteFrameName("light.png");
-        it->retain();
+    const vector<string> light_name{"light_1.png", "light_2.png",
+                                    "light_3.png"};
+    for (int i = 0; i < 3; ++i) {
+        lights[i].resize(50);
+        for (auto& it : lights[i]) {
+            it = Sprite::createWithSpriteFrameName(light_name[i]);
+            it->retain();
+        }
+    }
+}
+
+void GameWorldRenderer1::release() {
+    if (render) {
+        render->release();
+    }
+    for (int i = 0; i < 3; ++i) {
+        for (auto& it : lights[i]) {
+            it->release();
+        }
     }
 }
 
 void GameWorldRenderer1::update(const Vec2& left_bottom, const Size& size,
                                 GameWorld* gameworld) {
     auto gameMap = gameworld->getGameMap();
-    auto pp = gameMap->getMapHelper()->convert_in_map(left_bottom);
-    int xx = pp.x;
-    int yy = pp.y;
+    auto ilb = gameMap->getMapHelper()->convert_in_map(left_bottom);
 
-    auto pp1 =
+    auto isize =
         gameMap->getMapHelper()->convert_in_map(Vec2(size.width, size.height));
-    int ww = pp1.x;
-    int hh = pp1.y;
 
     auto& quad = gameworld->get_objects();
 
-    int cnt = 0;
-
-    quad.visit_in_rect({xx, yy + hh}, {xx + ww, yy},
+    int cnt[3] = {0, 0, 0};
+    // 边缘扩大一点，保证光源能够完整绘制
+    quad.visit_in_rect({ilb.x - 5, ilb.y + isize.y + 5},
+                       {ilb.x + isize.x + 5, ilb.y - 5},
                        [&](const iVec2& coor, GameObject* object) {
-                           if (cnt == 100) {
-                               return;
+                           auto& pos = object->getPosition();
+                           auto& lig = object->getAllWorldLight();
+
+                           for (auto& it : lig) {
+                               auto& li = it.second;
+                               int k = li.type;
+
+                               auto& light_sp = lights[k][cnt[k]];
+                               light_sp->setPosition(pos - left_bottom);
+                               light_sp->setScale(li.radius / 100.0f);
+                               light_sp->setColor(li.lightColor);
+                               light_sp->setOpacity(255 * li.opacity);
+
+                               cnt[k] += 1;
                            }
-                           auto p = object->getPosition();
-                           auto r = object->getLightRadius();
-                           auto c = object->getLightColor();
-
-                           lights[cnt]->setPosition(p - left_bottom);
-                           lights[cnt]->setScale(r / 100.0f);
-                           lights[cnt]->setColor(c);
-
-                           cnt += 1;
                        });
     // 0.2 可以让背景不是全黑
 
     render->beginWithClear(0.2, 0.2, 0.2, 1);
-    for (int i = 0; i < cnt; ++i) {
-        lights[i]->visit();
+    for (int k = 0; k < 3; ++k) {
+        for (int i = 0; i < cnt[k]; ++i) {
+            lights[k][i]->visit();
+        }
     }
     render->end();
 
