@@ -4,7 +4,7 @@
 #include "game/game_map/GameMap.h"
 
 
-class MapGeneratorComponent1 : public MapGeneratorComponent {
+class MapGenerator1 : public MapGeneratorComponent {
 public:
     void init(unsigned int seed);
 

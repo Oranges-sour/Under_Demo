@@ -1,8 +1,8 @@
 #include "MapGenerator2.h"
 
-void MapGeneratorComponent2::init(unsigned seed) {}
+void MapGenerator2::init(unsigned seed) {}
 
-void MapGeneratorComponent2::generate(int w, int h, MapTile& map) {
+void MapGenerator2::generate(int w, int h, MapTile& map) {
     const auto air = MapTileType::air;
     const auto dirt = MapTileType::dirt;
     const auto grass = MapTileType::grass;

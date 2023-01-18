@@ -3,7 +3,7 @@
 
 #include "game/game_map/GameMap.h"
 
-class MapPreRendererComponent1 : public MapPreRendererComponent {
+class MapPreRenderer1 : public MapPreRendererComponent {
 private:
     struct MapArea {
         int x, y, w, h;

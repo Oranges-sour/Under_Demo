@@ -1,6 +1,6 @@
 #include "MapPreRenderer1.h"
 
-void MapPreRendererComponent1::init(MapTile* map, unsigned int seed) {
+void MapPreRenderer1::init(MapTile* map, unsigned int seed) {
     this->_map = map;
     x_max = map->w / 16;
     x_now = 0;
@@ -14,11 +14,11 @@ void MapPreRendererComponent1::init(MapTile* map, unsigned int seed) {
     mark.resize((map->w + 1) * (map->h + 1), false);
 }
 
-bool MapPreRendererComponent1::isPreRenderFinish() {
+bool MapPreRenderer1::isPreRenderFinish() {
     return _isPreRenderFinish;
 }
 
-void MapPreRendererComponent1::preRender() {
+void MapPreRenderer1::preRender() {
     if (_isPreRenderFinish) {
         return;
     }
@@ -48,7 +48,7 @@ void MapPreRendererComponent1::preRender() {
     }
 }
 
-Size MapPreRendererComponent1::afterPreRender(Node* target) {
+Size MapPreRenderer1::afterPreRender(Node* target) {
     for (auto& it : textures) {
         auto& area = it.first;
         auto tex = it.second;
@@ -66,7 +66,7 @@ Size MapPreRendererComponent1::afterPreRender(Node* target) {
     return Size(64 * _map->w, 64 * _map->h);
 }
 
-Texture2D* MapPreRendererComponent1::render(const MapArea& area) {
+Texture2D* MapPreRenderer1::render(const MapArea& area) {
     const int pixleW = 64 * area.w;
     const int pixleH = 64 * area.h;
 
@@ -154,7 +154,7 @@ Texture2D* MapPreRendererComponent1::render(const MapArea& area) {
     return rt->getSprite()->getTexture();
 }
 
-void MapPreRendererComponent1::createTile(MapTileType type, int bit_mask,
+void MapPreRenderer1::createTile(MapTileType type, int bit_mask,
                                           const Vec2& pos, vector<Node*>& dst) {
     static const map<MapTileType, string> sprite_frame{
         {dirt, "game_map_tile_dirt.png"},
@@ -169,7 +169,7 @@ void MapPreRendererComponent1::createTile(MapTileType type, int bit_mask,
     dst.push_back(tile);
 }
 
-void MapPreRendererComponent1::createDecoration(int x, int y, MapTileType type,
+void MapPreRenderer1::createDecoration(int x, int y, MapTileType type,
                                                 int bit_mask, const Vec2& pos,
                                                 const MapArea& area,
                                                 vector<Node*>& dst) {
@@ -181,7 +181,7 @@ void MapPreRendererComponent1::createDecoration(int x, int y, MapTileType type,
     createDec6(x, y, type, bit_mask, pos, area, dst);
 }
 
-void MapPreRendererComponent1::createTileMask(MapTileType type, int bit_mask,
+void MapPreRenderer1::createTileMask(MapTileType type, int bit_mask,
                                               const Vec2& pos,
                                               vector<Node*>& dst) {
     static const vector<pair<int, string>> sprite_mask{
@@ -203,7 +203,7 @@ void MapPreRendererComponent1::createTileMask(MapTileType type, int bit_mask,
     }
 }
 
-void MapPreRendererComponent1::createDec1(int x, int y, MapTileType type,
+void MapPreRenderer1::createDec1(int x, int y, MapTileType type,
                                           int bit_mask, const Vec2& pos,
                                           const MapArea& area,
                                           vector<Node*>& dst) {
@@ -225,7 +225,7 @@ void MapPreRendererComponent1::createDec1(int x, int y, MapTileType type,
     }
 }
 
-void MapPreRendererComponent1::createDec2(int x, int y, MapTileType type,
+void MapPreRenderer1::createDec2(int x, int y, MapTileType type,
                                           int bit_mask, const Vec2& pos,
                                           const MapArea& area,
                                           vector<Node*>& dst) {
@@ -291,7 +291,7 @@ void MapPreRendererComponent1::createDec2(int x, int y, MapTileType type,
     }
 }
 
-void MapPreRendererComponent1::createDec3(int x, int y, MapTileType type,
+void MapPreRenderer1::createDec3(int x, int y, MapTileType type,
                                           int bit_mask, const Vec2& pos,
                                           const MapArea& area,
                                           vector<Node*>& dst) {
@@ -354,7 +354,7 @@ void MapPreRendererComponent1::createDec3(int x, int y, MapTileType type,
     }
 }
 
-void MapPreRendererComponent1::createDec4(int x, int y, MapTileType type,
+void MapPreRenderer1::createDec4(int x, int y, MapTileType type,
                                           int bit_mask, const Vec2& pos,
                                           const MapArea& area,
                                           vector<Node*>& dst) {
@@ -419,7 +419,7 @@ void MapPreRendererComponent1::createDec4(int x, int y, MapTileType type,
     }
 }
 
-void MapPreRendererComponent1::createDec5(int x, int y, MapTileType type,
+void MapPreRenderer1::createDec5(int x, int y, MapTileType type,
                                           int bit_mask, const Vec2& pos,
                                           const MapArea& area,
                                           vector<Node*>& dst) {
@@ -511,7 +511,7 @@ void MapPreRendererComponent1::createDec5(int x, int y, MapTileType type,
     }
 }
 
-void MapPreRendererComponent1::createDec6(int x, int y, MapTileType type,
+void MapPreRenderer1::createDec6(int x, int y, MapTileType type,
                                           int bit_mask, const Vec2& pos,
                                           const MapArea& area,
                                           vector<Node*>& dst) {

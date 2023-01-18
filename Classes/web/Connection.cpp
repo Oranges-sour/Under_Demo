@@ -35,7 +35,6 @@ Connection::~Connection() {
 
     _cv.notify_all();
     _thread->join();
-    CCLOG("123");
 }
 
 bool Connection::open(const string& ip) {

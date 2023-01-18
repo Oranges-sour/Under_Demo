@@ -10,8 +10,8 @@ using namespace cocos2d;
 
 #include "game/game_frame/GameFrame.h"
 #include "utility/QuadTree.h"
-#include "utility/math/iVec2.h"
 #include "utility/json/json.h"
+#include "utility/math/iVec2.h"
 
 class GameObject;
 class GameMap;
@@ -19,6 +19,14 @@ class GameWorldRenderer;
 class GameFrameManager;
 
 class Connection;
+
+enum ObjectLayer {
+    layer_enemy = 1,
+    layer_player,
+    layer_bullet,
+    layer_particle,
+    layer_map_physics,
+};
 
 class GameWorld : public Node {
 public:
@@ -48,7 +56,7 @@ public:
     //////////////////////////////////////////////
 
     // 新建一个object
-    GameObject* newObject(int layer, const Vec2& startPos);
+    GameObject* newObject(ObjectLayer layer, const Vec2& startPos);
 
     void removeObject(GameObject* ob);
 
@@ -113,7 +121,5 @@ public:
     virtual Vec2 calcu_camera_speed(const Vec2& current_pos,
                                     const Vec2& target_pos) = 0;
 };
-
-
 
 #endif

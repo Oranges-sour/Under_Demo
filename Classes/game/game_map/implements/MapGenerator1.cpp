@@ -310,11 +310,11 @@ struct MapAlg2 {
     }
 };
 
-void MapGeneratorComponent1::init(unsigned int seed) {
+void MapGenerator1::init(unsigned int seed) {
     random = make_shared<Random>(seed);
 }
 
-void MapGeneratorComponent1::generate(int w, int h, MapTile& map) {
+void MapGenerator1::generate(int w, int h, MapTile& map) {
     const auto air = MapTileType::air;
     const auto dirt = MapTileType::dirt;
     const auto grass = MapTileType::grass;

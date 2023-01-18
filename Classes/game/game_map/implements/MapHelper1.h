@@ -3,7 +3,7 @@
 
 #include "game/game_map/GameMap.h"
 
-class MapHelperComponent1 : public MapHelperComponent {
+class MapHelper1 : public MapHelperComponent {
 public:
     virtual iVec2 convert_in_map(const Vec2& pos);
 };

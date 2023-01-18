@@ -3,7 +3,7 @@
 
 #include "game/game_map/GameMap.h"
 
-class MapPhysicsComponent1 : public MapPhysicsComponent {
+class MapPhysics1 : public MapPhysicsComponent {
 public:
     virtual void updateLogic(GameWorld* game_world);
 

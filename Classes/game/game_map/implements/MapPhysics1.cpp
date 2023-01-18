@@ -2,7 +2,7 @@
 
 #include "utility/PhysicsShapeCache.h"
 
-void MapPhysicsComponent1::updateLogic(GameWorld* game_world) {
+void MapPhysics1::updateLogic(GameWorld* game_world) {
     const int dx[8] = {-1, 0, 1, 1, 1, 0, -1, -1};
     const int dy[8] = {1, 1, 1, 0, -1, -1, -1, 0};
 
@@ -63,8 +63,9 @@ void MapPhysicsComponent1::updateLogic(GameWorld* game_world) {
                         iter->second->pushEvent(event);
                     } else {
                         auto sp = game_world->newObject(
-                            4, Vec2((xx - 1) * 64 + 5,
-                                    (yy - 1) * 64 + 5) /*保证落在格子里*/);
+                            layer_map_physics,
+                            Vec2((xx - 1) * 64 + 5,
+                                 (yy - 1) * 64 + 5) /*保证落在格子里*/);
                         sp->initWithSpriteFrameName(
                             "game_map_tile_physics.png");
                         sp->setVisible(false);

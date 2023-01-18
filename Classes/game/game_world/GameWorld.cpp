@@ -64,7 +64,7 @@ void GameWorld::cleanup() {
     Node::cleanup();
 }
 
-GameObject* GameWorld::newObject(int layer, const Vec2& startPos) {
+GameObject* GameWorld::newObject(ObjectLayer layer, const Vec2& startPos) {
     auto ob = GameObject::create();
     assert(ob != nullptr);
 

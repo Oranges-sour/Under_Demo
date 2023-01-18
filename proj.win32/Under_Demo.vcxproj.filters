@@ -49,6 +49,27 @@
     <Filter Include="src\game\game_world\implements">
       <UniqueIdentifier>{763c5350-5067-482a-bdf6-b88bc264ceaf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\game\game_object\implements">
+      <UniqueIdentifier>{f3a3ace1-9c2b-496f-9ad4-65888c2664ff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\game\game_object\implements\player">
+      <UniqueIdentifier>{f1797b5c-2b88-4d5c-b44d-d733b675a715}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\game\game_object\implements\bullet">
+      <UniqueIdentifier>{8ccadeca-1371-449a-bff4-2fa0fd0f4f2c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\game\game_object\implements\bullet\bullet_1">
+      <UniqueIdentifier>{ed8c3ac2-07ac-4215-a18b-0e88c46f27d4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\game\game_object\implements\particle">
+      <UniqueIdentifier>{83a0f1e3-f53e-4885-bc5e-01fb8be18191}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\game\game_object\implements\particle\particle_1">
+      <UniqueIdentifier>{f1889078-ecee-4a97-bc5d-7de265b86faa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\game\game_object\implements\player\player_1">
+      <UniqueIdentifier>{ed763fc8-1c71-476c-83d3-4a402283cbd7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -116,6 +137,33 @@
     </ClCompile>
     <ClCompile Include="..\Classes\game\game_world\implements\WorldRenderer1.cpp">
       <Filter>src\game\game_world\implements</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\game\game_object\implements\bullet\bullet_1\Bullet1AI.cpp">
+      <Filter>src\game\game_object\implements\bullet\bullet_1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\game\game_object\implements\bullet\bullet_1\Bullet1Physics.cpp">
+      <Filter>src\game\game_object\implements\bullet\bullet_1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\game\game_object\implements\particle\particle_1\Particle1AI.cpp">
+      <Filter>src\game\game_object\implements\particle\particle_1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\game\game_object\implements\particle\particle_1\Particle1Physics.cpp">
+      <Filter>src\game\game_object\implements\particle\particle_1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\game\game_object\implements\player\player_1\Player1AI.cpp">
+      <Filter>src\game\game_object\implements\player\player_1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\game\game_object\implements\player\player_1\Player1Physics.cpp">
+      <Filter>src\game\game_object\implements\player\player_1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\game\game_object\implements\bullet\bullet_1\Bullet1.cpp">
+      <Filter>src\game\game_object\implements\bullet\bullet_1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\game\game_object\implements\particle\particle_1\Particle1.cpp">
+      <Filter>src\game\game_object\implements\particle\particle_1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\game\game_object\implements\player\player_1\Player1.cpp">
+      <Filter>src\game\game_object\implements\player\player_1</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -199,6 +247,33 @@
     </ClInclude>
     <ClInclude Include="..\Classes\game\game_world\implements\WorldRenderer1.h">
       <Filter>src\game\game_world\implements</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\game\game_object\implements\bullet\bullet_1\Bullet1AI.h">
+      <Filter>src\game\game_object\implements\bullet\bullet_1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\game\game_object\implements\bullet\bullet_1\Bullet1Physics.h">
+      <Filter>src\game\game_object\implements\bullet\bullet_1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\game\game_object\implements\particle\particle_1\Particle1AI.h">
+      <Filter>src\game\game_object\implements\particle\particle_1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\game\game_object\implements\particle\particle_1\Particle1Physics.h">
+      <Filter>src\game\game_object\implements\particle\particle_1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\game\game_object\implements\player\player_1\Player1AI.h">
+      <Filter>src\game\game_object\implements\player\player_1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\game\game_object\implements\player\player_1\Player1Physics.h">
+      <Filter>src\game\game_object\implements\player\player_1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\game\game_object\implements\bullet\bullet_1\Bullet1.h">
+      <Filter>src\game\game_object\implements\bullet\bullet_1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\game\game_object\implements\particle\particle_1\Particle1.h">
+      <Filter>src\game\game_object\implements\particle\particle_1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\game\game_object\implements\player\player_1\Player1.h">
+      <Filter>src\game\game_object\implements\player\player_1</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

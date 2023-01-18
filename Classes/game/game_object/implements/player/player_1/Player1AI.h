@@ -1,0 +1,19 @@
+#ifndef __PLAYER_1_AI_H__
+#define __PLAYER_1_AI_H__
+
+#include "game/game_object/GameObject.h"
+
+class Player1AI : public GameComponent {
+public:
+    Player1AI() {}
+    virtual void updateLogic(GameObject* ob) override;
+    virtual void updateDraw(GameObject* ob, float rate) override {}
+    virtual void receiveGameAct(GameObject* ob, const GameAct& event) override;
+    virtual void receiveEvent(GameObject* ob, const json& event) override;
+
+private:
+    int xx = 0;
+    int yy = 0;
+};
+
+#endif

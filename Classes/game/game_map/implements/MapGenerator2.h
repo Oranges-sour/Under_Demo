@@ -3,7 +3,7 @@
 
 #include "game/game_map/GameMap.h"
 
-class MapGeneratorComponent2 : public MapGeneratorComponent {
+class MapGenerator2 : public MapGeneratorComponent {
 public:
     void init(unsigned seed);
 

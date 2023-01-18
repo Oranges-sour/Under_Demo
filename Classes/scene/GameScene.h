@@ -4,10 +4,8 @@
 #include <string>
 using namespace std;
 
-#include "cocos/network/WebSocket.h"
 #include "cocos2d.h"
 using namespace cocos2d;
-using namespace cocos2d::network;
 
 #include "web/Connection.h"
 #include "game/game_object/GameObject.h"
@@ -21,7 +19,7 @@ class GameWorld;
 using namespace std::chrono;
 
 class GameMap;
-class MapPreRendererComponent1;
+class MapPreRenderer1;
 
 class LoadingLayer;
 
@@ -62,7 +60,7 @@ private:
 
     GameWorld* game_world;
     shared_ptr<GameMap> game_map;
-    shared_ptr<MapPreRendererComponent1> game_map_pre_renderer;
+    shared_ptr<MapPreRenderer1> game_map_pre_renderer;
 
     shared_ptr<GameFrameManager> _frame_manager;
 
@@ -92,78 +90,16 @@ private:
     Sprite* spAct0 = nullptr;
 };
 
-class PlayerPhysicsComponent : public PhysicsComponent {
-public:
-    PlayerPhysicsComponent(const Vec2& pos) { this->posNow = pos; }
 
-    virtual void receiveGameAct(GameObject* ob, const GameAct& act) override {}
-    virtual void receiveEvent(GameObject* ob, const json& event) override;
-    virtual void updateLogic(GameObject* ob) override;
 
-private:
-    float fall_speed_y = 0;
 
-    void wall_contact_check(GameObject* ob);
-};
 
-class PlayerAI : public GameComponent {
-public:
-    PlayerAI() {}
-    virtual void updateLogic(GameObject* ob) override;
-    virtual void updateDraw(GameObject* ob, float rate) override {}
-    virtual void receiveGameAct(GameObject* ob, const GameAct& event) override;
-    virtual void receiveEvent(GameObject* ob, const json& event) override;
 
-private:
-    int xx = 0;
-    int yy = 0;
-};
 
-class BulletAi : public GameComponent {
-public:
-    BulletAi(float x, float y) : xx(x), yy(y) {}
 
-    virtual void updateLogic(GameObject* ob) override;
-    virtual void updateDraw(GameObject* ob, float rate) override {}
-    virtual void receiveGameAct(GameObject* ob, const GameAct& event){};
-    virtual void receiveEvent(GameObject* ob, const json& event) override {}
 
-private:
-    float xx, yy;
-};
 
-class BulletPhysicsComponent1 : public PhysicsComponent {
-public:
-    BulletPhysicsComponent1(const Vec2& pos) { this->posNow = pos; }
 
-    virtual void receiveGameAct(GameObject* ob, const GameAct& act) override {}
-    virtual void receiveEvent(GameObject* ob, const json& event) override;
 
-private:
-    bool is_dead = false;
-};
-
-class ParticleAi : public GameComponent {
-public:
-    ParticleAi(float x, float y) : xx(x), yy(y) {}
-
-    virtual void updateLogic(GameObject* ob) override;
-    virtual void updateDraw(GameObject* ob, float rate) override {}
-    virtual void receiveGameAct(GameObject* ob, const GameAct& event){};
-    virtual void receiveEvent(GameObject* ob, const json& event) override {}
-
-private:
-    float xx, yy;
-
-    int cnt = 0;
-};
-
-class ParticlePhysicsComponent : public PhysicsComponent {
-public:
-    ParticlePhysicsComponent(const Vec2& pos) { this->posNow = pos; }
-
-    virtual void receiveGameAct(GameObject* ob, const GameAct& act) override {}
-    virtual void receiveEvent(GameObject* ob, const json& event) override;
-};
 
 #endif

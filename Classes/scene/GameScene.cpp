@@ -5,7 +5,7 @@
 #include "game/game_map/implements/MapHelper1.h"
 #include "game/game_map/implements/MapPhysics1.h"
 #include "game/game_map/implements/MapPreRenderer1.h"
-#include "game/game_object/GameObject.h"
+#include "game/game_object/implements/player/player_1/Player1.h"
 #include "game/game_world/GameWorld.h"
 #include "game/game_world/implements/WorldRenderer1.h"
 #include "scene/StartScene.h"
@@ -50,16 +50,16 @@ void GameScene::init_map(unsigned seed) {
     // 创建地图
     this->game_map = make_shared<GameMap>(256, 256);
 
-    auto map_generator = make_shared<MapGeneratorComponent1>();
-    // auto map_generator = make_shared<MapGeneratorComponent2>();
+    auto map_generator = make_shared<MapGenerator1>();
+    // auto map_generator = make_shared<MapGenerator2>();
     map_generator->init(seed);
 
-    auto map_helper = make_shared<MapHelperComponent1>();
-    auto map_physics = make_shared<MapPhysicsComponent1>();
+    auto map_helper = make_shared<MapHelper1>();
+    auto map_physics = make_shared<MapPhysics1>();
 
     game_map->init(map_generator, map_helper, map_physics);
 
-    this->game_map_pre_renderer = make_shared<MapPreRendererComponent1>();
+    this->game_map_pre_renderer = make_shared<MapPreRenderer1>();
     game_map_pre_renderer->init(&game_map->get(), seed);
 
     this->schedule(
@@ -109,27 +109,7 @@ void GameScene::init_game() {
 
     // 创建玩家
     for (auto& it : player_uid) {
-        ///
-        auto ob = game_world->newObject(1, Vec2(300, 300));
-        // 玩家有特殊uid
-        ob->setUID(it);
-
-        ob->initWithSpriteFrameName("enemy_0.png");
-        ob->setPosition(300, 300);
-        auto phy = make_shared<PlayerPhysicsComponent>(Vec2(300, 300));
-        ob->addGameComponent(phy);
-
-        auto ai = make_shared<PlayerAI>();
-        ob->addGameComponent(ai);
-
-        ob->setGameObjectType(object_type_player);
-
-        WorldLight light(Color3B(255, 255, 255), 600, 1.0,
-                         WorldLight::world_light_type1);
-
-        ob->addWorldLight(light, "main_light");
-
-        PhysicsShapeCache::getInstance()->setBodyOnSprite("enemy_0", ob);
+        auto ob = Player1::create(game_world, Vec2(300, 300), it);
 
         players.insert({it, ob});
         if (it == Connection::instance()->get_uid()) {
@@ -385,287 +365,4 @@ bool LoadingLayer::init() {
         0.1f, "startBlocks");
 
     return true;
-}
-
-void PlayerAI::updateLogic(GameObject* ob) {
-    json event;
-    event["type"] = "move";
-    event["x"] = xx;
-
-    ob->pushEvent(event);
-}
-
-void PlayerAI::receiveEvent(GameObject* ob, const json& event) {}
-
-void PlayerAI::receiveGameAct(GameObject* ob, const GameAct& event) {
-    const float SPEED = 25;
-
-    if (event.type == act_move_start) {
-        if (ob->getUID() == event.uid) {
-            xx += event.param1 * SPEED;
-        }
-    }
-    if (event.type == act_move_stop) {
-        if (ob->getUID() == event.uid) {
-            xx -= event.param1 * SPEED;
-        }
-    }
-    if (event.type == act_jump) {
-        json event;
-        event["type"] = "jump";
-
-        ob->pushEvent(event);
-    }
-    if (event.type == act_attack) {
-        auto sp = ob->get_game_world()->newObject(2, ob->getPosition());
-        sp->initWithSpriteFrameName("enemy_bullet_1.png");
-        sp->setGameObjectType(object_type_bullet);
-
-        auto ai = make_shared<BulletAi>(event.param1, event.param2);
-        auto phy = make_shared<BulletPhysicsComponent1>(ob->getPosition());
-        sp->addGameComponent(ai);
-        sp->addGameComponent(phy);
-
-        WorldLight light(Color3B(194, 120, 194), 140, 1.0,
-                         WorldLight::world_light_type2);
-
-        sp->addWorldLight(light, "main_light");
-
-        PhysicsShapeCache::getInstance()->setBodyOnSprite("enemy_bullet_1", sp);
-    }
-    if (event.type == act_position_force_set) {
-        json ee;
-        ee["type"] = "position_force_set";
-        ee["x"] = event.param1;
-        ee["y"] = event.param2;
-
-        ob->pushEvent(ee);
-    }
-}
-
-void PlayerPhysicsComponent::receiveEvent(GameObject* ob, const json& event) {
-    string type = event["type"];
-    if (type == "move") {
-        float x = event["x"];
-
-        posNow += Vec2(x, 0);
-
-        fall_speed_y -= 6;
-        fall_speed_y = max<float>(-60, fall_speed_y);
-        fall_speed_y = min<float>(60, fall_speed_y);
-        posNow.y += fall_speed_y;
-    }
-    if (type == "jump") {
-        fall_speed_y = 50;
-    }
-    if (type == "position_force_set") {
-        float x = event["x"];
-        float y = event["y"];
-
-        posNow = Vec2(x, y);
-    }
-
-    this->wall_contact_check(ob);
-}
-
-void PlayerPhysicsComponent::wall_contact_check(GameObject* ob) {
-    const Size s = ob->getContentSize();
-    auto speed = posNow - posOld;
-
-    auto pos = posOld;
-
-    Vec2 pushVec(0, 0);
-
-    iVec2 ipushVec(0, 0);
-
-    auto maph = ob->get_game_world()->getGameMap()->getMapHelper();
-    auto& map = ob->get_game_world()->getGameMap()->get();
-
-    auto p0 = pos - Vec2(s / 2);
-    auto p1 = pos + Vec2(s / 2);
-
-    // 左下
-    auto ip0 = maph->convert_in_map(p0);
-    // 右上
-    auto ip1 = maph->convert_in_map(p1);
-
-    // 重新确定位置
-    const auto re_check = [&]() {
-        pos += pushVec;
-        pushVec = Vec2(0, 0);
-
-        p0 = pos - Vec2(s / 2);
-        p1 = pos + Vec2(s / 2);
-        ip0 = maph->convert_in_map(p0);
-        ip1 = maph->convert_in_map(p1);
-    };
-
-    if (speed.x > 0) {
-        // 右侧
-        for (int i = ip0.y; i <= ip1.y; ++i) {
-            auto t = map[ip1.x + 1][i];
-            if (t != MapTileType::air) {
-                // 会进去,要减少速度
-                if (p1.x + speed.x > ip1.x * 64) {
-                    speed.x = ip1.x * 64 - p1.x - 0.5;
-                }
-            }
-        }
-    } else if (speed.x < 0) {
-        // 左侧
-        for (int i = ip0.y; i <= ip1.y; ++i) {
-            auto t = map[ip0.x - 1][i];
-            if (t != MapTileType::air) {
-                // 会进去,要减少速度
-                if (p0.x + speed.x < (ip0.x - 1) * 64) {
-                    speed.x = (ip0.x - 1) * 64 - p0.x + 0.5;
-                }
-            }
-        }
-    }
-
-    if (speed.y > 0) {
-        // 上侧
-        for (int i = ip0.x; i <= ip1.x; ++i) {
-            auto t = map[i][ip1.y + 1];
-            if (t != MapTileType::air) {
-                // 会进去,要减少速度
-                if (p1.y + speed.y > ip1.y * 64) {
-                    speed.y = ip1.y * 64 - p1.y - 0.5;
-                }
-            }
-        }
-    } else if (speed.y < 0) {
-        // 下
-        for (int i = ip0.x; i <= ip1.x; ++i) {
-            auto t = map[i][ip0.y - 1];
-            if (t != MapTileType::air) {
-                // 会进去,要减少速度
-                if (p0.y + speed.y < (ip0.y - 1) * 64) {
-                    speed.y = (ip0.y - 1) * 64 - p0.y + 0.5;
-                    fall_speed_y = 0;
-                }
-            }
-        }
-    }
-
-    posNow = pos + speed;
-}
-
-void PlayerPhysicsComponent::updateLogic(GameObject* ob) {
-    PhysicsComponent::updateLogic(ob);
-}
-
-void BulletAi::updateLogic(GameObject* ob) {
-    {
-        json event;
-        event["type"] = "move";
-        event["x"] = xx * 40;
-        event["y"] = yy * 40;
-
-        ob->pushEvent(event);
-    }
-    {
-        json event;
-        event["type"] = "rotate";
-        event["r"] = 40;
-
-        ob->pushEvent(event);
-    }
-}
-
-void BulletPhysicsComponent1::receiveEvent(GameObject* ob, const json& event) {
-    string type = event["type"];
-    if (type == "move") {
-        float x = event["x"];
-        float y = event["y"];
-
-        posNow += Vec2(x, y);
-        return;
-    }
-    if (type == "rotate") {
-        float r = event["r"];
-
-        rotationNow += r;
-        return;
-    }
-    if (type == "contact") {
-        long long data = event["object"];
-        GameObject* tar = (GameObject*)data;
-        auto t = tar->getGameObjectType();
-        if (t == object_type_wall) {
-            if (is_dead) {
-                return;
-            }
-            is_dead = true;
-            ob->setVisible(false);
-            ob->removeFromParent();
-
-            // 创建粒子
-            for (int i = 0; i < 5; ++i) {
-                auto world = ob->get_game_world();
-                auto sp = world->newObject(2, ob->getPosition());
-                sp->initWithSpriteFrameName("enemy_bullet_1_par.png");
-                sp->setGameObjectType(object_type_particle);
-
-                rand_float r(0, 3.14 * 2);
-
-                float a = r(*world->getGlobalRandom());
-
-                auto ai = make_shared<ParticleAi>(cos(a), sin(a));
-                auto phy =
-                    make_shared<ParticlePhysicsComponent>(ob->getPosition());
-                sp->addGameComponent(ai);
-                sp->addGameComponent(phy);
-
-                WorldLight light(Color3B(194, 120, 194), 140, 1.0,
-                                 WorldLight::world_light_type2);
-
-                sp->addWorldLight(light, "main_light");
-            }
-        }
-    }
-}
-
-void ParticleAi::updateLogic(GameObject* ob) {
-    {
-        json event;
-        event["type"] = "move";
-        event["x"] = xx * 60;
-        event["y"] = yy * 60;
-
-        ob->pushEvent(event);
-    }
-    {
-        json event;
-        event["type"] = "rotate";
-        event["r"] = 40;
-
-        ob->pushEvent(event);
-    }
-
-    auto light = ob->getWorldLight("main_light");
-    light->radius = light->radius / 2.0f;
-
-    cnt += 1;
-    if (cnt >= 5) {
-        ob->removeFromParent();
-    }
-}
-
-void ParticlePhysicsComponent::receiveEvent(GameObject* ob, const json& event) {
-    string type = event["type"];
-    if (type == "move") {
-        float x = event["x"];
-        float y = event["y"];
-
-        posNow += Vec2(x, y);
-        return;
-    }
-    if (type == "rotate") {
-        float r = event["r"];
-
-        rotationNow += r;
-        return;
-    }
 }
