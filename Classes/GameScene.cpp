@@ -393,7 +393,7 @@ void PlayerAI::updateLogic(GameObject* ob) {
 void PlayerAI::receiveEvent(GameObject* ob, const json& event) {}
 
 void PlayerAI::receiveGameAct(GameObject* ob, const GameAct& event) {
-    const float SPEED = 30;
+    const float SPEED = 25;
 
     if (event.type == act_move_start) {
         if (ob->getUID() == event.uid) {
@@ -442,6 +442,11 @@ void PlayerPhysicsComponent::receiveEvent(GameObject* ob, const json& event) {
         float x = event["x"];
 
         posNow += Vec2(x, 0);
+
+        fall_speed_y -= 6;
+        fall_speed_y = max<float>(-60, fall_speed_y);
+        fall_speed_y = min<float>(60, fall_speed_y);
+        posNow.y += fall_speed_y;
     }
     if (type == "jump") {
         fall_speed_y = 50;
@@ -452,13 +457,6 @@ void PlayerPhysicsComponent::receiveEvent(GameObject* ob, const json& event) {
 
         posNow = Vec2(x, y);
     }
-
-    fall_speed_y -= 6;
-
-    fall_speed_y = max<float>(-60, fall_speed_y);
-    fall_speed_y = min<float>(60, fall_speed_y);
-
-    posNow.y += fall_speed_y;
 
     this->wall_contact_check(ob);
 }
