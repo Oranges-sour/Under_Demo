@@ -68,12 +68,12 @@ class Tools {
 class ServerDefault {
     //获得服务器的版本信息
     static get_server_version() {
-        return "v0.0.1";
+        return "v0.3.4";
     }
 
     //获得服务器对应的客户端版本
     static get_required_client_version() {
-        return "v0.0.1";
+        return "v0.3.4";
     }
 
 

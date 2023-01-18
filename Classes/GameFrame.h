@@ -2,6 +2,7 @@
 #define __GAME_FRAME_H__
 
 #include <memory>
+#include <queue>
 #include <string>
 #include <vector>
 using namespace std;
@@ -10,12 +11,15 @@ using namespace std;
 #include "json.h"
 
 class GameFrame;
+class GameWorld;
 
 enum GameActType {
     act_unknow,
     act_move_start,
     act_move_stop,
+    act_jump,
     act_attack,
+    act_position_force_set,
 };
 
 class GameAct {
@@ -40,30 +44,27 @@ class GameFrameManager {
 public:
     GameFrameManager();
 
-    void receiveFrameFromServer(const json& frame_event);
+    void init(GameWorld* game_world);
 
-    // 生成next_frame的json
-    json generateJsonOfNextFrame(const string& connection_uid);
+    void release();
 
-    // 生成新的next_frame
-    void newNextFrame();
+    void noitce(const json& frame_event);
 
-    // 是否有新的从服务器回来的帧
-    bool hasNewFrame();
-
-    // 获得下一帧
-    GameFrame* getNextFrame();
+    void update();
 
     // 推动作到next_frame
-    void pushGameAct(const GameAct& act);
+    void pushGameAct(const GameAct& act,
+                     bool role_back = true /*是否作用到自己*/);
 
 private:
+    shared_ptr<GameFrame> generate_frame(const json& event);
+
+    json generate_json(shared_ptr<GameFrame> game_frame);
+
+private:
+    GameWorld* _game_world;
+
     shared_ptr<GameFrame> _next_frame;
-
-    // 从服务器接收回来的帧
-    vector<GameFrame> frames;
-
-    int head, tail;
 };
 
 class GameFrame {

@@ -19,14 +19,6 @@ bool GameObject::init(GameWorld* game_world) {
 
 void GameObject::removeFromParent() { game_world->removeObject(this); }
 
-GameObject* GameObject::getNext() const { return _next; }
-
-void GameObject::setNext(GameObject* game_object) { _next = game_object; }
-
-bool GameObject::isInUse() { return _inUse; }
-
-void GameObject::setInUse(bool state) { _inUse = state; }
-
 void GameObject::addGameComponent(shared_ptr<GameComponent> componet) {
     _componets.push_back(componet);
 }
@@ -68,7 +60,7 @@ void GameObject::main_update() {
 
     this->stopAction(&_actionEase);
 
-    _actionTween.initWithDuration(0.066f, "phy", 0.0f, 1.0f);
+    _actionTween.initWithDuration(0.05f, "phy", 0.0f, 1.0f);
     _actionEase.initWithAction(&_actionTween, 1.2f);
 
     this->runAction(&_actionEase);

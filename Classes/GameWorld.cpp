@@ -1,7 +1,6 @@
 #include "GameWorld.h"
 
 #include "Connection.h"
-#include "GameFrame.h"
 #include "GameMap.h"
 #include "GameObject.h"
 #include "MyMath.h"
@@ -17,12 +16,10 @@ GameWorld* GameWorld::create() {
 }
 
 bool GameWorld::init() {
-    // SpritePool::init(1200);
-
     // 初始化全局随机数
     this->_globalRandom = make_shared<Random>(31415);
 
-    this->schedule([&](float) { main_update_logic(); }, 0.066f, "update_logic");
+    this->schedule([&](float) { main_update_logic(); }, 0.05f, "update_logic");
     this->schedule([&](float) { main_update_draw(); }, "update_draw");
 
     this->_game_node = Node::create();
@@ -58,16 +55,15 @@ bool GameWorld::init() {
     Director::getInstance()
         ->getEventDispatcher()
         ->addEventListenerWithSceneGraphPriority(conatctListener, this);
-
-    auto listener = make_shared<ConnectionEventListener>(
-        [&](const json& event) { notice(event); });
-    Connection::instance()->regeist_event_listener(listener,
-                                                   "game_world_listener");
     return true;
 }
 
+void GameWorld::pushGameAct(const GameAct& act) { _game_act_que.push(act); }
+
 void GameWorld::cleanup() {
-    Connection::instance()->remove_event_listener("game_world_listener");
+    if (_gameRenderer) {
+        _gameRenderer->release();
+    }
     Node::cleanup();
 }
 
@@ -79,7 +75,7 @@ GameObject* GameWorld::newObject(int layer, const Vec2& startPos) {
     ob->setPosition(startPos);
     _game_node->addChild(ob, layer);
 
-    auto p = this->_gameMap->_map_helper->convert_in_map(startPos);
+    auto p = this->_gameMap->getMapHelper()->convert_in_map(startPos);
 
     ob->setUID(Tools::random_string(8, *_globalRandom));
 
@@ -91,18 +87,14 @@ GameObject* GameWorld::newObject(int layer, const Vec2& startPos) {
 void GameWorld::removeObject(GameObject* ob) { needToRemove.insert(ob); }
 
 void GameWorld::main_update_logic() {
-    // 处理帧消息
-    if (!_frameManager->hasNewFrame()) {
-        return;
-    }
-    auto frame = _frameManager->getNextFrame();
-    for (auto& it : frame->actions) {
-        auto iter = _game_objects.find(it.uid);
-        if (iter == _game_objects.end()) {
-            assert(1 == 2);
-            continue;
+    while (!_game_act_que.empty()) {
+        auto p = _game_act_que.front();
+        _game_act_que.pop();
+
+        auto iter = _game_objects.find(p.uid);
+        if (iter != _game_objects.end()) {
+            iter->second->pushGameAct(p);
         }
-        iter->second->pushGameAct(it);
     }
 
     quad_tree.visit_in_rect(
@@ -136,12 +128,6 @@ void GameWorld::main_update_logic() {
         // SpritePool::saveBack(it);
     }
     needToRemove.clear();
-
-    // 迅速将此帧传出
-    auto js = _frameManager->generateJsonOfNextFrame(
-        Connection::instance()->get_uid());
-    Connection::instance()->push_statueEvent(js);
-    _frameManager->newNextFrame();
 }
 
 void GameWorld::main_update_draw() {
@@ -198,7 +184,7 @@ void GameWorld::updateGameObjectPosition() {
                 return;
             }
 
-            auto p = this->getGameMap()->_map_helper->convert_in_map(
+            auto p = this->getGameMap()->getMapHelper()->convert_in_map(
                 ob->getPosition());
             if (cor.x != p.x || cor.y != p.x) {
                 need_to_update.push_back({ob, {p.x, p.y}});
@@ -214,31 +200,10 @@ void GameWorld::updateGameObjectPosition() {
     }
 }
 
-void GameWorld::notice(const json& event) {
-    if (!event.contains("type")) {
-        return;
-    }
-
-    string type = event["type"];
-    if (type == "frame") {
-        _frameManager->receiveFrameFromServer(event);
-    }
-}
-
 ///////////////////////////////////////////////////////////////////////////////////////
-
-GameWorldRenderer1::~GameWorldRenderer1() {
-    if (render) {
-        render->release();
-    }
-    for (auto& it : lights) {
-        it->release();
-    }
-}
 
 void GameWorldRenderer1::init(Node* target) {
     this->light = Sprite::create();
-
 
     const auto visibleSize = Director::getInstance()->getVisibleSize();
     light->setPosition(visibleSize / 2);
@@ -249,49 +214,70 @@ void GameWorldRenderer1::init(Node* target) {
     this->render = RenderTexture::create(1920, 1080);
     this->render->retain();
 
-    lights.resize(100);
-    for (auto& it : lights) {
-        it = Sprite::createWithSpriteFrameName("light.png");
-        it->retain();
+    const vector<string> light_name{"light_1.png", "light_2.png",
+                                    "light_3.png"};
+    for (int i = 0; i < 3; ++i) {
+        lights[i].resize(50);
+        for (auto& it : lights[i]) {
+            it = Sprite::createWithSpriteFrameName(light_name[i]);
+            it->retain();
+        }
+    }
+}
+
+void GameWorldRenderer1::release() {
+    if (render) {
+        render->release();
+    }
+    for (int i = 0; i < 3; ++i) {
+        for (auto& it : lights[i]) {
+            it->release();
+        }
     }
 }
 
 void GameWorldRenderer1::update(const Vec2& left_bottom, const Size& size,
                                 GameWorld* gameworld) {
     auto gameMap = gameworld->getGameMap();
-    auto pp = gameMap->_map_helper->convert_in_map(left_bottom);
-    int xx = pp.x;
-    int yy = pp.y;
+    auto ilb = gameMap->getMapHelper()->convert_in_map(left_bottom);
 
-    auto pp1 =
-        gameMap->_map_helper->convert_in_map(Vec2(size.width, size.height));
-    int ww = pp1.x;
-    int hh = pp1.y;
+    auto isize =
+        gameMap->getMapHelper()->convert_in_map(Vec2(size.width, size.height));
 
     auto& quad = gameworld->get_objects();
 
-    int cnt = 0;
-
-    quad.visit_in_rect({xx, yy + hh}, {xx + ww, yy},
+    int cnt[3] = {0, 0, 0};
+    // 边缘扩大一点，保证光源能够完整绘制
+    quad.visit_in_rect({ilb.x - 5, ilb.y + isize.y + 5},
+                       {ilb.x + isize.x + 5, ilb.y - 5},
                        [&](const iVec2& coor, GameObject* object) {
-                           if (cnt == 100) {
-                               return;
+                           auto& pos = object->getPosition();
+                           auto& lig = object->getAllWorldLight();
+
+                           for (auto& it : lig) {
+                               auto& li = it.second;
+                               int k = li.type;
+
+                               if (cnt[k] >= 50) {
+                                   continue;
+                               }
+
+                               auto& light_sp = lights[k][cnt[k]];
+                               light_sp->setPosition(pos - left_bottom);
+                               light_sp->setScale(li.radius / 100.0f);
+                               light_sp->setColor(li.lightColor);
+                               light_sp->setOpacity(255 * li.opacity);
+
+                               cnt[k] += 1;
                            }
-                           auto p = object->getPosition();
-                           auto r = object->getLightRadius();
-                           auto c = object->getLightColor();
-
-                           lights[cnt]->setPosition(p - left_bottom);
-                           lights[cnt]->setScale(r / 100.0f);
-                           lights[cnt]->setColor(c);
-
-                           cnt += 1;
                        });
     // 0.2 可以让背景不是全黑
 
     render->beginWithClear(0.2, 0.2, 0.2, 1);
-    for (int i = 0; i < cnt; ++i) {
-        lights[i]->visit();
+    for (int k = 0; k < 3; ++k) {
+        for (int i = 0; i < cnt[k]; ++i) {
+            lights[k][i]->visit();
+        }
     }
     render->end();
 

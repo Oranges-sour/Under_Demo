@@ -401,7 +401,9 @@
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
-            <key type="filename">Res/light.png</key>
+            <key type="filename">Res/light_1.png</key>
+            <key type="filename">Res/light_2.png</key>
+            <key type="filename">Res/light_3.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
                 <point_f>0.5,0.5</point_f>
@@ -430,7 +432,6 @@
                     <filename>Res/game_map_tile_dirt.png</filename>
                     <filename>Res/game_map_tile_grass.png</filename>
                     <filename>Res/game_map_tile_rock.png</filename>
-                    <filename>Res/light.png</filename>
                     <filename>Res/enemy_0.png</filename>
                     <filename>Res/game_map_tile_physics.png</filename>
                     <filename>Res/game_map_tile_grass_decorate_1.png</filename>
@@ -450,6 +451,9 @@
                     <filename>Res/joystick_small.png</filename>
                     <filename>Res/joystick_attack_bk_effect.png</filename>
                     <filename>Res/joystick_large_effect.png</filename>
+                    <filename>Res/light_1.png</filename>
+                    <filename>Res/light_2.png</filename>
+                    <filename>Res/light_3.png</filename>
                 </array>
             </struct>
         </map>

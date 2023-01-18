@@ -111,36 +111,43 @@ class GameStatue_Start implements IGameStatue {
 
             let frame = event as any as Frame_MSG;
 
-            if (this.new_frame) {
-                this.frame = new Frame_MSG();
-                this.frame.frame.cnt = frame.frame.cnt;
-
-                this.new_frame = false;
-                this.frame_player = 0;
-            }
-
-            let that = this;
-            frame.frame.actions.forEach(function (act) {
-                that.frame.frame.actions.push(act);
+            game.visit_host(function (c) {
+                c.push_event(frame as any as EventBag);
             });
-            this.frame_player += 1;
+            game.visit_all_player(function (c) {
+                c.push_event(frame as any as EventBag);
+            });
+
+            // if (this.new_frame) {
+            //     this.frame = new Frame_MSG();
+            //     this.frame.frame.cnt = frame.frame.cnt;
+
+            //     this.new_frame = false;
+            //     this.frame_player = 0;
+            // }
+
+            // let that = this;
+            // frame.frame.actions.forEach(function (act) {
+            //     that.frame.frame.actions.push(act);
+            // });
+            // this.frame_player += 1;
 
 
-            //收集到了所有的帧，下发
-            if (this.frame_player == game.get_player_cnt()) {
-                this.frame_player = 0;
+            // //收集到了所有的帧，下发
+            // if (this.frame_player == game.get_player_cnt()) {
+            //     this.frame_player = 0;
 
-                //Tools.log("Next frame: " + JSON.stringify(that.frame));
+            //     //Tools.log("Next frame: " + JSON.stringify(that.frame));
                 
-                game.visit_host(function (c) {
-                    c.push_event(that.frame as any as EventBag);
-                });
-                game.visit_all_player(function (c) {
-                    c.push_event(that.frame as any as EventBag);
-                });
+            //     game.visit_host(function (c) {
+            //         c.push_event(that.frame as any as EventBag);
+            //     });
+            //     game.visit_all_player(function (c) {
+            //         c.push_event(that.frame as any as EventBag);
+            //     });
 
-                this.new_frame = true;
-            }
+            //     this.new_frame = true;
+            // }
 
         }
 

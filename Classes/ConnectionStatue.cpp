@@ -49,7 +49,7 @@ void ConnectionStatue_Default::update(Connection* connection, int interval_ms) {
 
         json msg;
         msg["type"] = "client_check";
-        msg["version"] = "v0.0.1";
+        msg["version"] = "v0.3.4";
         msg["uid"] = uid;
         msg["security_key"] = "1kd73b0pmz37ru91saqkm0286ti61ckg";
 

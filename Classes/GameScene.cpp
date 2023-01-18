@@ -10,9 +10,6 @@
 #include "PhysicsShapeCache.h"
 #include "TouchesPool.h"
 
-steady_clock::time_point time_0;
-steady_clock::time_point time_1;
-
 GameScene* GameScene::createScene() { return GameScene::create(); }
 
 bool GameScene::init() {
@@ -83,6 +80,11 @@ void GameScene::init_game() {
     this->game_world = GameWorld::create();
     this->addChild(game_world);
 
+    this->_frame_manager = make_shared<GameFrameManager>();
+    _frame_manager->init(game_world);
+    this->schedule([&](float) { _frame_manager->update(); },
+                   "frame_manager_upd");
+
     game_map_pre_renderer->afterPreRender(game_world->get_game_map_target());
     // 释放
     game_map_pre_renderer.reset();
@@ -92,9 +94,6 @@ void GameScene::init_game() {
     auto ren = make_shared<GameWorldRenderer1>();
     game_world->setGameRenderer(ren);
     ren->init(game_world->get_game_renderer_target());
-
-    auto frame = make_shared<GameFrameManager>();
-    game_world->setGameFrameManager(frame);
 
     auto game_bk = Sprite::create("game_bk.png");
     game_bk->setAnchorPoint(Vec2(0, 0));
@@ -122,8 +121,10 @@ void GameScene::init_game() {
 
         ob->setGameObjectType(object_type_player);
 
-        ob->setLightRadius(600);
-        ob->setLightColor(Color3B(255, 255, 255));
+        WorldLight light(Color3B(255, 255, 255), 600, 1.0,
+                         WorldLight::world_light_type1);
+
+        ob->addWorldLight(light, "main_light");
 
         PhysicsShapeCache::getInstance()->setBodyOnSprite("enemy_0", ob);
 
@@ -145,7 +146,6 @@ void GameScene::init_game() {
         auto b = eventMouse->getMouseButton();
         auto pos = eventMouse->getLocationInView();
         if (b == EventMouse::MouseButton::BUTTON_LEFT) {
-            auto frame_man = game_world->getGameFrameManager();
             GameAct act;
             act.type = act_attack;
             act.uid = players.find(Connection::instance()->get_uid())
@@ -153,7 +153,7 @@ void GameScene::init_game() {
 
             act.param1 = 1;
             act.param2 = 0;
-            frame_man->pushGameAct(act);
+            _frame_manager->pushGameAct(act);
         }
     };
 
@@ -192,7 +192,8 @@ void GameScene::init_game() {
     this->schedule(
         [&](float) {
             static stack<Vec2> st;
-            auto frame_man = game_world->getGameFrameManager();
+
+            static bool can_jump = true;
 
             while (!st.empty()) {
                 auto vec = st.top();
@@ -202,8 +203,7 @@ void GameScene::init_game() {
                 act.type = act_move_stop;
                 act.uid = Connection::instance()->get_uid();
                 act.param1 = vec.x;
-                act.param2 = vec.y;
-                frame_man->pushGameAct(act);
+                _frame_manager->pushGameAct(act);
             }
 
             auto vec = joystick_move->getMoveVec();
@@ -214,12 +214,41 @@ void GameScene::init_game() {
             act.type = act_move_start;
             act.uid = Connection::instance()->get_uid();
             act.param1 = vec.x;
-            act.param2 = vec.y;
-            frame_man->pushGameAct(act);
+            _frame_manager->pushGameAct(act);
 
             st.push(vec);
+
+            if (vec.y < 0.7) {
+                can_jump = true;
+            }
+
+            if (vec.y > 0.7 && can_jump) {
+                can_jump = false;
+                GameAct act;
+                act.type = act_jump;
+                act.uid = Connection::instance()->get_uid();
+                // act.param1 = vec.x;
+                _frame_manager->pushGameAct(act);
+            }
         },
         0.0333f, "move_upd");
+
+    this->schedule(
+        [&](float) {
+            for (auto& it : players) {
+                auto ob = it.second;
+                if (ob->getUID() == Connection::instance()->get_uid()) {
+                    GameAct act;
+                    act.type = act_position_force_set;
+                    act.uid = ob->getUID();
+                    act.param1 = ob->getPosition().x;
+                    act.param2 = ob->getPosition().y;
+
+                    _frame_manager->pushGameAct(act, false);
+                }
+            }
+        },
+        0.0333f, "position_force_set");
 
     this->schedule(
         [&](float) {
@@ -228,21 +257,15 @@ void GameScene::init_game() {
                 return;
             }
 
-            auto frame_man = game_world->getGameFrameManager();
             GameAct act;
             act.type = act_attack;
             act.uid = Connection::instance()->get_uid();
 
             act.param1 = vec.x;
             act.param2 = vec.y;
-            frame_man->pushGameAct(act);
+            _frame_manager->pushGameAct(act);
         },
         0.4f, "attack_upd");
-
-    // 初始化完毕，要手动给一帧
-    json js = frame->generateJsonOfNextFrame(Connection::instance()->get_uid());
-    frame->newNextFrame();
-    Connection::instance()->push_statueEvent(js);
 }
 
 void GameScene::notice(const json& event) {
@@ -262,22 +285,18 @@ void GameScene::notice(const json& event) {
 }
 
 void GameScene::keyDown(EventKeyboard::KeyCode key) {
-    auto frame_man = game_world->getGameFrameManager();
     GameAct act;
     act.type = act_move_start;
     act.uid = Connection::instance()->get_uid();
 
     switch (key) {
         case EventKeyboard::KeyCode::KEY_W: {
-            act.param1 = 0;
-            act.param2 = 1;
-
-            time_0 = steady_clock::now();
-
+            GameAct act;
+            act.type = act_jump;
+            act.uid = Connection::instance()->get_uid();
+            _frame_manager->pushGameAct(act);
         } break;
         case EventKeyboard::KeyCode::KEY_S: {
-            act.param1 = 0;
-            act.param2 = -1;
         } break;
         case EventKeyboard::KeyCode::KEY_A: {
             act.param1 = -1;
@@ -289,35 +308,28 @@ void GameScene::keyDown(EventKeyboard::KeyCode key) {
         } break;
     }
 
-    frame_man->pushGameAct(act);
+    _frame_manager->pushGameAct(act);
 }
 
 void GameScene::keyUp(EventKeyboard::KeyCode key) {
-    auto frame_man = game_world->getGameFrameManager();
     GameAct act;
     act.type = act_move_stop;
     act.uid = Connection::instance()->get_uid();
 
     switch (key) {
         case EventKeyboard::KeyCode::KEY_W: {
-            act.param1 = 0;
-            act.param2 = 1;
         } break;
         case EventKeyboard::KeyCode::KEY_S: {
-            act.param1 = 0;
-            act.param2 = -1;
         } break;
         case EventKeyboard::KeyCode::KEY_A: {
             act.param1 = -1;
-            act.param2 = 0;
         } break;
         case EventKeyboard::KeyCode::KEY_D: {
             act.param1 = 1;
-            act.param2 = 0;
         } break;
     }
 
-    frame_man->pushGameAct(act);
+    _frame_manager->pushGameAct(act);
 }
 
 bool LoadingLayer::init() {
@@ -376,31 +388,30 @@ void PlayerAI::updateLogic(GameObject* ob) {
     json event;
     event["type"] = "move";
     event["x"] = xx;
-    event["y"] = yy;
 
     ob->pushEvent(event);
 }
 
+void PlayerAI::receiveEvent(GameObject* ob, const json& event) {}
+
 void PlayerAI::receiveGameAct(GameObject* ob, const GameAct& event) {
-    const float SPEED = 30;
+    const float SPEED = 25;
 
     if (event.type == act_move_start) {
         if (ob->getUID() == event.uid) {
             xx += event.param1 * SPEED;
-            yy += event.param2 * SPEED;
-
-            if (abs(yy - SPEED) < 0.01) {
-                time_1 = steady_clock::now();
-                auto d = duration_cast<duration<float>>(time_1 - time_0);
-                CCLOG("%f", d.count());
-            }
         }
     }
     if (event.type == act_move_stop) {
         if (ob->getUID() == event.uid) {
             xx -= event.param1 * SPEED;
-            yy -= event.param2 * SPEED;
         }
+    }
+    if (event.type == act_jump) {
+        json event;
+        event["type"] = "jump";
+
+        ob->pushEvent(event);
     }
     if (event.type == act_attack) {
         auto sp = ob->get_game_world()->newObject(2, ob->getPosition());
@@ -412,10 +423,20 @@ void PlayerAI::receiveGameAct(GameObject* ob, const GameAct& event) {
         sp->addGameComponent(ai);
         sp->addGameComponent(phy);
 
-        sp->setLightRadius(140);
-        sp->setLightColor(Color3B(194, 120, 194));
+        WorldLight light(Color3B(194, 120, 194), 140, 1.0,
+                         WorldLight::world_light_type2);
+
+        sp->addWorldLight(light, "main_light");
 
         PhysicsShapeCache::getInstance()->setBodyOnSprite("enemy_bullet_1", sp);
+    }
+    if (event.type == act_position_force_set) {
+        json ee;
+        ee["type"] = "position_force_set";
+        ee["x"] = event.param1;
+        ee["y"] = event.param2;
+
+        ob->pushEvent(ee);
     }
 }
 
@@ -423,11 +444,113 @@ void PlayerPhysicsComponent::receiveEvent(GameObject* ob, const json& event) {
     string type = event["type"];
     if (type == "move") {
         float x = event["x"];
+
+        posNow += Vec2(x, 0);
+
+        fall_speed_y -= 6;
+        fall_speed_y = max<float>(-60, fall_speed_y);
+        fall_speed_y = min<float>(60, fall_speed_y);
+        posNow.y += fall_speed_y;
+    }
+    if (type == "jump") {
+        fall_speed_y = 50;
+    }
+    if (type == "position_force_set") {
+        float x = event["x"];
         float y = event["y"];
 
-        posNow += Vec2(x, y);
-        return;
+        posNow = Vec2(x, y);
     }
+
+    this->wall_contact_check(ob);
+}
+
+void PlayerPhysicsComponent::wall_contact_check(GameObject* ob) {
+    const Size s = ob->getContentSize();
+    auto speed = posNow - posOld;
+
+    auto pos = posOld;
+
+    Vec2 pushVec(0, 0);
+
+    iVec2 ipushVec(0, 0);
+
+    auto maph = ob->get_game_world()->getGameMap()->getMapHelper();
+    auto& map = ob->get_game_world()->getGameMap()->get();
+
+    auto p0 = pos - Vec2(s / 2);
+    auto p1 = pos + Vec2(s / 2);
+
+    // 左下
+    auto ip0 = maph->convert_in_map(p0);
+    // 右上
+    auto ip1 = maph->convert_in_map(p1);
+
+    // 重新确定位置
+    const auto re_check = [&]() {
+        pos += pushVec;
+        pushVec = Vec2(0, 0);
+
+        p0 = pos - Vec2(s / 2);
+        p1 = pos + Vec2(s / 2);
+        ip0 = maph->convert_in_map(p0);
+        ip1 = maph->convert_in_map(p1);
+    };
+
+    if (speed.x > 0) {
+        // 右侧
+        for (int i = ip0.y; i <= ip1.y; ++i) {
+            auto t = map[ip1.x + 1][i];
+            if (t != MapTileType::air) {
+                // 会进去,要减少速度
+                if (p1.x + speed.x > ip1.x * 64) {
+                    speed.x = ip1.x * 64 - p1.x - 0.5;
+                }
+            }
+        }
+    } else if (speed.x < 0) {
+        // 左侧
+        for (int i = ip0.y; i <= ip1.y; ++i) {
+            auto t = map[ip0.x - 1][i];
+            if (t != MapTileType::air) {
+                // 会进去,要减少速度
+                if (p0.x + speed.x < (ip0.x - 1) * 64) {
+                    speed.x = (ip0.x - 1) * 64 - p0.x + 0.5;
+                }
+            }
+        }
+    }
+
+    if (speed.y > 0) {
+        // 上侧
+        for (int i = ip0.x; i <= ip1.x; ++i) {
+            auto t = map[i][ip1.y + 1];
+            if (t != MapTileType::air) {
+                // 会进去,要减少速度
+                if (p1.y + speed.y > ip1.y * 64) {
+                    speed.y = ip1.y * 64 - p1.y - 0.5;
+                }
+            }
+        }
+    } else if (speed.y < 0) {
+        // 下
+        for (int i = ip0.x; i <= ip1.x; ++i) {
+            auto t = map[i][ip0.y - 1];
+            if (t != MapTileType::air) {
+                // 会进去,要减少速度
+                if (p0.y + speed.y < (ip0.y - 1) * 64) {
+                    speed.y = (ip0.y - 1) * 64 - p0.y + 0.5;
+                    fall_speed_y = 0;
+                }
+            }
+        }
+    }
+
+    posNow = pos + speed;
+}
+
+void PlayerPhysicsComponent::updateLogic(GameObject* ob) {
+    PhysicsComponent::updateLogic(ob);
 }
 
 void BulletAi::updateLogic(GameObject* ob) {
@@ -492,8 +615,10 @@ void BulletPhysicsComponent1::receiveEvent(GameObject* ob, const json& event) {
                 sp->addGameComponent(ai);
                 sp->addGameComponent(phy);
 
-                sp->setLightRadius(140);
-                sp->setLightColor(Color3B(194, 120, 194));
+                WorldLight light(Color3B(194, 120, 194), 140, 1.0,
+                                 WorldLight::world_light_type2);
+
+                sp->addWorldLight(light, "main_light");
             }
         }
     }
@@ -516,7 +641,8 @@ void ParticleAi::updateLogic(GameObject* ob) {
         ob->pushEvent(event);
     }
 
-    ob->setLightRadius(ob->getLightRadius() / 2.0f);
+    auto light = ob->getWorldLight("main_light");
+    light->radius = light->radius / 2.0f;
 
     cnt += 1;
     if (cnt >= 5) {

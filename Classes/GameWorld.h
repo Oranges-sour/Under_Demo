@@ -8,9 +8,9 @@ using namespace std;
 #include "cocos2d.h"
 using namespace cocos2d;
 
+#include "GameFrame.h"
 #include "QuadTree.h"
 #include "iVec2.h"
-
 #include "json.h"
 
 class GameObject;
@@ -41,13 +41,7 @@ public:
         return this->_gameRenderer;
     }
 
-    void setGameFrameManager(shared_ptr<GameFrameManager> frameManager) {
-        this->_frameManager = frameManager;
-    }
-
-    shared_ptr<GameFrameManager> getGameFrameManager() {
-        return this->_frameManager;
-    }
+    void pushGameAct(const GameAct& act);
 
     virtual void cleanup() override;
 
@@ -103,7 +97,8 @@ private:
     Quad<GameObject*> quad_tree;
     shared_ptr<GameMap> _gameMap;
     shared_ptr<GameWorldRenderer> _gameRenderer;
-    shared_ptr<GameFrameManager> _frameManager;
+
+    queue<GameAct> _game_act_que;
 
     // 游戏内的任何粒子创建，随机等，都必须用此随机引擎，保证一致性
     shared_ptr<Random> _globalRandom;
@@ -112,6 +107,7 @@ private:
 class GameWorldRenderer {
 public:
     virtual void init(Node* target) = 0;
+    virtual void release() = 0;
     virtual void update(const Vec2& left_bottom, const Size& size,
                         GameWorld* gameworld) = 0;
     virtual Vec2 calcu_camera_speed(const Vec2& current_pos,
@@ -120,18 +116,19 @@ public:
 
 class GameWorldRenderer1 : public GameWorldRenderer {
 public:
-    ~GameWorldRenderer1();
-
-    virtual void init(Node* target);
+    virtual void init(Node* target) override;
+    virtual void release() override;
     virtual void update(const Vec2& left_bottom, const Size& size,
-                        GameWorld* gameworld);
+                        GameWorld* gameworld) override;
     virtual Vec2 calcu_camera_speed(const Vec2& current_pos,
-                                    const Vec2& target_pos);
+                                    const Vec2& target_pos) override;
 
 private:
+
     Sprite* light = nullptr;
     RenderTexture* render = nullptr;
-    vector<Sprite*> lights;
+
+    vector<Sprite*> lights[3];
 };
 
 #endif

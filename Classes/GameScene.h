@@ -41,6 +41,7 @@ public:
 
     virtual void cleanup() override {
         Connection::instance()->remove_event_listener("GameScene_listener");
+        _frame_manager->release();
         Scene::cleanup();
     }
 
@@ -62,6 +63,8 @@ private:
     GameWorld* game_world;
     shared_ptr<GameMap> game_map;
     shared_ptr<MapPreRendererComponent1> game_map_pre_renderer;
+
+    shared_ptr<GameFrameManager> _frame_manager;
 
     LoadingLayer* loading_layer;
 };
@@ -95,6 +98,12 @@ public:
 
     virtual void receiveGameAct(GameObject* ob, const GameAct& act) override {}
     virtual void receiveEvent(GameObject* ob, const json& event) override;
+    virtual void updateLogic(GameObject* ob) override;
+
+private:
+    float fall_speed_y = 0;
+
+    void wall_contact_check(GameObject* ob);
 };
 
 class PlayerAI : public GameComponent {
@@ -103,7 +112,7 @@ public:
     virtual void updateLogic(GameObject* ob) override;
     virtual void updateDraw(GameObject* ob, float rate) override {}
     virtual void receiveGameAct(GameObject* ob, const GameAct& event) override;
-    virtual void receiveEvent(GameObject* ob, const json& event) override {}
+    virtual void receiveEvent(GameObject* ob, const json& event) override;
 
 private:
     int xx = 0;
