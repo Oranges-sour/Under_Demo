@@ -218,11 +218,11 @@ void GameScene::init_game() {
 
             st.push(vec);
 
-            if (vec.y < 0.8) {
+            if (vec.y < 0.7) {
                 can_jump = true;
             }
 
-            if (vec.y > 0.8 && can_jump) {
+            if (vec.y > 0.7 && can_jump) {
                 can_jump = false;
                 GameAct act;
                 act.type = act_jump;

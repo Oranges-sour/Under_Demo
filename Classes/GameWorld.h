@@ -124,6 +124,7 @@ public:
                                     const Vec2& target_pos) override;
 
 private:
+
     Sprite* light = nullptr;
     RenderTexture* render = nullptr;
 

@@ -258,6 +258,10 @@ void GameWorldRenderer1::update(const Vec2& left_bottom, const Size& size,
                                auto& li = it.second;
                                int k = li.type;
 
+                               if (cnt[k] >= 50) {
+                                   continue;
+                               }
+
                                auto& light_sp = lights[k][cnt[k]];
                                light_sp->setPosition(pos - left_bottom);
                                light_sp->setScale(li.radius / 100.0f);
