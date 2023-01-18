@@ -9,10 +9,10 @@ using namespace std;
 using namespace cocos2d;
 using namespace cocos2d::network;
 
-#include "Connection.h"
-#include "GameComponent.h"
-#include "GameFrame.h"
-#include "Random.h"
+#include "web/Connection.h"
+#include "game/game_object/GameObject.h"
+#include "game/game_frame/GameFrame.h"
+#include "utility/math/Random.h"
 
 class Joystick;
 class GameWorld;

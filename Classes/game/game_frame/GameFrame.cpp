@@ -1,6 +1,6 @@
 #include "GameFrame.h"
 
-#include "GameWorld.h"
+#include "game/game_world/GameWorld.h"
 
 GameFrameManager::GameFrameManager() { _next_frame = make_shared<GameFrame>(); }
 

@@ -155,45 +155,53 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)\Resources\" /D /E /I /F /Y
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\Classes\AppDelegate.cpp" />
-    <ClCompile Include="..\Classes\Connection.cpp" />
-    <ClCompile Include="..\Classes\ConnectionStatue.cpp" />
-    <ClCompile Include="..\Classes\GameComponent.cpp" />
-    <ClCompile Include="..\Classes\GameFrame.cpp" />
-    <ClCompile Include="..\Classes\GameMap.cpp" />
-    <ClCompile Include="..\Classes\GameObject.cpp" />
-    <ClCompile Include="..\Classes\GameScene.cpp" />
-    <ClCompile Include="..\Classes\GameWorld.cpp" />
-    <ClCompile Include="..\Classes\HelloWorldScene.cpp" />
-    <ClCompile Include="..\Classes\Joystick.cpp" />
-    <ClCompile Include="..\Classes\MyMath.cpp" />
-    <ClCompile Include="..\Classes\PhysicsShapeCache.cpp" />
-    <ClCompile Include="..\Classes\Random.cpp" />
-    <ClCompile Include="..\Classes\SpritePool.cpp" />
-    <ClCompile Include="..\Classes\TouchesPool.cpp" />
+    <ClCompile Include="..\Classes\game\game_frame\GameFrame.cpp" />
+    <ClCompile Include="..\Classes\game\game_map\GameMap.cpp" />
+    <ClCompile Include="..\Classes\game\game_map\inplements\MapGenerator1.cpp" />
+    <ClCompile Include="..\Classes\game\game_map\inplements\MapGenerator2.cpp" />
+    <ClCompile Include="..\Classes\game\game_map\inplements\MapHelper1.cpp" />
+    <ClCompile Include="..\Classes\game\game_map\inplements\MapPhysics1.cpp" />
+    <ClCompile Include="..\Classes\game\game_map\inplements\MapPreRenderer1.cpp" />
+    <ClCompile Include="..\Classes\game\game_object\GameObject.cpp" />
+    <ClCompile Include="..\Classes\game\game_world\GameWorld.cpp" />
+    <ClCompile Include="..\Classes\scene\GameScene.cpp" />
+    <ClCompile Include="..\Classes\scene\StartScene.cpp" />
+    <ClCompile Include="..\Classes\utility\math\MyMath.cpp" />
+    <ClCompile Include="..\Classes\utility\math\Random.cpp" />
+    <ClCompile Include="..\Classes\utility\PhysicsShapeCache.cpp" />
+    <ClCompile Include="..\Classes\utility\SpritePool.cpp" />
+    <ClCompile Include="..\Classes\utility\touch\Joystick.cpp" />
+    <ClCompile Include="..\Classes\utility\touch\TouchesPool.cpp" />
+    <ClCompile Include="..\Classes\web\Connection.cpp" />
+    <ClCompile Include="..\Classes\web\ConnectionStatue.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\Classes\addon_json.hpp" />
     <ClInclude Include="..\Classes\AppDelegate.h" />
-    <ClInclude Include="..\Classes\Connection.h" />
-    <ClInclude Include="..\Classes\ConnectionStatue.h" />
-    <ClInclude Include="..\Classes\GameComponent.h" />
-    <ClInclude Include="..\Classes\GameFrame.h" />
-    <ClInclude Include="..\Classes\GameMap.h" />
-    <ClInclude Include="..\Classes\GameObject.h" />
-    <ClInclude Include="..\Classes\GameScene.h" />
-    <ClInclude Include="..\Classes\GameWorld.h" />
-    <ClInclude Include="..\Classes\HelloWorldScene.h" />
-    <ClInclude Include="..\Classes\iVec2.h" />
-    <ClInclude Include="..\Classes\Joystick.h" />
-    <ClInclude Include="..\Classes\json.h" />
-    <ClInclude Include="..\Classes\MyMath.h" />
-    <ClInclude Include="..\Classes\PhysicsShapeCache.h" />
-    <ClInclude Include="..\Classes\QuadTree.h" />
-    <ClInclude Include="..\Classes\Random.h" />
-    <ClInclude Include="..\Classes\SpritePool.h" />
-    <ClInclude Include="..\Classes\Tools.h" />
-    <ClInclude Include="..\Classes\TouchesPool.h" />
+    <ClInclude Include="..\Classes\game\game_frame\GameFrame.h" />
+    <ClInclude Include="..\Classes\game\game_map\GameMap.h" />
+    <ClInclude Include="..\Classes\game\game_map\inplements\MapGenerator1.h" />
+    <ClInclude Include="..\Classes\game\game_map\inplements\MapGenerator2.h" />
+    <ClInclude Include="..\Classes\game\game_map\inplements\MapHelper1.h" />
+    <ClInclude Include="..\Classes\game\game_map\inplements\MapPhysics1.h" />
+    <ClInclude Include="..\Classes\game\game_map\inplements\MapPreRenderer1.h" />
+    <ClInclude Include="..\Classes\game\game_object\GameObject.h" />
+    <ClInclude Include="..\Classes\game\game_world\GameWorld.h" />
+    <ClInclude Include="..\Classes\scene\GameScene.h" />
+    <ClInclude Include="..\Classes\scene\StartScene.h" />
+    <ClInclude Include="..\Classes\utility\json\addon_json.hpp" />
+    <ClInclude Include="..\Classes\utility\json\json.h" />
+    <ClInclude Include="..\Classes\utility\math\iVec2.h" />
+    <ClInclude Include="..\Classes\utility\math\MyMath.h" />
+    <ClInclude Include="..\Classes\utility\math\Random.h" />
+    <ClInclude Include="..\Classes\utility\PhysicsShapeCache.h" />
+    <ClInclude Include="..\Classes\utility\QuadTree.h" />
+    <ClInclude Include="..\Classes\utility\SpritePool.h" />
+    <ClInclude Include="..\Classes\utility\Tools.h" />
+    <ClInclude Include="..\Classes\utility\touch\Joystick.h" />
+    <ClInclude Include="..\Classes\utility\touch\TouchesPool.h" />
+    <ClInclude Include="..\Classes\web\Connection.h" />
+    <ClInclude Include="..\Classes\web\ConnectionStatue.h" />
     <ClInclude Include="main.h" />
   </ItemGroup>
   <ItemGroup>
@@ -209,7 +217,7 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)\Resources\" /D /E /I /F /Y
     <ResourceCompile Include="game.rc" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\Classes\iVec2.inl" />
+    <None Include="..\Classes\utility\math\iVec2.inl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

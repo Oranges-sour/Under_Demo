@@ -1,7 +1,7 @@
 #include "AppDelegate.h"
 
-#include "HelloWorldScene.h"
-#include "PhysicsShapeCache.h"
+#include "scene/StartScene.h"
+#include "utility/PhysicsShapeCache.h"
 
 // #define USE_AUDIO_ENGINE 1
 // #define USE_SIMPLE_AUDIO_ENGINE 1

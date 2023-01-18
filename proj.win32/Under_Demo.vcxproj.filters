@@ -10,14 +10,41 @@
     <Filter Include="src">
       <UniqueIdentifier>{bb6c862e-70e9-49d9-81b7-3829a6f50471}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\web">
-      <UniqueIdentifier>{a93cbb73-e472-473c-86c5-e5b7ad52273a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="src\game">
-      <UniqueIdentifier>{d19d731c-bf39-4939-8f6d-505c0a7ea2fc}</UniqueIdentifier>
+      <UniqueIdentifier>{67fa490a-a073-4c75-9ff3-33e68734975b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\tools">
-      <UniqueIdentifier>{5620b623-4afd-48b0-aedf-75596b88a0b5}</UniqueIdentifier>
+    <Filter Include="src\game\game_frame">
+      <UniqueIdentifier>{6f03e81c-c5fe-42c9-8dfa-452622883e70}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\game\game_map">
+      <UniqueIdentifier>{7076b90f-c129-4301-81aa-71f187c5784a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\game\game_object">
+      <UniqueIdentifier>{b4031722-7ee5-41ef-bef2-465f356933a5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\game\game_world">
+      <UniqueIdentifier>{973a318e-3e75-4b64-9881-1f532b2446e7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\scene">
+      <UniqueIdentifier>{26493081-2cb2-451a-81c6-6842a88287d1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\utility">
+      <UniqueIdentifier>{a2421daa-6f68-45ab-8738-ac1a8d21ee3b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\utility\json">
+      <UniqueIdentifier>{080f4bcf-b561-40f5-be60-a93860305aa6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\utility\math">
+      <UniqueIdentifier>{07b1ea51-fd27-47cb-be48-ce4c98a47849}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\utility\touch">
+      <UniqueIdentifier>{030a3cfa-3822-4bb4-9928-5879f80828a7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\web">
+      <UniqueIdentifier>{ee85f4a6-ab43-4446-a995-8984c0cd0180}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\game\game_map\implements">
+      <UniqueIdentifier>{6086b1c8-055a-45a4-abc4-67cc63cfffbf}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -27,50 +54,62 @@
     <ClCompile Include="..\Classes\AppDelegate.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\HelloWorldScene.cpp">
-      <Filter>src</Filter>
+    <ClCompile Include="..\Classes\game\game_frame\GameFrame.cpp">
+      <Filter>src\game\game_frame</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\Connection.cpp">
+    <ClCompile Include="..\Classes\game\game_map\GameMap.cpp">
+      <Filter>src\game\game_map</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\game\game_object\GameObject.cpp">
+      <Filter>src\game\game_object</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\game\game_world\GameWorld.cpp">
+      <Filter>src\game\game_world</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\scene\GameScene.cpp">
+      <Filter>src\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\utility\math\MyMath.cpp">
+      <Filter>src\utility\math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\utility\math\Random.cpp">
+      <Filter>src\utility\math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\utility\touch\Joystick.cpp">
+      <Filter>src\utility\touch</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\utility\touch\TouchesPool.cpp">
+      <Filter>src\utility\touch</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\utility\PhysicsShapeCache.cpp">
+      <Filter>src\utility</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\utility\SpritePool.cpp">
+      <Filter>src\utility</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\web\Connection.cpp">
       <Filter>src\web</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\ConnectionStatue.cpp">
+    <ClCompile Include="..\Classes\web\ConnectionStatue.cpp">
       <Filter>src\web</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\GameComponent.cpp">
-      <Filter>src\game</Filter>
+    <ClCompile Include="..\Classes\scene\StartScene.cpp">
+      <Filter>src\scene</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\GameMap.cpp">
-      <Filter>src\game</Filter>
+    <ClCompile Include="..\Classes\game\game_map\inplements\MapGenerator1.cpp">
+      <Filter>src\game\game_map\implements</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\GameObject.cpp">
-      <Filter>src\game</Filter>
+    <ClCompile Include="..\Classes\game\game_map\inplements\MapGenerator2.cpp">
+      <Filter>src\game\game_map\implements</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\GameWorld.cpp">
-      <Filter>src\game</Filter>
+    <ClCompile Include="..\Classes\game\game_map\inplements\MapPreRenderer1.cpp">
+      <Filter>src\game\game_map\implements</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\Random.cpp">
-      <Filter>src\tools</Filter>
+    <ClCompile Include="..\Classes\game\game_map\inplements\MapHelper1.cpp">
+      <Filter>src\game\game_map\implements</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\SpritePool.cpp">
-      <Filter>src\tools</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\PhysicsShapeCache.cpp">
-      <Filter>src\tools</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\GameScene.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\MyMath.cpp">
-      <Filter>src\tools</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\GameFrame.cpp">
-      <Filter>src\game</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\TouchesPool.cpp">
-      <Filter>src\tools</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\Joystick.cpp">
-      <Filter>src\tools</Filter>
+    <ClCompile Include="..\Classes\game\game_map\inplements\MapPhysics1.cpp">
+      <Filter>src\game\game_map\implements</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -80,65 +119,77 @@
     <ClInclude Include="..\Classes\AppDelegate.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\HelloWorldScene.h">
-      <Filter>src</Filter>
+    <ClInclude Include="..\Classes\game\game_frame\GameFrame.h">
+      <Filter>src\game\game_frame</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\Connection.h">
+    <ClInclude Include="..\Classes\game\game_map\GameMap.h">
+      <Filter>src\game\game_map</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\game\game_object\GameObject.h">
+      <Filter>src\game\game_object</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\game\game_world\GameWorld.h">
+      <Filter>src\game\game_world</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\scene\GameScene.h">
+      <Filter>src\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\utility\json\addon_json.hpp">
+      <Filter>src\utility\json</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\utility\json\json.h">
+      <Filter>src\utility\json</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\utility\math\iVec2.h">
+      <Filter>src\utility\math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\utility\math\MyMath.h">
+      <Filter>src\utility\math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\utility\math\Random.h">
+      <Filter>src\utility\math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\utility\touch\Joystick.h">
+      <Filter>src\utility\touch</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\utility\touch\TouchesPool.h">
+      <Filter>src\utility\touch</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\utility\PhysicsShapeCache.h">
+      <Filter>src\utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\utility\QuadTree.h">
+      <Filter>src\utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\utility\SpritePool.h">
+      <Filter>src\utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\utility\Tools.h">
+      <Filter>src\utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\web\Connection.h">
       <Filter>src\web</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\ConnectionStatue.h">
+    <ClInclude Include="..\Classes\web\ConnectionStatue.h">
       <Filter>src\web</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\GameMap.h">
-      <Filter>src\game</Filter>
+    <ClInclude Include="..\Classes\scene\StartScene.h">
+      <Filter>src\scene</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\GameObject.h">
-      <Filter>src\game</Filter>
+    <ClInclude Include="..\Classes\game\game_map\inplements\MapGenerator1.h">
+      <Filter>src\game\game_map\implements</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\GameWorld.h">
-      <Filter>src\game</Filter>
+    <ClInclude Include="..\Classes\game\game_map\inplements\MapGenerator2.h">
+      <Filter>src\game\game_map\implements</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\QuadTree.h">
-      <Filter>src\tools</Filter>
+    <ClInclude Include="..\Classes\game\game_map\inplements\MapPreRenderer1.h">
+      <Filter>src\game\game_map\implements</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\Random.h">
-      <Filter>src\tools</Filter>
+    <ClInclude Include="..\Classes\game\game_map\inplements\MapHelper1.h">
+      <Filter>src\game\game_map\implements</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\SpritePool.h">
-      <Filter>src\tools</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Tools.h">
-      <Filter>src\tools</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\PhysicsShapeCache.h">
-      <Filter>src\tools</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\GameScene.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\json.h">
-      <Filter>src\tools</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\addon_json.hpp">
-      <Filter>src\tools</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\iVec2.h">
-      <Filter>src\tools</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\MyMath.h">
-      <Filter>src\tools</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\GameFrame.h">
-      <Filter>src\game</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\TouchesPool.h">
-      <Filter>src\tools</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Joystick.h">
-      <Filter>src\tools</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\GameComponent.h">
-      <Filter>src\game</Filter>
+    <ClInclude Include="..\Classes\game\game_map\inplements\MapPhysics1.h">
+      <Filter>src\game\game_map\implements</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -147,8 +198,8 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\Classes\iVec2.inl">
-      <Filter>src\tools</Filter>
+    <None Include="..\Classes\utility\math\iVec2.inl">
+      <Filter>src\utility\math</Filter>
     </None>
   </ItemGroup>
 </Project>

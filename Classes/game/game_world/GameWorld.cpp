@@ -1,10 +1,9 @@
 #include "GameWorld.h"
 
-#include "Connection.h"
-#include "GameMap.h"
-#include "GameObject.h"
-#include "MyMath.h"
-#include "SpritePool.h"
+#include "web/Connection.h"
+#include "game/game_map/GameMap.h"
+#include "game/game_object/GameObject.h"
+#include "utility/math/MyMath.h"
 
 GameWorld* GameWorld::create() {
     auto g = new GameWorld();

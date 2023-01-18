@@ -14,8 +14,7 @@ using namespace std;
 using namespace cocos2d;
 using namespace cocos2d::network;
 
-#include "json.h"
-using json = nlohmann::json;
+#include "utility/json/json.h"
 
 class ConnectionStatue;
 

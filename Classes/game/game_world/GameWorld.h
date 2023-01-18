@@ -8,10 +8,10 @@ using namespace std;
 #include "cocos2d.h"
 using namespace cocos2d;
 
-#include "GameFrame.h"
-#include "QuadTree.h"
-#include "iVec2.h"
-#include "json.h"
+#include "game/game_frame/GameFrame.h"
+#include "utility/QuadTree.h"
+#include "utility/math/iVec2.h"
+#include "utility/json/json.h"
 
 class GameObject;
 class GameMap;

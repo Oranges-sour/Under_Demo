@@ -1,14 +1,16 @@
 #include "GameScene.h"
 
-#include "GameComponent.h"
-#include "GameFrame.h"
-#include "GameMap.h"
-#include "GameObject.h"
-#include "GameWorld.h"
-#include "HelloWorldScene.h"
-#include "Joystick.h"
-#include "PhysicsShapeCache.h"
-#include "TouchesPool.h"
+#include "game/game_frame/GameFrame.h"
+#include "game/game_map/inplements/MapGenerator1.h"
+#include "game/game_map/inplements/MapHelper1.h"
+#include "game/game_map/inplements/MapPhysics1.h"
+#include "game/game_map/inplements/MapPreRenderer1.h"
+#include "game/game_object/GameObject.h"
+#include "game/game_world/GameWorld.h"
+#include "scene/StartScene.h"
+#include "utility/PhysicsShapeCache.h"
+#include "utility/touch/Joystick.h"
+#include "utility/touch/TouchesPool.h"
 
 GameScene* GameScene::createScene() { return GameScene::create(); }
 

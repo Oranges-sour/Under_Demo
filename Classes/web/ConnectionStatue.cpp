@@ -2,8 +2,8 @@
 
 #include <vector>
 
-#include "Connection.h"
-#include "Tools.h"
+#include "web/Connection.h"
+#include "utility/Tools.h"
 #include "cocos2d.h"
 using namespace std;
 

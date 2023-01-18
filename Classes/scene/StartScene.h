@@ -9,7 +9,7 @@ using namespace std;
 using namespace cocos2d;
 using namespace cocos2d::network;
 
-#include "Connection.h"
+#include "web/Connection.h"
 
 class Lobby_Layer;
 class Game_Layer;

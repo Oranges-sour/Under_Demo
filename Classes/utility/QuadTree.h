@@ -6,9 +6,9 @@
 #include <set>
 #include <string>
 
-#include "Random.h"
-#include "Tools.h"
-#include "iVec2.h"
+#include "utility/math/Random.h"
+#include "utility/Tools.h"
+#include "utility/math/iVec2.h"
 
 template <class T>
 class QuadContainer {

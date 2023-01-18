@@ -7,8 +7,8 @@
 #include <vector>
 using namespace std;
 
-#include "Connection.h"
-#include "json.h"
+#include "web/Connection.h"
+#include "utility/json/json.h"
 
 class GameFrame;
 class GameWorld;

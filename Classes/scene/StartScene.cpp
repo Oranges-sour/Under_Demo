@@ -1,12 +1,13 @@
-#include "HelloWorldScene.h"
+#include "scene/StartScene.h"
 
-#include "GameComponent.h"
-#include "GameFrame.h"
-#include "GameObject.h"
-#include "GameScene.h"
-#include "PhysicsShapeCache.h"
+#include "game/game_object/GameComponent.h"
+#include "game/game_frame/GameFrame.h"
+#include "game/game_object/GameObject.h"
+#include "scene/GameScene.h"
+#include "utility/PhysicsShapeCache.h"
+#include "utility/json/json.h"
+
 #include "SimpleAudioEngine.h"
-#include "json.h"
 #include "ui/CocosGUI.h"
 
 USING_NS_CC;
