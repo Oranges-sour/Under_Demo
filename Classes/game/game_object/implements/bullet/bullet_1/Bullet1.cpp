@@ -2,6 +2,9 @@
 
 #include "Bullet1AI.h"
 #include "Bullet1Physics.h"
+
+#include "game/game_object/GameObject.h"
+#include "game/game_world/GameWorld.h"
 #include "utility/PhysicsShapeCache.h"
 
 GameObject* Bullet1::create(GameWorld* world, const Vec2& start_pos,

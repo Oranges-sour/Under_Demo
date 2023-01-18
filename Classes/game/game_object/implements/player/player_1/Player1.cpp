@@ -1,5 +1,8 @@
 #include "Player1.h"
 
+#include "game/game_object/GameObject.h"
+#include "game/game_world/GameWorld.h"
+
 #include "Player1AI.h"
 #include "Player1Physics.h"
 #include "utility/PhysicsShapeCache.h"

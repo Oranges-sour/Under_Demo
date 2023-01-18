@@ -1,8 +1,11 @@
 #ifndef __PARTICLE_1_H__
 #define __PARTICLE_1_H__
 
-#include "game/game_object/GameObject.h"
-#include "game/game_world/GameWorld.h"
+#include "cocos2d.h"
+USING_NS_CC;
+
+class GameObject;
+class GameWorld;
 
 class Particle1 {
 public:

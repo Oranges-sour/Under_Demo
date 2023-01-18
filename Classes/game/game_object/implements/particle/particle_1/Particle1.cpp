@@ -3,6 +3,9 @@
 #include "Particle1AI.h"
 #include "Particle1Physics.h"
 
+#include "game/game_object/GameObject.h"
+#include "game/game_world/GameWorld.h"
+
 GameObject* Particle1::create(GameWorld* world, const Vec2& start_pos) {
     auto ob = world->newObject(layer_particle, start_pos);
     ob->initWithSpriteFrameName("enemy_bullet_1_par.png");

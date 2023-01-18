@@ -1,8 +1,11 @@
 #ifndef __BULLET_1_H__
 #define __BULLET_1_H__
 
-#include "game/game_object/GameObject.h"
-#include "game/game_world/GameWorld.h"
+#include "cocos2d.h"
+USING_NS_CC;
+
+class GameWorld;
+class GameObject;
 
 class Bullet1 {
 public:

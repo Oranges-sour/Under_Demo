@@ -1,8 +1,14 @@
 #ifndef __PLAYER_1_H__
 #define __PLAYER_1_H__
 
-#include "game/game_object/GameObject.h"
-#include "game/game_world/GameWorld.h"
+#include "cocos2d.h"
+USING_NS_CC;
+
+#include <string>
+using namespace std;
+
+class GameWorld;
+class GameObject;
 
 class Player1 {
 public:
