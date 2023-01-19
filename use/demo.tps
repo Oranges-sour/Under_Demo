@@ -195,6 +195,7 @@
                 <false/>
             </struct>
             <key type="filename">Res/enemy_bullet_1.png</key>
+            <key type="filename">Res/game_map_decoration_1.png</key>
             <key type="filename">Res/game_map_tile_cover0.png</key>
             <key type="filename">Res/game_map_tile_cover1.png</key>
             <key type="filename">Res/game_map_tile_cover2.png</key>
@@ -418,6 +419,21 @@
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
+            <key type="filename">Res/man_stay.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>40,68,80,135</rect>
+                <key>scale9Paddings</key>
+                <rect>40,68,80,135</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
         </map>
         <key>fileLists</key>
         <map type="SpriteSheetMap">
@@ -454,6 +470,8 @@
                     <filename>Res/light_1.png</filename>
                     <filename>Res/light_2.png</filename>
                     <filename>Res/light_3.png</filename>
+                    <filename>Res/game_map_decoration_1.png</filename>
+                    <filename>Res/man_stay.png</filename>
                 </array>
             </struct>
         </map>
