@@ -19,6 +19,8 @@ public:
     // 返回整个地图的大小
     virtual Size afterPreRender(Node* target);
 
+    vector<iVec2> getDec2Pos();
+
 private:
     virtual void init(MapTile* map) override {}
 
@@ -51,6 +53,8 @@ private:
                     const Vec2& pos, const MapArea& area, vector<Node*>& dst);
 
 private:
+    vector<iVec2> dec2_pos;
+
     shared_ptr<Random> _random;
 
     vector<bool> mark1;

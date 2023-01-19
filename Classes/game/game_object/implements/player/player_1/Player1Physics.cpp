@@ -29,6 +29,7 @@ void Player1Physics::receiveEvent(GameObject* ob, const json& event) {
 
 void Player1Physics::wall_contact_check(GameObject* ob) {
     const Size s = ob->getContentSize();
+    // const Size s(50, 250);
     auto speed = posNow - posOld;
 
     auto pos = posOld;

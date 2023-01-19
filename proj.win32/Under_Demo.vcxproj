@@ -157,6 +157,7 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)\Resources\" /D /E /I /F /Y
     <ClCompile Include="..\Classes\AppDelegate.cpp" />
     <ClCompile Include="..\Classes\game\game_frame\GameFrame.cpp" />
     <ClCompile Include="..\Classes\game\game_map\GameMap.cpp" />
+    <ClCompile Include="..\Classes\game\game_map\implements\MapDecorationCreator1.cpp" />
     <ClCompile Include="..\Classes\game\game_map\implements\MapGenerator1.cpp" />
     <ClCompile Include="..\Classes\game\game_map\implements\MapGenerator2.cpp" />
     <ClCompile Include="..\Classes\game\game_map\implements\MapHelper1.cpp" />
@@ -166,6 +167,10 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)\Resources\" /D /E /I /F /Y
     <ClCompile Include="..\Classes\game\game_object\implements\bullet\bullet_1\Bullet1.cpp" />
     <ClCompile Include="..\Classes\game\game_object\implements\bullet\bullet_1\Bullet1AI.cpp" />
     <ClCompile Include="..\Classes\game\game_object\implements\bullet\bullet_1\Bullet1Physics.cpp" />
+    <ClCompile Include="..\Classes\game\game_object\implements\mpa_decoration\decoration_1\Decoration1.cpp" />
+    <ClCompile Include="..\Classes\game\game_object\implements\mpa_decoration\decoration_1\Decoration1AI.cpp" />
+    <ClCompile Include="..\Classes\game\game_object\implements\mpa_decoration\decoration_2\Decoration2.cpp" />
+    <ClCompile Include="..\Classes\game\game_object\implements\mpa_decoration\decoration_2\Decoration2AI.cpp" />
     <ClCompile Include="..\Classes\game\game_object\implements\particle\particle_1\Particle1.cpp" />
     <ClCompile Include="..\Classes\game\game_object\implements\particle\particle_1\Particle1AI.cpp" />
     <ClCompile Include="..\Classes\game\game_object\implements\particle\particle_1\Particle1Physics.cpp" />
@@ -190,6 +195,7 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)\Resources\" /D /E /I /F /Y
     <ClInclude Include="..\Classes\AppDelegate.h" />
     <ClInclude Include="..\Classes\game\game_frame\GameFrame.h" />
     <ClInclude Include="..\Classes\game\game_map\GameMap.h" />
+    <ClInclude Include="..\Classes\game\game_map\implements\MapDecorationCreator1.h" />
     <ClInclude Include="..\Classes\game\game_map\implements\MapGenerator1.h" />
     <ClInclude Include="..\Classes\game\game_map\implements\MapGenerator2.h" />
     <ClInclude Include="..\Classes\game\game_map\implements\MapHelper1.h" />
@@ -199,6 +205,10 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)\Resources\" /D /E /I /F /Y
     <ClInclude Include="..\Classes\game\game_object\implements\bullet\bullet_1\Bullet1.h" />
     <ClInclude Include="..\Classes\game\game_object\implements\bullet\bullet_1\Bullet1AI.h" />
     <ClInclude Include="..\Classes\game\game_object\implements\bullet\bullet_1\Bullet1Physics.h" />
+    <ClInclude Include="..\Classes\game\game_object\implements\mpa_decoration\decoration_1\Decoration1.h" />
+    <ClInclude Include="..\Classes\game\game_object\implements\mpa_decoration\decoration_1\Decoration1AI.h" />
+    <ClInclude Include="..\Classes\game\game_object\implements\mpa_decoration\decoration_2\Decoration2.h" />
+    <ClInclude Include="..\Classes\game\game_object\implements\mpa_decoration\decoration_2\Decoration2AI.h" />
     <ClInclude Include="..\Classes\game\game_object\implements\particle\particle_1\Particle1.h" />
     <ClInclude Include="..\Classes\game\game_object\implements\particle\particle_1\Particle1AI.h" />
     <ClInclude Include="..\Classes\game\game_object\implements\particle\particle_1\Particle1Physics.h" />

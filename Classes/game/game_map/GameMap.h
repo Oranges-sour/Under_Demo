@@ -94,6 +94,11 @@ public:
     virtual Size afterPreRender(Node* target) = 0;
 };
 
+class MapDecorationCreatorComponent {
+public:
+    virtual void generate(GameWorld* world, MapTile* map) = 0;
+};
+
 class MapGameObjectTileComponent : public GameComponent {
 public:
     void init(map<string, GameObject*>* _dirty, const string& uid) {
@@ -123,6 +128,5 @@ class MapPhysicsComponent {
 public:
     virtual void updateLogic(GameWorld* game_world) = 0;
 };
-
 
 #endif

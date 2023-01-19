@@ -1,6 +1,7 @@
 #include "GameScene.h"
 
 #include "game/game_frame/GameFrame.h"
+#include "game/game_map/implements/MapDecorationCreator1.h"
 #include "game/game_map/implements/MapGenerator1.h"
 #include "game/game_map/implements/MapHelper1.h"
 #include "game/game_map/implements/MapPhysics1.h"
@@ -22,13 +23,13 @@ bool GameScene::init() {
 
     auto phyw = this->getPhysicsWorld();
     phyw->setGravity(Vec2::ZERO);
-    phyw->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
-    // phyw->setUpdateRate(0.5);
+    // phyw->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
+    phyw->setUpdateRate(2);
 
     loading_layer = LoadingLayer::create();
     this->addChild(loading_layer, 1);
 
-    this->schedule([&](float) { Connection::instance()->update(16); },
+    this->schedule([&](float dt) { Connection::instance()->update(dt * 1000); },
                    "web_upd");
 
     auto listener = make_shared<ConnectionEventListener>(
@@ -41,8 +42,8 @@ bool GameScene::init() {
 
 void GameScene::start(unsigned seed, int player_cnt,
                       const vector<string>& player_uid) {
-    this->player_cnt = player_cnt;
     this->player_uid = player_uid;
+    this->seed = seed;
     init_map(seed);
 }
 
@@ -50,9 +51,10 @@ void GameScene::init_map(unsigned seed) {
     // 创建地图
     this->game_map = make_shared<GameMap>(256, 256);
 
+    // 创建地图生成器
     auto map_generator = make_shared<MapGenerator1>();
-    // auto map_generator = make_shared<MapGenerator2>();
     map_generator->init(seed);
+    // auto map_generator = make_shared<MapGenerator2>();
 
     auto map_helper = make_shared<MapHelper1>();
     auto map_physics = make_shared<MapPhysics1>();
@@ -89,14 +91,21 @@ void GameScene::init_game() {
                    "frame_manager_upd");
 
     game_map_pre_renderer->afterPreRender(game_world->get_game_map_target());
-    // 释放
-    game_map_pre_renderer.reset();
+   
 
     game_world->setGameMap(game_map);
 
     auto ren = make_shared<GameWorldRenderer1>();
     game_world->setGameRenderer(ren);
     ren->init(game_world->get_game_renderer_target());
+
+    auto dec = make_shared<MapDecorationCreator1>();
+    dec->setDec2Pos(game_map_pre_renderer->getDec2Pos());
+    dec->generate(game_world, &game_map->get(), seed);
+
+    
+     // 释放
+    game_map_pre_renderer.reset();
 
     auto game_bk = Sprite::create("game_bk.png");
     game_bk->setAnchorPoint(Vec2(0, 0));
@@ -231,7 +240,7 @@ void GameScene::init_game() {
                 }
             }
         },
-        0.0333f, "position_force_set");
+        0.03f, "position_force_set");
 
     this->schedule(
         [&](float) {
@@ -249,6 +258,7 @@ void GameScene::init_game() {
             _frame_manager->pushGameAct(act);
         },
         0.4f, "attack_upd");
+
 }
 
 void GameScene::notice(const json& event) {

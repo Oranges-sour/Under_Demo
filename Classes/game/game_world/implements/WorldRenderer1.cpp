@@ -49,29 +49,29 @@ void GameWorldRenderer1::update(const Vec2& left_bottom, const Size& size,
 
     int cnt[3] = {0, 0, 0};
     // 边缘扩大一点，保证光源能够完整绘制
-    quad.visit_in_rect({ilb.x - 5, ilb.y + isize.y + 5},
-                       {ilb.x + isize.x + 5, ilb.y - 5},
-                       [&](const iVec2& coor, GameObject* object) {
-                           auto& pos = object->getPosition();
-                           auto& lig = object->getAllWorldLight();
+    quad.visit_in_rect(
+        {ilb.x - 5, ilb.y + isize.y + 5}, {ilb.x + isize.x + 5, ilb.y - 5},
+        [&](const iVec2& coor, GameObject* object) {
+            auto& pos = object->getPosition();
+            auto& lig = object->getAllWorldLight();
 
-                           for (auto& it : lig) {
-                               auto& li = it.second;
-                               int k = li.type;
+            for (auto& it : lig) {
+                auto& li = it.second;
+                int k = li.type;
 
-                               if (cnt[k] >= 50) {
-                                   continue;
-                               }
+                if (cnt[k] >= 50) {
+                    continue;
+                }
 
-                               auto& light_sp = lights[k][cnt[k]];
-                               light_sp->setPosition(pos - left_bottom);
-                               light_sp->setScale(li.radius / 100.0f);
-                               light_sp->setColor(li.lightColor);
-                               light_sp->setOpacity(255 * li.opacity);
+                auto& light_sp = lights[k][cnt[k]];
+                light_sp->setPosition(pos - left_bottom + li.offset);
+                light_sp->setScale(li.radius / 100.0f);
+                light_sp->setColor(li.lightColor);
+                light_sp->setOpacity(255 * li.opacity);
 
-                               cnt[k] += 1;
-                           }
-                       });
+                cnt[k] += 1;
+            }
+        });
     // 0.2 可以让背景不是全黑
 
     render->beginWithClear(0.2, 0.2, 0.2, 1);

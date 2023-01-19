@@ -50,7 +50,8 @@ private:
     void keyUp(EventKeyboard::KeyCode key);
 
 private:
-    int player_cnt;
+    unsigned int seed;
+
     vector<string> player_uid;
 
     Joystick* joystick_move;

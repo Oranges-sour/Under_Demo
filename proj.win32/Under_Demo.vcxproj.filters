@@ -70,6 +70,15 @@
     <Filter Include="src\game\game_object\implements\player\player_1">
       <UniqueIdentifier>{ed763fc8-1c71-476c-83d3-4a402283cbd7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\game\game_object\implements\map_decoration">
+      <UniqueIdentifier>{cd2da36e-99c9-4cfb-b932-5de071692d04}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\game\game_object\implements\map_decoration\decoration_1">
+      <UniqueIdentifier>{b3bb3a0e-31e9-4076-8909-bb4e6186a207}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\game\game_object\implements\map_decoration\decoration_2">
+      <UniqueIdentifier>{219d3120-e3d1-4747-8ee3-ede3723f3b33}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -164,6 +173,21 @@
     </ClCompile>
     <ClCompile Include="..\Classes\game\game_object\implements\player\player_1\Player1.cpp">
       <Filter>src\game\game_object\implements\player\player_1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\game\game_map\implements\MapDecorationCreator1.cpp">
+      <Filter>src\game\game_map\implements</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\game\game_object\implements\mpa_decoration\decoration_1\Decoration1.cpp">
+      <Filter>src\game\game_object\implements\map_decoration\decoration_1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\game\game_object\implements\mpa_decoration\decoration_1\Decoration1AI.cpp">
+      <Filter>src\game\game_object\implements\map_decoration\decoration_1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\game\game_object\implements\mpa_decoration\decoration_2\Decoration2.cpp">
+      <Filter>src\game\game_object\implements\map_decoration\decoration_2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\game\game_object\implements\mpa_decoration\decoration_2\Decoration2AI.cpp">
+      <Filter>src\game\game_object\implements\map_decoration\decoration_2</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -274,6 +298,21 @@
     </ClInclude>
     <ClInclude Include="..\Classes\game\game_object\implements\player\player_1\Player1.h">
       <Filter>src\game\game_object\implements\player\player_1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\game\game_map\implements\MapDecorationCreator1.h">
+      <Filter>src\game\game_map\implements</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\game\game_object\implements\mpa_decoration\decoration_1\Decoration1.h">
+      <Filter>src\game\game_object\implements\map_decoration\decoration_1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\game\game_object\implements\mpa_decoration\decoration_1\Decoration1AI.h">
+      <Filter>src\game\game_object\implements\map_decoration\decoration_1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\game\game_object\implements\mpa_decoration\decoration_2\Decoration2.h">
+      <Filter>src\game\game_object\implements\map_decoration\decoration_2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\game\game_object\implements\mpa_decoration\decoration_2\Decoration2AI.h">
+      <Filter>src\game\game_object\implements\map_decoration\decoration_2</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -14,9 +14,7 @@ void MapPreRenderer1::init(MapTile* map, unsigned int seed) {
     mark.resize((map->w + 1) * (map->h + 1), false);
 }
 
-bool MapPreRenderer1::isPreRenderFinish() {
-    return _isPreRenderFinish;
-}
+bool MapPreRenderer1::isPreRenderFinish() { return _isPreRenderFinish; }
 
 void MapPreRenderer1::preRender() {
     if (_isPreRenderFinish) {
@@ -65,6 +63,8 @@ Size MapPreRenderer1::afterPreRender(Node* target) {
 
     return Size(64 * _map->w, 64 * _map->h);
 }
+
+vector<iVec2> MapPreRenderer1::getDec2Pos() { return this->dec2_pos; }
 
 Texture2D* MapPreRenderer1::render(const MapArea& area) {
     const int pixleW = 64 * area.w;
@@ -155,7 +155,7 @@ Texture2D* MapPreRenderer1::render(const MapArea& area) {
 }
 
 void MapPreRenderer1::createTile(MapTileType type, int bit_mask,
-                                          const Vec2& pos, vector<Node*>& dst) {
+                                 const Vec2& pos, vector<Node*>& dst) {
     static const map<MapTileType, string> sprite_frame{
         {dirt, "game_map_tile_dirt.png"},
         {grass, "game_map_tile_grass.png"},
@@ -170,9 +170,9 @@ void MapPreRenderer1::createTile(MapTileType type, int bit_mask,
 }
 
 void MapPreRenderer1::createDecoration(int x, int y, MapTileType type,
-                                                int bit_mask, const Vec2& pos,
-                                                const MapArea& area,
-                                                vector<Node*>& dst) {
+                                       int bit_mask, const Vec2& pos,
+                                       const MapArea& area,
+                                       vector<Node*>& dst) {
     createDec1(x, y, type, bit_mask, pos, area, dst);
     createDec2(x, y, type, bit_mask, pos, area, dst);
     createDec3(x, y, type, bit_mask, pos, area, dst);
@@ -182,8 +182,7 @@ void MapPreRenderer1::createDecoration(int x, int y, MapTileType type,
 }
 
 void MapPreRenderer1::createTileMask(MapTileType type, int bit_mask,
-                                              const Vec2& pos,
-                                              vector<Node*>& dst) {
+                                     const Vec2& pos, vector<Node*>& dst) {
     static const vector<pair<int, string>> sprite_mask{
         {0x83, "game_map_tile_cover0.png"},
         {0x0E, "game_map_tile_cover1.png"},
@@ -203,10 +202,9 @@ void MapPreRenderer1::createTileMask(MapTileType type, int bit_mask,
     }
 }
 
-void MapPreRenderer1::createDec1(int x, int y, MapTileType type,
-                                          int bit_mask, const Vec2& pos,
-                                          const MapArea& area,
-                                          vector<Node*>& dst) {
+void MapPreRenderer1::createDec1(int x, int y, MapTileType type, int bit_mask,
+                                 const Vec2& pos, const MapArea& area,
+                                 vector<Node*>& dst) {
     static const vector<string> grass_decoration1{
         "game_map_tile_grass_decorate_1.png",
         "game_map_tile_grass_decorate_2.png",
@@ -225,10 +223,9 @@ void MapPreRenderer1::createDec1(int x, int y, MapTileType type,
     }
 }
 
-void MapPreRenderer1::createDec2(int x, int y, MapTileType type,
-                                          int bit_mask, const Vec2& pos,
-                                          const MapArea& area,
-                                          vector<Node*>& dst) {
+void MapPreRenderer1::createDec2(int x, int y, MapTileType type, int bit_mask,
+                                 const Vec2& pos, const MapArea& area,
+                                 vector<Node*>& dst) {
     const int dx[] = {1, 2};
     const int dy[] = {0, 0};
 
@@ -291,10 +288,9 @@ void MapPreRenderer1::createDec2(int x, int y, MapTileType type,
     }
 }
 
-void MapPreRenderer1::createDec3(int x, int y, MapTileType type,
-                                          int bit_mask, const Vec2& pos,
-                                          const MapArea& area,
-                                          vector<Node*>& dst) {
+void MapPreRenderer1::createDec3(int x, int y, MapTileType type, int bit_mask,
+                                 const Vec2& pos, const MapArea& area,
+                                 vector<Node*>& dst) {
     const auto inside = [&](int x, int y) {
         if (x >= area.x && x <= area.x + area.w - 1 && y >= area.y &&
             y <= area.y + area.h - 1) {
@@ -349,15 +345,16 @@ void MapPreRenderer1::createDec3(int x, int y, MapTileType type,
                 g->setAnchorPoint(Vec2(0, 1));
                 g->setPosition(pos);
                 dst.push_back(g);
+
+                dec2_pos.push_back({x, y});
             }
         }
     }
 }
 
-void MapPreRenderer1::createDec4(int x, int y, MapTileType type,
-                                          int bit_mask, const Vec2& pos,
-                                          const MapArea& area,
-                                          vector<Node*>& dst) {
+void MapPreRenderer1::createDec4(int x, int y, MapTileType type, int bit_mask,
+                                 const Vec2& pos, const MapArea& area,
+                                 vector<Node*>& dst) {
     const auto inside = [&](int x, int y) {
         if (x >= area.x && x <= area.x + area.w - 1 && y >= area.y &&
             y <= area.y + area.h - 1) {
@@ -414,15 +411,16 @@ void MapPreRenderer1::createDec4(int x, int y, MapTileType type,
                 g->setAnchorPoint(Vec2(0, 1));
                 g->setPosition(pos + Vec2(128, 0));
                 dst.push_back(g);
+
+                dec2_pos.push_back({x, y});
             }
         }
     }
 }
 
-void MapPreRenderer1::createDec5(int x, int y, MapTileType type,
-                                          int bit_mask, const Vec2& pos,
-                                          const MapArea& area,
-                                          vector<Node*>& dst) {
+void MapPreRenderer1::createDec5(int x, int y, MapTileType type, int bit_mask,
+                                 const Vec2& pos, const MapArea& area,
+                                 vector<Node*>& dst) {
     const auto inside = [&](int x, int y) {
         if (x >= area.x && x <= area.x + area.w - 1 && y >= area.y &&
             y <= area.y + area.h - 1) {
@@ -511,10 +509,9 @@ void MapPreRenderer1::createDec5(int x, int y, MapTileType type,
     }
 }
 
-void MapPreRenderer1::createDec6(int x, int y, MapTileType type,
-                                          int bit_mask, const Vec2& pos,
-                                          const MapArea& area,
-                                          vector<Node*>& dst) {
+void MapPreRenderer1::createDec6(int x, int y, MapTileType type, int bit_mask,
+                                 const Vec2& pos, const MapArea& area,
+                                 vector<Node*>& dst) {
     const auto inside = [&](int x, int y) {
         if (x >= area.x && x <= area.x + area.w - 1 && y >= area.y &&
             y <= area.y + area.h - 1) {

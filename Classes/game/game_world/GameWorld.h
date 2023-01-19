@@ -21,7 +21,8 @@ class GameFrameManager;
 class Connection;
 
 enum ObjectLayer {
-    layer_enemy = 1,
+    layer_map_decoration = 1,
+    layer_enemy,
     layer_player,
     layer_bullet,
     layer_particle,

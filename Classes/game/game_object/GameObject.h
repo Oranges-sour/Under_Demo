@@ -23,7 +23,7 @@ enum GameObjectType {
     object_type_particle,
     object_type_enemy,
     object_type_equipment,
-    object_type_decorate,
+    object_type_decoration,
     object_type_wall,  // µØÍ¼µÄ¿é
     object_type_unknow,
 };
@@ -39,14 +39,20 @@ struct WorldLight {
         : lightColor(Color3B(255, 255, 255)),
           radius(100.0f),
           opacity(1.0f),
-          type(world_light_type1) {}
+          type(world_light_type1),
+          offset(0, 0) {}
     WorldLight(const Color3B& color, float radius, float opacity,
-               WorldLightType type)
-        : lightColor(color), radius(radius), opacity(opacity), type(type) {}
+               WorldLightType type, const Vec2& offset = Vec2::ZERO)
+        : lightColor(color),
+          radius(radius),
+          opacity(opacity),
+          type(type),
+          offset(offset) {}
 
     Color3B lightColor;
     float radius;
     float opacity;
+    Vec2 offset;
     WorldLightType type;
 };
 
