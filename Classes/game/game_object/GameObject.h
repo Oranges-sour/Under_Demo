@@ -30,7 +30,7 @@ enum GameObjectType {
 
 struct WorldLight {
     enum WorldLightType {
-        world_light_type1,
+        world_light_type1 = 1,
         world_light_type2,
         world_light_type3
     };
@@ -91,7 +91,7 @@ public:
         return &(iter->second);
     }
 
-    const map<string, WorldLight>& getAllWorldLight() { return _world_light; }
+    map<string, WorldLight>& getAllWorldLight() { return _world_light; }
     //////////////////////////////////
 
     void main_update();

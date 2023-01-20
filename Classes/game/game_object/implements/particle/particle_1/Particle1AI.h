@@ -5,7 +5,13 @@
 
 class Particle1AI : public GameComponent {
 public:
-    Particle1AI(float x, float y) : xx(x), yy(y) {}
+    Particle1AI(const Vec2& direction, int live_frame, float move_speed,
+                float rotate_speed, float light_decrease_rate)
+        : live_frame(live_frame),
+          direction(direction),
+          move_speed(move_speed),
+          rotate_speed(move_speed),
+          light_decrease_rate(light_decrease_rate) {}
 
     virtual void updateLogicInScreenRect(GameObject* ob) override {}
     virtual void updateLogic(GameObject* ob) override;
@@ -14,7 +20,12 @@ public:
     virtual void receiveEvent(GameObject* ob, const json& event) override {}
 
 private:
-    float xx, yy;
+    Vec2 direction;
+
+    int live_frame;
+    float move_speed;
+    float rotate_speed;
+    float light_decrease_rate;
 
     int cnt = 0;
 };

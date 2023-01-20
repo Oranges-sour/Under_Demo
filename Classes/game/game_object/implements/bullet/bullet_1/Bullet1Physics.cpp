@@ -30,9 +30,9 @@ void Bullet1Physics::receiveEvent(GameObject* ob, const json& event) {
             ob->removeFromParent();
 
             // ´´½¨Á£×Ó
-            for (int i = 0; i < 5; ++i) {
+            for (int i = 0; i < dead_particle_cnt; ++i) {
                 auto world = ob->get_game_world();
-                Particle1::create(world, ob->getPosition());
+                Particle1::create(world, dead_particle_name, ob->getPosition());
             }
         }
     }

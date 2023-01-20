@@ -33,7 +33,7 @@ void Player1AI::receiveGameAct(GameObject* ob, const GameAct& event) {
     }
     if (event.type == act_attack) {
         auto world = ob->get_game_world();
-        Bullet1::create(world, ob->getPosition(),
+        Bullet1::create(world, "bullet_1", ob->getPosition(),
                         Vec2(event.param1, event.param2));
     }
     if (event.type == act_position_force_set) {

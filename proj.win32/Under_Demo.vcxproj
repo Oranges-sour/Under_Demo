@@ -181,6 +181,7 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)\Resources\" /D /E /I /F /Y
     <ClCompile Include="..\Classes\game\game_world\implements\WorldRenderer1.cpp" />
     <ClCompile Include="..\Classes\scene\GameScene.cpp" />
     <ClCompile Include="..\Classes\scene\StartScene.cpp" />
+    <ClCompile Include="..\Classes\utility\GameObjectInfo.cpp" />
     <ClCompile Include="..\Classes\utility\math\MyMath.cpp" />
     <ClCompile Include="..\Classes\utility\math\Random.cpp" />
     <ClCompile Include="..\Classes\utility\PhysicsShapeCache.cpp" />
@@ -219,6 +220,7 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)\Resources\" /D /E /I /F /Y
     <ClInclude Include="..\Classes\game\game_world\implements\WorldRenderer1.h" />
     <ClInclude Include="..\Classes\scene\GameScene.h" />
     <ClInclude Include="..\Classes\scene\StartScene.h" />
+    <ClInclude Include="..\Classes\utility\GameObjectInfo.h" />
     <ClInclude Include="..\Classes\utility\json\addon_json.hpp" />
     <ClInclude Include="..\Classes\utility\json\json.h" />
     <ClInclude Include="..\Classes\utility\math\iVec2.h" />

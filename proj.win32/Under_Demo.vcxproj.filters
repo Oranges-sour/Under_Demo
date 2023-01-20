@@ -189,6 +189,9 @@
     <ClCompile Include="..\Classes\game\game_object\implements\mpa_decoration\decoration_2\Decoration2AI.cpp">
       <Filter>src\game\game_object\implements\map_decoration\decoration_2</Filter>
     </ClCompile>
+    <ClCompile Include="..\Classes\utility\GameObjectInfo.cpp">
+      <Filter>src\utility</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -313,6 +316,9 @@
     </ClInclude>
     <ClInclude Include="..\Classes\game\game_object\implements\mpa_decoration\decoration_2\Decoration2AI.h">
       <Filter>src\game\game_object\implements\map_decoration\decoration_2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\utility\GameObjectInfo.h">
+      <Filter>src\utility</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

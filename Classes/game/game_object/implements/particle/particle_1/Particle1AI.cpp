@@ -4,24 +4,26 @@ void Particle1AI::updateLogic(GameObject* ob) {
     {
         json event;
         event["type"] = "move";
-        event["x"] = xx * 60;
-        event["y"] = yy * 60;
+        event["x"] = direction.x * move_speed;
+        event["y"] = direction.y * move_speed;
 
         ob->pushEvent(event);
     }
     {
         json event;
         event["type"] = "rotate";
-        event["r"] = 40;
+        event["r"] = rotate_speed;
 
         ob->pushEvent(event);
     }
 
-    auto light = ob->getWorldLight("main_light");
-    light->radius = light->radius / 2.0f;
+    auto& lights = ob->getAllWorldLight();
+    for (auto& it : lights) {
+        it.second.radius *= light_decrease_rate;
+    }
 
     cnt += 1;
-    if (cnt >= 5) {
+    if (cnt > live_frame) {
         ob->removeFromParent();
     }
 }

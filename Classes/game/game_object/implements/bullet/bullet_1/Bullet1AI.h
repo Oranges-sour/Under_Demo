@@ -1,11 +1,14 @@
-#ifndef	__BULLET_1_AI_H__
+#ifndef __BULLET_1_AI_H__
 #define __BULLET_1_AI_H__
 
 #include "game/game_object/GameObject.h"
 
 class Bullet1AI : public GameComponent {
 public:
-    Bullet1AI(float x, float y) : xx(x), yy(y) {}
+    Bullet1AI(const Vec2& direction, float move_speed, float rotate_speed)
+        : direction(direction),
+          move_speed(move_speed),
+          rotate_speed(rotate_speed) {}
 
     virtual void updateLogicInScreenRect(GameObject* ob) override {}
     virtual void updateLogic(GameObject* ob) override;
@@ -14,7 +17,9 @@ public:
     virtual void receiveEvent(GameObject* ob, const json& event) override {}
 
 private:
-    float xx, yy;
+    Vec2 direction;
+    float move_speed;
+    float rotate_speed;
 };
 
 #endif

@@ -2,6 +2,7 @@
 
 #include "scene/StartScene.h"
 #include "utility/PhysicsShapeCache.h"
+#include "utility/GameObjectInfo.h"
 
 // #define USE_AUDIO_ENGINE 1
 // #define USE_SIMPLE_AUDIO_ENGINE 1
@@ -39,7 +40,10 @@ void AppDelegate::initGLContextAttrs() {
     GLView::setGLContextAttrs(glContextAttrs);
 }
 
-static int register_all_packages() { return 0; }
+static int register_all_packages() {
+    GameObjectInfo::instance()->load("game_object_info.json");
+    return 0;
+}
 
 bool AppDelegate::applicationDidFinishLaunching() {
     // initialize director

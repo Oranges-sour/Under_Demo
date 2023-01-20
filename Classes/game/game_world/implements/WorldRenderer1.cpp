@@ -57,7 +57,7 @@ void GameWorldRenderer1::update(const Vec2& left_bottom, const Size& size,
 
             for (auto& it : lig) {
                 auto& li = it.second;
-                int k = li.type;
+                int k = li.type - 1;  // type从1开始，对应下标要减一
 
                 if (cnt[k] >= 50) {
                     continue;

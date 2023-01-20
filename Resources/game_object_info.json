@@ -1,0 +1,48 @@
+{
+    "objects": [
+        {
+            "name": "bullet_1_particle",
+            "@info": "给Particle1 使用的参数",
+            "info": {
+                "sprite_frame": "enemy_bullet_1_par.png",
+                "live_frame": 3,
+                "move_speed": 60,
+                "rotate_speed": 40,
+                "light_decrease_rate": 0.8,
+                "world_lights": [
+                    {
+                        "key": "main_light",
+                        "type": 2,
+                        "r": 194,
+                        "g": 120,
+                        "b": 194,
+                        "radius": 140,
+                        "opacity": 1.0
+                    }
+                ]
+            }
+        },
+        {
+            "name": "bullet_1",
+            "info": {
+                "sprite_frame": "enemy_bullet_1.png",
+                "physics_shape": "enemy_bullet_1",
+                "move_speed": 60,
+                "rotate_speed": 40,
+                "dead_particle_cnt": 5,
+                "dead_particle_name": "bullet_1_particle",
+                "world_lights": [
+                    {
+                        "key": "main_light",
+                        "type": 2,
+                        "r": 194,
+                        "g": 120,
+                        "b": 194,
+                        "radius": 140,
+                        "opacity": 1.0
+                    }
+                ]
+            }
+        }
+    ]
+}

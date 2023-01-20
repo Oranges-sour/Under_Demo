@@ -4,15 +4,15 @@ void Bullet1AI::updateLogic(GameObject* ob) {
     {
         json event;
         event["type"] = "move";
-        event["x"] = xx * 40;
-        event["y"] = yy * 40;
+        event["x"] = direction.x * move_speed;
+        event["y"] = direction.y * move_speed;
 
         ob->pushEvent(event);
     }
     {
         json event;
         event["type"] = "rotate";
-        event["r"] = 40;
+        event["r"] = rotate_speed;
 
         ob->pushEvent(event);
     }
