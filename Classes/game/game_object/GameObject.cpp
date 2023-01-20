@@ -64,6 +64,12 @@ void GameObject::main_update() {
     this->runAction(&_actionEase);
 }
 
+void GameObject::main_update_in_screen_rect() {
+    for (auto& it : _componets) {
+        it->updateLogicInScreenRect(this);
+    }
+}
+
 void PhysicsComponent::updateLogic(GameObject* ob) {
     posOld = posNow;
     rotationOld = rotationNow;

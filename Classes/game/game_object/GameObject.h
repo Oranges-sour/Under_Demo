@@ -96,6 +96,9 @@ public:
 
     void main_update();
 
+    // 在屏幕显示区域内会调用
+    void main_update_in_screen_rect();
+
     void setGameObjectType(GameObjectType new_type) {
         _game_object_type = new_type;
     }
@@ -126,6 +129,7 @@ private:
 
 class GameComponent {
 public:
+    virtual void updateLogicInScreenRect(GameObject* ob) = 0;
     virtual void updateLogic(GameObject* ob) = 0;
     virtual void updateDraw(GameObject* ob, float rate) = 0;
     virtual void receiveGameAct(GameObject* ob, const GameAct& event) = 0;
@@ -136,6 +140,7 @@ class PhysicsComponent : public GameComponent {
 public:
     PhysicsComponent()
         : scaleNow(Vec2(1.0, 1.0)), opacityNow(1.0), rotationNow(0.0) {}
+    virtual void updateLogicInScreenRect(GameObject* ob) override {}
     virtual void updateLogic(GameObject* ob) override;
     virtual void updateDraw(GameObject* ob, float rate) override;
     virtual void receiveGameAct(GameObject* ob, const GameAct& event) override {

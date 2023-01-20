@@ -94,9 +94,14 @@ void GameWorld::main_update_logic() {
         }
     }
 
+    // 全图更新
     quad_tree.visit_in_rect(
-        {-1, 500}, {500, -1},
+        {1, _gameMap->get().h}, {_gameMap->get().w, 1},
         [&](const iVec2& cor, GameObject* ob) { ob->main_update(); });
+
+    // 摄像机区域更新
+    const auto screenCenter = Vec2(1920, 1080) / 2;
+    mina_update_in_screen_rect(camera_pos - screenCenter, Size(1920, 1080));
 
     this->updateGameObjectPosition();
 
@@ -195,4 +200,19 @@ void GameWorld::updateGameObjectPosition() {
 
         node = quad_tree.insert({it.second}, ob);
     }
+}
+
+void GameWorld::mina_update_in_screen_rect(const Vec2& left_bottom,
+                                           const Size& size) {
+    auto ilb = _gameMap->getMapHelper()->convert_in_map(left_bottom);
+
+    auto isize =
+        _gameMap->getMapHelper()->convert_in_map(Vec2(size.width, size.height));
+
+    // 边缘扩大一点
+    quad_tree.visit_in_rect({ilb.x - 5, ilb.y + isize.y + 5},
+                            {ilb.x + isize.x + 5, ilb.y - 5},
+                            [&](const iVec2& coor, GameObject* object) {
+                                object->main_update_in_screen_rect();
+                            });
 }

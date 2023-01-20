@@ -106,6 +106,7 @@ public:
         this->uid = uid;
     }
 
+    virtual void updateLogicInScreenRect(GameObject* ob) override {}
     virtual void updateLogic(GameObject* ob);
     virtual void updateDraw(GameObject* ob, float rate) {}
     virtual void receiveEvent(GameObject* ob, const json& event);

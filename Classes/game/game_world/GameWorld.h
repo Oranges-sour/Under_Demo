@@ -79,6 +79,8 @@ public:
     shared_ptr<Random> getGlobalRandom() { return this->_globalRandom; }
 
 private:
+    void mina_update_in_screen_rect(const Vec2& left_bottom, const Size& size);
+
     void processContact(PhysicsContact& conatct);
     void updateGameObjectPosition();
 

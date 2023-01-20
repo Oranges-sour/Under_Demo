@@ -6,6 +6,8 @@
 class Player1AI : public GameComponent {
 public:
     Player1AI() {}
+
+    virtual void updateLogicInScreenRect(GameObject* ob) override {}
     virtual void updateLogic(GameObject* ob) override;
     virtual void updateDraw(GameObject* ob, float rate) override {}
     virtual void receiveGameAct(GameObject* ob, const GameAct& event) override;
