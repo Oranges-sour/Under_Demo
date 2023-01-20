@@ -80,9 +80,9 @@
         <key>maxTextureSize</key>
         <QSize>
             <key>width</key>
-            <int>2048</int>
+            <int>4096</int>
             <key>height</key>
-            <int>2048</int>
+            <int>4096</int>
         </QSize>
         <key>fixedTextureSize</key>
         <QSize>
@@ -161,13 +161,13 @@
             <key>scaleMode</key>
             <enum type="ScaleMode">Smooth</enum>
             <key>extrude</key>
-            <uint>1</uint>
+            <uint>2</uint>
             <key>trimThreshold</key>
             <uint>1</uint>
             <key>trimMargin</key>
             <uint>1</uint>
             <key>trimMode</key>
-            <enum type="SpriteSettings::TrimMode">None</enum>
+            <enum type="SpriteSettings::TrimMode">Trim</enum>
             <key>tracerTolerance</key>
             <int>200</int>
             <key>heuristicMask</key>
@@ -195,6 +195,7 @@
                 <false/>
             </struct>
             <key type="filename">Res/enemy_bullet_1.png</key>
+            <key type="filename">Res/game_map_decoration_1.png</key>
             <key type="filename">Res/game_map_tile_cover0.png</key>
             <key type="filename">Res/game_map_tile_cover1.png</key>
             <key type="filename">Res/game_map_tile_cover2.png</key>
@@ -418,6 +419,28 @@
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
+            <key type="filename">Res/man_jump_1.png</key>
+            <key type="filename">Res/man_jump_2.png</key>
+            <key type="filename">Res/man_jump_3.png</key>
+            <key type="filename">Res/man_run_1.png</key>
+            <key type="filename">Res/man_run_2.png</key>
+            <key type="filename">Res/man_run_3.png</key>
+            <key type="filename">Res/man_run_4.png</key>
+            <key type="filename">Res/man_stay.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>40,68,80,135</rect>
+                <key>scale9Paddings</key>
+                <rect>40,68,80,135</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
         </map>
         <key>fileLists</key>
         <map type="SpriteSheetMap">
@@ -454,6 +477,15 @@
                     <filename>Res/light_1.png</filename>
                     <filename>Res/light_2.png</filename>
                     <filename>Res/light_3.png</filename>
+                    <filename>Res/game_map_decoration_1.png</filename>
+                    <filename>Res/man_stay.png</filename>
+                    <filename>Res/man_run_1.png</filename>
+                    <filename>Res/man_run_2.png</filename>
+                    <filename>Res/man_run_3.png</filename>
+                    <filename>Res/man_run_4.png</filename>
+                    <filename>Res/man_jump_1.png</filename>
+                    <filename>Res/man_jump_2.png</filename>
+                    <filename>Res/man_jump_3.png</filename>
                 </array>
             </struct>
         </map>
