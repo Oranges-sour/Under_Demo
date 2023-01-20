@@ -7,6 +7,18 @@ void Player1Physics::receiveEvent(GameObject* ob, const json& event) {
     if (type == "move") {
         float x = event["x"];
 
+        if (abs(x) > 1) {
+            run = true;
+        } else {
+            run = false;
+        }
+
+        if (x < 0) {
+            scaleNow.x = -1;
+        } else if (x > 0) {
+            scaleNow.x = 1;
+        }
+
         posNow += Vec2(x, 0);
 
         fall_speed_y -= 6;
@@ -28,37 +40,20 @@ void Player1Physics::receiveEvent(GameObject* ob, const json& event) {
 }
 
 void Player1Physics::wall_contact_check(GameObject* ob) {
-    const Size s = ob->getContentSize();
-    // const Size s(50, 250);
     auto speed = posNow - posOld;
 
     auto pos = posOld;
 
-    Vec2 pushVec(0, 0);
-
-    iVec2 ipushVec(0, 0);
-
     auto maph = ob->get_game_world()->getGameMap()->getMapHelper();
     auto& map = ob->get_game_world()->getGameMap()->get();
 
-    auto p0 = pos - Vec2(s / 2);
-    auto p1 = pos + Vec2(s / 2);
+    auto p0 = pos - Vec2(30, 135);
+    auto p1 = pos + Vec2(30, -15);
 
     // 左下
     auto ip0 = maph->convert_in_map(p0);
     // 右上
     auto ip1 = maph->convert_in_map(p1);
-
-    // 重新确定位置
-    const auto re_check = [&]() {
-        pos += pushVec;
-        pushVec = Vec2(0, 0);
-
-        p0 = pos - Vec2(s / 2);
-        p1 = pos + Vec2(s / 2);
-        ip0 = maph->convert_in_map(p0);
-        ip1 = maph->convert_in_map(p1);
-    };
 
     if (speed.x > 0) {
         // 右侧
@@ -113,5 +108,16 @@ void Player1Physics::wall_contact_check(GameObject* ob) {
 }
 
 void Player1Physics::updateLogic(GameObject* ob) {
+    const vector<string> vec{"man_run_1.png", "man_run_2.png", "man_run_3.png",
+                       "man_run_4.png"};
+
+    cnt += 1;
+
+    if (run) {
+        ob->setSpriteFrame(vec[cnt % 4]);
+    } else {
+        ob->setSpriteFrame("man_stay.png");
+    }
+
     PhysicsComponent::updateLogic(ob);
 }

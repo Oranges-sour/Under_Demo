@@ -8,6 +8,7 @@ void Player1AI::updateLogic(GameObject* ob) {
     event["x"] = xx;
 
     ob->pushEvent(event);
+
 }
 
 void Player1AI::receiveEvent(GameObject* ob, const json& event) {}

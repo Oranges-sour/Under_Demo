@@ -12,7 +12,7 @@
                 "world_lights": [
                     {
                         "key": "main_light",
-                        "type": 2,
+                        "type": 3,
                         "r": 194,
                         "g": 120,
                         "b": 194,

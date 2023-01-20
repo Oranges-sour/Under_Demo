@@ -11,7 +11,7 @@ GameObject* Player1::create(GameWorld* world, const Vec2& start_pos,
                             const string& uid) {
     auto ob = world->newObject(layer_player, start_pos);
 
-    ob->initWithSpriteFrameName("enemy_0.png");
+    ob->initWithSpriteFrameName("man_stay.png");
     ob->setGameObjectType(object_type_player);
     // Íæ¼ÒÓÐÌØÊâuid
     ob->setUID(uid);

@@ -5,7 +5,7 @@
 
 class Player1Physics : public PhysicsComponent {
 public:
-    Player1Physics(const Vec2& pos) { this->posNow = pos; }
+    Player1Physics(const Vec2& pos) : run(false) { this->posNow = pos; }
 
     virtual void receiveGameAct(GameObject* ob, const GameAct& act) override {}
     virtual void receiveEvent(GameObject* ob, const json& event) override;
@@ -13,6 +13,9 @@ public:
 
 private:
     float fall_speed_y = 0;
+
+    int cnt = 0;
+    bool run;
 
     void wall_contact_check(GameObject* ob);
 };
