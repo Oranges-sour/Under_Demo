@@ -25,6 +25,8 @@
 
 cmake_minimum_required(VERSION 3.6)
 
+add_definitions(-std=c++14)
+
 set(APP_NAME Under_Demo)
 
 project(${APP_NAME})
@@ -49,45 +51,86 @@ endif()
 # add cross-platforms source files and header files 
 list(APPEND GAME_SOURCE
      Classes/AppDelegate.cpp
-     Classes/HelloWorldScene.cpp
-     Classes/Connection.cpp
-     Classes/ConnectionStatue.cpp
-     Classes/GameComponent.cpp
-     Classes/GameFrame.cpp
-     Classes/GameMap.cpp
-     Classes/GameObject.cpp
-     Classes/GameScene.cpp
-     Classes/GameWorld.cpp
-     Classes/Joystick.cpp
-     Classes/MyMath.cpp
-     Classes/PhysicsShapeCache.cpp
-     Classes/Random.cpp
-     Classes/SpritePool.cpp
-     Classes/TouchesPool.cpp
+     Classes/game/game_frame/GameFrame.cpp
+     Classes/game/game_map/GameMap.cpp
+     Classes/game/game_map/implements/MapDecorationCreator1.cpp
+     Classes/game/game_map/implements/MapGenerator1.cpp
+     Classes/game/game_map/implements/MapGenerator2.cpp
+     Classes/game/game_map/implements/MapHelper1.cpp
+     Classes/game/game_map/implements/MapPhysics1.cpp
+     Classes/game/game_map/implements/MapPreRenderer1.cpp
+     Classes/game/game_object/GameObject.cpp
+     Classes/game/game_object/implements/bullet/bullet_1/Bullet1.cpp
+     Classes/game/game_object/implements/bullet/bullet_1/Bullet1AI.cpp
+     Classes/game/game_object/implements/bullet/bullet_1/Bullet1Physics.cpp
+     Classes/game/game_object/implements/mpa_decoration/decoration_1/Decoration1.cpp
+     Classes/game/game_object/implements/mpa_decoration/decoration_1/Decoration1AI.cpp
+     Classes/game/game_object/implements/mpa_decoration/decoration_2/Decoration2.cpp
+     Classes/game/game_object/implements/mpa_decoration/decoration_2/Decoration2AI.cpp
+     Classes/game/game_object/implements/particle/particle_1/Particle1.cpp
+     Classes/game/game_object/implements/particle/particle_1/Particle1AI.cpp
+     Classes/game/game_object/implements/particle/particle_1/Particle1Physics.cpp
+     Classes/game/game_object/implements/physics_component/PhysicsComponent.cpp
+     Classes/game/game_object/implements/player/player_1/Player1.cpp
+     Classes/game/game_object/implements/player/player_1/Player1AI.cpp
+     Classes/game/game_object/implements/player/player_1/Player1Physics.cpp
+     Classes/game/game_world/GameWorld.cpp
+     Classes/game/game_world/implements/WorldRenderer1.cpp
+     Classes/scene/GameScene.cpp
+     Classes/scene/StartScene.cpp
+     Classes/utility/GameObjectInfo.cpp
+     Classes/utility/math/MyMath.cpp
+     Classes/utility/math/Random.cpp
+     Classes/utility/PhysicsShapeCache.cpp
+     Classes/utility/SpritePool.cpp
+     Classes/utility/touch/Joystick.cpp
+     Classes/utility/touch/TouchesPool.cpp
+     Classes/web/Connection.cpp
+     Classes/web/ConnectionStatue.cpp
      )
 list(APPEND GAME_HEADER
      Classes/AppDelegate.h
-     Classes/HelloWorldScene.h
-     Classes/addon_json.hpp
-     Classes/Connection.h
-     Classes/ConnectionStatue.h
-     Classes/GameComponent.h
-     Classes/GameFrame.h
-     Classes/GameMap.h
-     Classes/GameObject.h
-     Classes/GameScene.h
-     Classes/GameWorld.h
-     Classes/iVec2.h
-     Classes/iVec2.inl
-     Classes/Joystick.h
-     Classes/json.h
-     Classes/MyMath.h
-     Classes/PhysicsShapeCache.h
-     Classes/QuadTree.h
-     Classes/Random.h
-     Classes/SpritePool.h
-     Classes/Tools.h
-     Classes/TouchesPool.h
+     Classes/game/game_frame/GameFrame.h
+     Classes/game/game_map/GameMap.h
+     Classes/game/game_map/implements/MapDecorationCreator1.h
+     Classes/game/game_map/implements/MapGenerator1.h
+     Classes/game/game_map/implements/MapGenerator2.h
+     Classes/game/game_map/implements/MapHelper1.h
+     Classes/game/game_map/implements/MapPhysics1.h
+     Classes/game/game_map/implements/MapPreRenderer1.h
+     Classes/game/game_object/GameObject.h
+     Classes/game/game_object/implements/bullet/bullet_1/Bullet1.h
+     Classes/game/game_object/implements/bullet/bullet_1/Bullet1AI.h
+     Classes/game/game_object/implements/bullet/bullet_1/Bullet1Physics.h
+     Classes/game/game_object/implements/mpa_decoration/decoration_1/Decoration1.h
+     Classes/game/game_object/implements/mpa_decoration/decoration_1/Decoration1AI.h
+     Classes/game/game_object/implements/mpa_decoration/decoration_2/Decoration2.h
+     Classes/game/game_object/implements/mpa_decoration/decoration_2/Decoration2AI.h
+     Classes/game/game_object/implements/particle/particle_1/Particle1.h
+     Classes/game/game_object/implements/particle/particle_1/Particle1AI.h
+     Classes/game/game_object/implements/particle/particle_1/Particle1Physics.h
+     Classes/game/game_object/implements/physics_component/PhysicsComponent.h
+     Classes/game/game_object/implements/player/player_1/Player1.h
+     Classes/game/game_object/implements/player/player_1/Player1AI.h
+     Classes/game/game_object/implements/player/player_1/Player1Physics.h
+     Classes/game/game_world/GameWorld.h
+     Classes/game/game_world/implements/WorldRenderer1.h
+     Classes/scene/GameScene.h
+     Classes/scene/StartScene.h
+     Classes/utility/GameObjectInfo.h
+     Classes/utility/json/addon_json.hpp
+     Classes/utility/json/json.h
+     Classes/utility/math/iVec2.h
+     Classes/utility/math/MyMath.h
+     Classes/utility/math/Random.h
+     Classes/utility/PhysicsShapeCache.h
+     Classes/utility/QuadTree.h
+     Classes/utility/SpritePool.h
+     Classes/utility/Tools.h
+     Classes/utility/touch/Joystick.h
+     Classes/utility/touch/TouchesPool.h
+     Classes/web/Connection.h
+     Classes/web/ConnectionStatue.h
      )
 
 if(ANDROID)
