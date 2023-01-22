@@ -79,6 +79,9 @@
     <Filter Include="src\game\game_object\implements\map_decoration\decoration_2">
       <UniqueIdentifier>{219d3120-e3d1-4747-8ee3-ede3723f3b33}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\game\game_object\implements\physics_component">
+      <UniqueIdentifier>{b63f5a3e-e82b-46bc-a737-4016dd765e4c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -191,6 +194,9 @@
     </ClCompile>
     <ClCompile Include="..\Classes\utility\GameObjectInfo.cpp">
       <Filter>src\utility</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\game\game_object\implements\physics_component\PhysicsComponent.cpp">
+      <Filter>src\game\game_object\implements\physics_component</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -319,6 +325,9 @@
     </ClInclude>
     <ClInclude Include="..\Classes\utility\GameObjectInfo.h">
       <Filter>src\utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\game\game_object\implements\physics_component\PhysicsComponent.h">
+      <Filter>src\game\game_object\implements\physics_component</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

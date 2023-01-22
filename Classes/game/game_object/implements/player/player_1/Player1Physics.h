@@ -12,12 +12,15 @@ public:
     virtual void updateLogic(GameObject* ob) override;
 
 private:
-    float fall_speed_y = 0;
 
     int cnt = 0;
     bool run;
-
-    void wall_contact_check(GameObject* ob);
 };
+
+class Player1FrameAction {
+public:
+    virtual void play() = 0;
+};
+
 
 #endif

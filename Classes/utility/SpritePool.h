@@ -4,7 +4,7 @@
 
 #include <vector>
 
-#include "GameObject.h"
+#include "game/game_object/GameObject.h"
 using namespace std;
 
 class SpritePool {

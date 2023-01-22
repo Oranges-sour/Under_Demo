@@ -18,6 +18,7 @@ public:
     virtual void updateDraw(GameObject* ob, float rate) override {}
     virtual void receiveGameAct(GameObject* ob, const GameAct& event){};
     virtual void receiveEvent(GameObject* ob, const json& event) override {}
+    virtual void updateAfterEvent(GameObject* ob) override {}
 
 private:
     Vec2 direction;
