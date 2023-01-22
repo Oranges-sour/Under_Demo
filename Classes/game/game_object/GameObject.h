@@ -134,32 +134,9 @@ public:
     virtual void updateDraw(GameObject* ob, float rate) = 0;
     virtual void receiveGameAct(GameObject* ob, const GameAct& event) = 0;
     virtual void receiveEvent(GameObject* ob, const json& event) = 0;
+    virtual void updateAfterEvent(GameObject* ob) = 0;
 };
 
-class PhysicsComponent : public GameComponent {
-public:
-    PhysicsComponent()
-        : scaleNow(Vec2(1.0, 1.0)), opacityNow(1.0), rotationNow(0.0) {}
-    virtual void updateLogicInScreenRect(GameObject* ob) override {}
-    virtual void updateLogic(GameObject* ob) override;
-    virtual void updateDraw(GameObject* ob, float rate) override;
-    virtual void receiveGameAct(GameObject* ob, const GameAct& event) override {
-    }
-    virtual void receiveEvent(GameObject* ob, const json& event) {}
-
-protected:
-    ActionTween action_tween;
-    EaseInOut action_ease;
-
-    Vec2 scaleNow;
-    float rotationNow;
-    float opacityNow;
-    Vec2 posNow;
-
-    Vec2 scaleOld;
-    float rotationOld;
-    float opacityOld;
-    Vec2 posOld;
-};
+#include "game/game_object/implements/physics_component/PhysicsComponent.h"
 
 #endif

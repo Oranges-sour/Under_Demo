@@ -1,10 +1,9 @@
 #include "Player1.h"
 
-#include "game/game_object/GameObject.h"
-#include "game/game_world/GameWorld.h"
-
 #include "Player1AI.h"
 #include "Player1Physics.h"
+#include "game/game_object/GameObject.h"
+#include "game/game_world/GameWorld.h"
 #include "utility/PhysicsShapeCache.h"
 
 GameObject* Player1::create(GameWorld* world, const Vec2& start_pos,
@@ -18,6 +17,17 @@ GameObject* Player1::create(GameWorld* world, const Vec2& start_pos,
 
     auto ai = make_shared<Player1AI>();
     auto phy = make_shared<Player1Physics>(start_pos);
+
+    auto speed_comp = make_shared<PhysicsComponent::SpeedComponent>();
+    auto gravity_comp =
+        make_shared<PhysicsComponent::GravityComponent>(6, speed_comp);
+    auto wall_contact_comp =
+        make_shared<PhysicsComponent::WallContactComponent>(
+            Vec2(30, 135), Vec2(30, -15), speed_comp);
+
+    phy->setGravityComponent(gravity_comp);
+    phy->setSpeedComponent(speed_comp);
+    phy->setWallContactComponent(wall_contact_comp);
 
     ob->addGameComponent(phy);
     ob->addGameComponent(ai);

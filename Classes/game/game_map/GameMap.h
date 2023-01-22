@@ -111,6 +111,8 @@ public:
     virtual void updateDraw(GameObject* ob, float rate) {}
     virtual void receiveEvent(GameObject* ob, const json& event);
     virtual void receiveGameAct(GameObject* ob, const GameAct& act) {}
+    virtual void updateAfterEvent(GameObject* ob) override {}
+
 
 private:
     string uid;

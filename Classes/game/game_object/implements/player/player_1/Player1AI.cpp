@@ -2,14 +2,7 @@
 
 #include "game/game_object/implements/bullet/bullet_1/Bullet1.h"
 
-void Player1AI::updateLogic(GameObject* ob) {
-    json event;
-    event["type"] = "move";
-    event["x"] = xx;
-
-    ob->pushEvent(event);
-
-}
+void Player1AI::updateLogic(GameObject* ob) {}
 
 void Player1AI::receiveEvent(GameObject* ob, const json& event) {}
 
@@ -18,18 +11,23 @@ void Player1AI::receiveGameAct(GameObject* ob, const GameAct& event) {
 
     if (event.type == act_move_start) {
         if (ob->getUID() == event.uid) {
-            xx += event.param1 * SPEED;
+            json ee;
+            ee["type"] = "move";
+            ee["x"] = event.param1 * SPEED;
+            ob->pushEvent(ee);
         }
     }
     if (event.type == act_move_stop) {
         if (ob->getUID() == event.uid) {
-            xx -= event.param1 * SPEED;
+            json ee;
+            ee["type"] = "move";
+            ee["x"] = -event.param1 * SPEED;
+            ob->pushEvent(ee);
         }
     }
     if (event.type == act_jump) {
         json event;
         event["type"] = "jump";
-
         ob->pushEvent(event);
     }
     if (event.type == act_attack) {

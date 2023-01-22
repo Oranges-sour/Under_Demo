@@ -55,6 +55,9 @@ void GameObject::main_update() {
             it->receiveEvent(this, front);
         }
     }
+    for (auto& it : _componets) {
+        it->updateAfterEvent(this);
+    }
 
     this->stopAction(&_actionEase);
 
@@ -68,26 +71,4 @@ void GameObject::main_update_in_screen_rect() {
     for (auto& it : _componets) {
         it->updateLogicInScreenRect(this);
     }
-}
-
-void PhysicsComponent::updateLogic(GameObject* ob) {
-    posOld = posNow;
-    rotationOld = rotationNow;
-    opacityOld = opacityNow;
-    scaleOld = scaleNow;
-}
-
-void PhysicsComponent::updateDraw(GameObject* ob, float rate) {
-    auto deltaPos = posNow - posOld;
-    ob->setPosition(posOld + deltaPos * rate);
-
-    auto deltaRotation = rotationNow - rotationOld;
-    ob->setRotation(rotationOld + deltaRotation * rate);
-
-    auto deltaOpacity = opacityNow - opacityOld;
-    ob->setOpacity((opacityOld + deltaOpacity * rate) * 255);
-
-    auto deltaScale = scaleNow - scaleOld;
-    ob->setScaleX(scaleOld.x + deltaScale.x * rate);
-    ob->setScaleY(scaleOld.y + deltaScale.y * rate);
 }
