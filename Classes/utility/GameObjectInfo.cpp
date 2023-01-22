@@ -33,7 +33,7 @@ void GameObjectInfo::load(const string& file) {
 const json& GameObjectInfo::get(const string& key) {
     auto iter = _map.find(key);
     if (iter == _map.end()) {
-        return json();
+        return BAD_JSON;
     }
     return iter->second;
 }

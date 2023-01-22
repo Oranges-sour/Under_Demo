@@ -1,6 +1,5 @@
 #include "scene/StartScene.h"
 
-#include "game/game_object/GameComponent.h"
 #include "game/game_frame/GameFrame.h"
 #include "game/game_object/GameObject.h"
 #include "scene/GameScene.h"

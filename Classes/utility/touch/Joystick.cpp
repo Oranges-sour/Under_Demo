@@ -1,6 +1,6 @@
 #include "Joystick.h"
 
-#include "MyMath.h"
+#include "utility/math/MyMath.h"
 #include "TouchesPool.h"
 
 Joystick* Joystick::create(const std::string& backGround,
