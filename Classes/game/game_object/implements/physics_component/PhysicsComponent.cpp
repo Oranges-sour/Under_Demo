@@ -151,6 +151,9 @@ void PhysicsComponent::GravityComponent::updateAfterEvent(
 
 void PhysicsComponent::SpeedComponent::updateAfterEvent(GameObject* ob,
                                                         PhysicsComponent* phy) {
+    speed.x = max(min(speed.x, 60.0f), -60.0f);
+    speed.y = max(min(speed.y, 60.0f), -60.0f);
+
     phy->posNow += speed;
 }
 

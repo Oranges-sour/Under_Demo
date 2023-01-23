@@ -1,5 +1,7 @@
 #include "scene/StartScene.h"
 
+#include <sstream>
+
 #include "RefLineLayer.h"
 #include "SimpleAudioEngine.h"
 #include "game/game_frame/GameFrame.h"
@@ -104,6 +106,7 @@ bool Lobby_Layer::init() {
 
     auto sp = Sprite::create("blue_bk.png");
     sp->setPosition(visibleSize / 2);
+    sp->setScaleX(visibleSize.width / 1920);
     this->addChild(sp);
 
     this->not_in_game = new Node();
@@ -119,27 +122,33 @@ bool Lobby_Layer::init() {
         not_in_game->addChild(menu);
 
         auto text =
-            ui::TextField::create("input description", "font_normal.otf", 32);
+            ui::TextField::create("Input Description", "font_normal.otf", 48);
         text->setMaxLengthEnabled(true);
         text->setMaxLength(10);
-        text->setPosition(Vec2(500, visibleSize.height - 200));
+        text->setPosition(Vec2(800, visibleSize.height - 200));
         not_in_game->addChild(text);
 
-        auto l = Label::createWithTTF("create game", "font_normal.otf", 32);
+        auto l = Label::createWithTTF("Create Game", "font_normal.otf", 48,
+                                      Size(500, 200), TextHAlignment::CENTER,
+                                      TextVAlignment::CENTER);
+
         auto button = MenuItemLabel::create(l, [&, text](Ref*) {
+            if (text->getString() == "") {
+                return;
+            }
             json event;
             event["type"] = "create_game";
             event["info"] = text->getString();
             Connection::instance()->push_statueEvent(event);
         });
 
-        button->setPosition(400, visibleSize.height - 100);
+        button->setPosition(800, visibleSize.height - 100);
         menu->addChild(button);
 
         for (int i = 0; i < 6; ++i) {
             auto info = GameInfo::create();
             not_in_game->addChild(info);
-            info->setPosition(200, visibleSize.height - (i * 80 + 100));
+            info->setPosition(300, visibleSize.height - (i * 120 + 100));
 
             info->info->setString("--N/A--");
 
@@ -154,20 +163,21 @@ bool Lobby_Layer::init() {
         in_game->addChild(menu);
 
         this->my_uid = Label::createWithTTF("", "font_normal.otf", 48);
-        my_uid->setPosition(400, visibleSize.height - 200);
+        my_uid->setPosition(800, visibleSize.height - 200);
         in_game->addChild(my_uid);
 
         auto text =
-            ui::TextField::create("input message", "font_normal.otf", 32);
+            ui::TextField::create("input message", "font_normal.otf", 48);
         text->setMaxLengthEnabled(true);
-        text->setMaxLength(20);
-        text->setPosition(Vec2(500, visibleSize.height - 400));
+        text->setMaxLength(10);
+        text->setPosition(Vec2(800, visibleSize.height - 400));
         in_game->addChild(text);
 
         // 发送聊天消息
         {
-            auto l =
-                Label::createWithTTF("send message", "font_normal.otf", 32);
+            auto l = Label::createWithTTF(
+                "send message", "font_normal.otf", 48, Size(450, 100),
+                TextHAlignment::CENTER, TextVAlignment::CENTER);
             auto button = MenuItemLabel::create(l, [&, text](Ref*) {
                 auto str = text->getString();
                 if (str == "") {
@@ -182,13 +192,15 @@ bool Lobby_Layer::init() {
                 event["info_2"] = "";
                 Connection::instance()->push_statueEvent(event);
             });
-            button->setPosition(Vec2(400, visibleSize.height - 500));
+            button->setPosition(Vec2(800, visibleSize.height - 500));
             menu->addChild(button);
         }
 
         // 退出当前房间
         {
-            auto l = Label::createWithTTF("quit game", "font_normal.otf", 32);
+            auto l = Label::createWithTTF(
+                "quit game", "font_normal.otf", 48, Size(450, 100),
+                TextHAlignment::CENTER, TextVAlignment::CENTER);
             auto button = MenuItemLabel::create(l, [&, text](Ref*) {
                 json event;
                 event["type"] = "quit_game";
@@ -196,13 +208,15 @@ bool Lobby_Layer::init() {
                 event["info_2"] = "";
                 Connection::instance()->push_statueEvent(event);
             });
-            button->setPosition(Vec2(400, visibleSize.height - 600));
+            button->setPosition(Vec2(800, visibleSize.height - 600));
             menu->addChild(button);
         }
 
         // 开始游戏
         {
-            auto l = Label::createWithTTF("start game", "font_normal.otf", 32);
+            auto l = Label::createWithTTF(
+                "Start Game(Only Host)", "font_normal.otf", 48, Size(650, 100),
+                TextHAlignment::CENTER, TextVAlignment::CENTER);
             auto button = MenuItemLabel::create(l, [&, text](Ref*) {
                 if (!this->is_host) {
                     return;
@@ -212,14 +226,14 @@ bool Lobby_Layer::init() {
                 event["info_1"] = to_string(1004);  // seed
                 Connection::instance()->push_statueEvent(event);
             });
-            button->setPosition(Vec2(400, visibleSize.height - 700));
+            button->setPosition(Vec2(800, visibleSize.height - 700));
             menu->addChild(button);
         }
 
         for (int i = 0; i < 6; ++i) {
             auto info = Label::createWithTTF("", "font_normal.otf", 32);
             in_game->addChild(info);
-            info->setPosition(200, visibleSize.height - (i * 80 + 100));
+            info->setPosition(200, visibleSize.height - (i * 90 + 100));
 
             info->setString("N/A>>N/A");
 
@@ -259,7 +273,11 @@ void Lobby_Layer::notice(const json& event) {
     if (type == "create_game_result" || type == "join_game_result") {
         string statue = event["statue"];
         if (statue == "success") {
-            this->my_uid->setString(Connection::instance()->get_uid());
+            stringstream ss;
+            ss << "UID: ";
+            ss << Connection::instance()->get_uid();            
+
+            this->my_uid->setString(ss.str());
             this->is_in_game = true;
             if (type == "create_game_result") {
                 this->is_host = true;
@@ -311,10 +329,12 @@ bool Lobby_Layer::GameInfo::init() {
     this->addChild(menu);
 
     this->info = Label::createWithTTF("", "font_normal.otf", 32);
-    info->setPosition(0, 32);
+    info->setPosition(0, 42);
     this->addChild(info);
 
-    auto b = Label::createWithTTF("join", "font_normal.otf", 32);
+    auto b =
+        Label::createWithTTF("join", "font_normal.otf", 40, Size(200, 100),
+                             TextHAlignment::CENTER, TextVAlignment::CENTER);
     this->button = MenuItemLabel::create(b, [&](Ref* node) {
         if (uid == "bad_id") {
             return;
