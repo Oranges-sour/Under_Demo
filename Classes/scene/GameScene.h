@@ -7,10 +7,10 @@ using namespace std;
 #include "cocos2d.h"
 using namespace cocos2d;
 
-#include "web/Connection.h"
-#include "game/game_object/GameObject.h"
 #include "game/game_frame/GameFrame.h"
+#include "game/game_object/GameObject.h"
 #include "utility/math/Random.h"
+#include "web/Connection.h"
 
 class Joystick;
 class GameWorld;
@@ -48,6 +48,15 @@ public:
 private:
     void keyDown(EventKeyboard::KeyCode key);
     void keyUp(EventKeyboard::KeyCode key);
+
+private:
+    void try_ping();
+
+    int ping_ms = 1000;
+    list<int> ping_que;
+    bool ping_finish = true;
+    steady_clock::time_point ping_time0;
+    steady_clock::time_point ping_time1;
 
 private:
     unsigned int seed;
@@ -90,17 +99,5 @@ private:
     Sprite* bk = nullptr;
     Sprite* spAct0 = nullptr;
 };
-
-
-
-
-
-
-
-
-
-
-
-
 
 #endif

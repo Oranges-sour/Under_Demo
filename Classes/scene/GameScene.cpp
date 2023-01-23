@@ -22,6 +22,8 @@ bool GameScene::init() {
         return true;
     }
 
+    auto vs = Director::getInstance()->getVisibleSize();
+
     auto phyw = this->getPhysicsWorld();
     phyw->setGravity(Vec2::ZERO);
     // phyw->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
@@ -32,6 +34,57 @@ bool GameScene::init() {
 
     this->schedule([&](float dt) { Connection::instance()->update(dt * 1000); },
                    "web_upd");
+
+    this->schedule([&](float dt) { try_ping(); }, 0.1f, "try_ping");
+
+    auto ping_1 =
+        Label::createWithTTF("", "font_normal.otf", 48, Size(300, 80),
+                             TextHAlignment::RIGHT, TextVAlignment::TOP);
+    ping_1->setAnchorPoint(Vec2(1, 1));
+    ping_1->setPosition(vs.width - 100, vs.height - 50);
+    this->addChild(ping_1, 2);
+
+    auto ping_2 =
+        Label::createWithTTF("", "font_normal.otf", 48, Size(500, 80),
+                             TextHAlignment::RIGHT, TextVAlignment::TOP);
+    ping_2->setAnchorPoint(Vec2(1, 1));
+    ping_2->setPosition(vs.width - 100, vs.height - 120);
+    this->addChild(ping_2, 2);
+
+    this->schedule(
+        [&, ping_1, ping_2](float dt) {
+            ping_que.push_back(ping_ms);
+            while (ping_que.size() > 10) {
+                ping_que.pop_front();
+            }
+
+            {
+                stringstream ss;
+                ss << "ping: ";
+                ss << ping_ms;
+                ss << "ms";
+
+                ping_1->setString(ss.str());
+            }
+            int cnt = 0;
+            int ping_sum = 0;
+            for (auto& it : ping_que) {
+                ping_sum += it;
+                cnt += 1;
+            }
+            if (cnt == 0) {
+                return;
+            }
+            {
+                stringstream ss;
+                ss << "ping avg: ";
+                ss << ping_sum / cnt;
+                ss << "ms";
+
+                ping_2->setString(ss.str());
+            }
+        },
+        0.1f, "ping_l");
 
     auto listener = make_shared<ConnectionEventListener>(
         [&](const json& event) { notice(event); });
@@ -284,6 +337,15 @@ void GameScene::notice(const json& event) {
             return;
         }
     }
+
+    if (type == "ping") {
+        ping_time1 = steady_clock::now();
+        ping_finish = true;
+
+        ping_ms =
+            duration_cast<duration<float>>(ping_time1 - ping_time0).count() *
+            1000 / 2;
+    }
 }
 
 void GameScene::keyDown(EventKeyboard::KeyCode key) {
@@ -332,6 +394,18 @@ void GameScene::keyUp(EventKeyboard::KeyCode key) {
     }
 
     _frame_manager->pushGameAct(act);
+}
+
+void GameScene::try_ping() {
+    if (!ping_finish) {
+        return;
+    }
+
+    json e;
+    e["type"] = "ping";
+    Connection::instance()->push_statueEvent(e);
+    ping_time0 = steady_clock::now();
+    ping_finish = false;
 }
 
 bool LoadingLayer::init() {
