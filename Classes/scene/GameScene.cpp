@@ -1,5 +1,6 @@
 #include "GameScene.h"
 
+#include "RefLineLayer.h"
 #include "game/game_frame/GameFrame.h"
 #include "game/game_map/implements/MapDecorationCreator1.h"
 #include "game/game_map/implements/MapGenerator1.h"
@@ -36,6 +37,9 @@ bool GameScene::init() {
         [&](const json& event) { notice(event); });
     Connection::instance()->regeist_event_listener(listener,
                                                    "GameScene_listener");
+
+    auto refline = RefLineLayer::create();
+    this->addChild(refline, 1000);
 
     return true;
 }
@@ -91,7 +95,6 @@ void GameScene::init_game() {
                    "frame_manager_upd");
 
     game_map_pre_renderer->afterPreRender(game_world->get_game_map_target());
-   
 
     game_world->setGameMap(game_map);
 
@@ -103,8 +106,7 @@ void GameScene::init_game() {
     dec->setDec2Pos(game_map_pre_renderer->getDec2Pos());
     dec->generate(game_world, &game_map->get(), seed);
 
-    
-     // ÊÍ·Å
+    // ÊÍ·Å
     game_map_pre_renderer.reset();
 
     auto game_bk = Sprite::create("game_bk.png");
@@ -169,16 +171,18 @@ void GameScene::init_game() {
     _dis->addEventListenerWithSceneGraphPriority(mouseListener, this);
     _dis->addEventListenerWithSceneGraphPriority(touchListener, this);
 
+    auto visible_size = Director::getInstance()->getVisibleSize();
+
     this->joystick_move =
         Joystick::create("joystick_large.png", "joystick_small.png",
                          "joystick_large_effect.png");
-    joystick_move->setOriginalPosition(Vec2(300, 300));
+    joystick_move->setOriginalPosition(Vec2(450, 300));
     this->addChild(joystick_move, 1);
 
     this->joystick_attack =
         Joystick::create("joystick_attack_bk.png", "joystick_attack.png",
                          "joystick_attack_bk_effect.png");
-    joystick_attack->setOriginalPosition(Vec2(1620, 300));
+    joystick_attack->setOriginalPosition(Vec2(visible_size.width - 450, 300));
     this->addChild(joystick_attack, 1);
 
     this->schedule(
@@ -210,11 +214,11 @@ void GameScene::init_game() {
 
             st.push(vec);
 
-            if (vec.y < 0.7) {
+            if (vec.y < 0.55) {
                 can_jump = true;
             }
 
-            if (vec.y > 0.7 && can_jump) {
+            if (vec.y > 0.55 && can_jump) {
                 can_jump = false;
                 GameAct act;
                 act.type = act_jump;
@@ -258,7 +262,6 @@ void GameScene::init_game() {
             _frame_manager->pushGameAct(act);
         },
         0.4f, "attack_upd");
-
 }
 
 void GameScene::notice(const json& event) {

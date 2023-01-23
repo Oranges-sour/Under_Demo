@@ -198,6 +198,9 @@
     <ClCompile Include="..\Classes\game\game_object\implements\physics_component\PhysicsComponent.cpp">
       <Filter>src\game\game_object\implements\physics_component</Filter>
     </ClCompile>
+    <ClCompile Include="..\Classes\scene\RefLineLayer.cpp">
+      <Filter>src\scene</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -328,6 +331,9 @@
     </ClInclude>
     <ClInclude Include="..\Classes\game\game_object\implements\physics_component\PhysicsComponent.h">
       <Filter>src\game\game_object\implements\physics_component</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\scene\RefLineLayer.h">
+      <Filter>src\scene</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

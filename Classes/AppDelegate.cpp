@@ -54,8 +54,8 @@ bool AppDelegate::applicationDidFinishLaunching() {
     (CC_TARGET_PLATFORM == CC_PLATFORM_MAC) ||   \
     (CC_TARGET_PLATFORM == CC_PLATFORM_LINUX)
         glview = GLViewImpl::createWithRect(
-            "Under_Demo", cocos2d::Rect(0, 0, designResolutionSize.width / 1.5,
-                                        designResolutionSize.height / 1.5));
+            "Under_Demo", cocos2d::Rect(0, 0, 2340,
+                                        1080));
 #else
         glview = GLViewImpl::create("Under_Demo");
 #endif
@@ -71,7 +71,7 @@ bool AppDelegate::applicationDidFinishLaunching() {
     // Set the design resolution
     glview->setDesignResolutionSize(designResolutionSize.width,
                                     designResolutionSize.height,
-                                    ResolutionPolicy::SHOW_ALL);
+                                    ResolutionPolicy::FIXED_HEIGHT);
 
     register_all_packages();
 

@@ -1,13 +1,13 @@
 #include "scene/StartScene.h"
 
+#include "RefLineLayer.h"
+#include "SimpleAudioEngine.h"
 #include "game/game_frame/GameFrame.h"
 #include "game/game_object/GameObject.h"
 #include "scene/GameScene.h"
+#include "ui/CocosGUI.h"
 #include "utility/PhysicsShapeCache.h"
 #include "utility/json/json.h"
-
-#include "SimpleAudioEngine.h"
-#include "ui/CocosGUI.h"
 
 USING_NS_CC;
 
@@ -40,8 +40,10 @@ bool DemoScene::init() {
 
     auto visibleSize = Director::getInstance()->getVisibleSize();
 
-    auto la = Label::createWithTTF("Connecting...", "font_normal.otf", 48);
-    la->setPosition(400, visibleSize.height - 200);
+    auto la = Label::createWithTTF("Connecting...", "font_normal.otf", 48,
+                                   Size(500, 200), TextHAlignment::CENTER,
+                                   TextVAlignment::CENTER);
+    la->setPosition(visibleSize.width / 2, visibleSize.height / 2);
     this->addChild(la);
 
     this->schedule(
@@ -56,6 +58,9 @@ bool DemoScene::init() {
             }
         },
         "check_server_online");
+
+    auto refline = RefLineLayer::create();
+    this->addChild(refline, 1000);
 
     return true;
 }
