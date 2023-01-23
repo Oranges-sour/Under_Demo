@@ -206,6 +206,12 @@ void GameScene::init_game() {
             if (vec == Vec2::ZERO) {
                 return;
             }
+            if (vec.x < 0) {
+                vec.x = -1;
+            }
+            if (vec.x > 0) {
+                vec.x = 1;
+            }
             GameAct act;
             act.type = act_move_start;
             act.uid = Connection::instance()->get_uid();
@@ -214,11 +220,11 @@ void GameScene::init_game() {
 
             st.push(vec);
 
-            if (vec.y < 0.55) {
+            if (vec.y < 0.20) {
                 can_jump = true;
             }
 
-            if (vec.y > 0.55 && can_jump) {
+            if (vec.y > 0.20 && can_jump) {
                 can_jump = false;
                 GameAct act;
                 act.type = act_jump;
