@@ -173,7 +173,7 @@ void GameScene::init_game() {
 
     // ´´½¨Íæ¼Ò
     for (auto& it : player_uid) {
-        auto ob = Player1::create(game_world, Vec2(300, 300), it);
+        auto ob = Player1::create(game_world, "1", Vec2(300, 300), it);
 
         players.insert({it, ob});
         if (it == Connection::instance()->get_uid()) {
@@ -349,10 +349,6 @@ void GameScene::notice(const json& event) {
 }
 
 void GameScene::keyDown(EventKeyboard::KeyCode key) {
-    GameAct act;
-    act.type = act_move_start;
-    act.uid = Connection::instance()->get_uid();
-
     switch (key) {
         case EventKeyboard::KeyCode::KEY_W: {
             GameAct act;
@@ -363,37 +359,46 @@ void GameScene::keyDown(EventKeyboard::KeyCode key) {
         case EventKeyboard::KeyCode::KEY_S: {
         } break;
         case EventKeyboard::KeyCode::KEY_A: {
+            GameAct act;
+            act.type = act_move_start;
+            act.uid = Connection::instance()->get_uid();
             act.param1 = -1;
-            act.param2 = 0;
+            _frame_manager->pushGameAct(act);
+
         } break;
         case EventKeyboard::KeyCode::KEY_D: {
+            GameAct act;
+            act.type = act_move_start;
+            act.uid = Connection::instance()->get_uid();
             act.param1 = 1;
-            act.param2 = 0;
+            _frame_manager->pushGameAct(act);
         } break;
     }
-
-    _frame_manager->pushGameAct(act);
 }
 
 void GameScene::keyUp(EventKeyboard::KeyCode key) {
-    GameAct act;
-    act.type = act_move_stop;
-    act.uid = Connection::instance()->get_uid();
-
     switch (key) {
         case EventKeyboard::KeyCode::KEY_W: {
         } break;
         case EventKeyboard::KeyCode::KEY_S: {
         } break;
         case EventKeyboard::KeyCode::KEY_A: {
+            GameAct act;
+            act.type = act_move_stop;
+            act.uid = Connection::instance()->get_uid();
             act.param1 = -1;
+            _frame_manager->pushGameAct(act);
         } break;
         case EventKeyboard::KeyCode::KEY_D: {
+            GameAct act;
+            act.type = act_move_stop;
+            act.uid = Connection::instance()->get_uid();
             act.param1 = 1;
+            _frame_manager->pushGameAct(act);
         } break;
     }
 
-    _frame_manager->pushGameAct(act);
+    
 }
 
 void GameScene::try_ping() {

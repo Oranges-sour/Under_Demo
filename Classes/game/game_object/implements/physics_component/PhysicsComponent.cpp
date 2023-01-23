@@ -66,7 +66,7 @@ void PhysicsComponent::WallContactComponent::updateAfterEvent(
     auto maph = ob->get_game_world()->getGameMap()->getMapHelper();
     auto& map = ob->get_game_world()->getGameMap()->get();
 
-    auto p0 = pos - left_top_offset;
+    auto p0 = pos + left_top_offset;
     auto p1 = pos + right_bottom_offset;
 
     // ×óÏÂ

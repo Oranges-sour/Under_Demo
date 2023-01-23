@@ -7,13 +7,15 @@ USING_NS_CC;
 #include <string>
 using namespace std;
 
+#include "utility/json/json.h"
+
 class GameWorld;
 class GameObject;
 
 class Player1 {
 public:
-    static GameObject* create(GameWorld* world, const Vec2& start_pos,
-                              const string& uid);
+    static GameObject* create(GameWorld* world, const json& json_key,
+                              const Vec2& start_pos, const string& uid);
 };
 
 #endif

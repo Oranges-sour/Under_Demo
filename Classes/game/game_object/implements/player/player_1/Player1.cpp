@@ -5,11 +5,14 @@
 #include "game/game_object/GameObject.h"
 #include "game/game_world/GameWorld.h"
 #include "utility/PhysicsShapeCache.h"
+#include "utility/GameObjectInfo.h"
 
-GameObject* Player1::create(GameWorld* world, const Vec2& start_pos,
-                            const string& uid) {
+GameObject* Player1::create(GameWorld* world, const json& json_key,
+                            const Vec2& start_pos, const string& uid) {
+    auto& json = GameObjectInfo::instance()->get(json_key);
+
+
     auto ob = world->newObject(layer_player, start_pos);
-
     ob->initWithSpriteFrameName("man_stay.png");
     ob->setGameObjectType(object_type_player);
     // ÕÊº“”–Ãÿ ‚uid
@@ -23,7 +26,7 @@ GameObject* Player1::create(GameWorld* world, const Vec2& start_pos,
         make_shared<PhysicsComponent::GravityComponent>(6, speed_comp);
     auto wall_contact_comp =
         make_shared<PhysicsComponent::WallContactComponent>(
-            Vec2(30, 135), Vec2(30, -15), speed_comp);
+            Vec2(-30, -135), Vec2(30, -15), speed_comp);
 
     phy->setGravityComponent(gravity_comp);
     phy->setSpeedComponent(speed_comp);
