@@ -7,13 +7,11 @@ void Player1AI::updateLogic(GameObject* ob) {}
 void Player1AI::receiveEvent(GameObject* ob, const json& event) {}
 
 void Player1AI::receiveGameAct(GameObject* ob, const GameAct& event) {
-    const float SPEED = 25;
-
     if (event.type == act_move_start) {
         if (ob->getUID() == event.uid) {
             json ee;
             ee["type"] = "move";
-            ee["x"] = event.param1 * SPEED;
+            ee["x"] = event.param1;
             ob->pushEvent(ee);
         }
     }
@@ -21,7 +19,7 @@ void Player1AI::receiveGameAct(GameObject* ob, const GameAct& event) {
         if (ob->getUID() == event.uid) {
             json ee;
             ee["type"] = "move";
-            ee["x"] = -event.param1 * SPEED;
+            ee["x"] = -event.param1;
             ob->pushEvent(ee);
         }
     }

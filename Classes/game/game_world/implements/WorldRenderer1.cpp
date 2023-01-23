@@ -12,7 +12,7 @@ void GameWorldRenderer1::init(Node* target) {
 
     target->addChild(light);
 
-    this->render = RenderTexture::create(1920, 1080);
+    this->render = RenderTexture::create(visibleSize.width, visibleSize.height);
     this->render->retain();
 
     const vector<string> light_name{"light_1.png", "light_2.png",

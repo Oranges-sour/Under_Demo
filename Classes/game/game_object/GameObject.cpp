@@ -65,10 +65,43 @@ void GameObject::main_update() {
     _actionEase.initWithAction(&_actionTween, 1.1f);
 
     this->runAction(&_actionEase);
+
+    if (this->_frame_action) {
+        this->_frame_action->play(this);
+    }
 }
 
 void GameObject::main_update_in_screen_rect() {
     for (auto& it : _componets) {
         it->updateLogicInScreenRect(this);
+    }
+}
+
+void GameObject::switch_frame_action_statue(
+    shared_ptr<GameObjectFrameAction> new_action) {
+    new_action->reset();
+    this->_frame_action = new_action;
+}
+
+GameObjectFrameAction::GameObjectFrameAction(
+    const vector<string>& sprite_frames,
+    const function<void(GameObject*, int)>& round_call_back)
+    : sprite_frames(sprite_frames),
+      round_call_back(round_call_back),
+      cnt(0),
+      round_cnt(0) {}
+
+void GameObjectFrameAction::reset() {
+    cnt = 0;
+    round_cnt = 0;
+}
+
+void GameObjectFrameAction::play(GameObject* ob) {
+    ob->setSpriteFrame(sprite_frames[cnt]);
+    cnt += 1;
+    if (cnt == sprite_frames.size()) {
+        cnt = 0;
+        round_cnt += 1;
+        round_call_back(ob, round_cnt);
     }
 }

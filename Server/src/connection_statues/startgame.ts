@@ -48,6 +48,10 @@ class ConnectionStatue_StartGame implements IConnectionStatue {
             game.push_event(frame_msg as any as EventBag);
         }
 
+        if(msg.type == "ping") {
+            connection.send_message(msg);
+        }
+
 
     }
 

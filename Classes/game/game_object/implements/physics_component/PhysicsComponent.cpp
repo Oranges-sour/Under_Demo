@@ -66,7 +66,7 @@ void PhysicsComponent::WallContactComponent::updateAfterEvent(
     auto maph = ob->get_game_world()->getGameMap()->getMapHelper();
     auto& map = ob->get_game_world()->getGameMap()->get();
 
-    auto p0 = pos - left_top_offset;
+    auto p0 = pos + left_top_offset;
     auto p1 = pos + right_bottom_offset;
 
     // ×óÏÂ
@@ -151,6 +151,9 @@ void PhysicsComponent::GravityComponent::updateAfterEvent(
 
 void PhysicsComponent::SpeedComponent::updateAfterEvent(GameObject* ob,
                                                         PhysicsComponent* phy) {
+    speed.x = max(min(speed.x, 60.0f), -60.0f);
+    speed.y = max(min(speed.y, 60.0f), -60.0f);
+
     phy->posNow += speed;
 }
 

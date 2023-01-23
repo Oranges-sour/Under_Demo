@@ -2,9 +2,9 @@
 
 #include <vector>
 
-#include "web/Connection.h"
-#include "utility/Tools.h"
 #include "cocos2d.h"
+#include "utility/Tools.h"
+#include "web/Connection.h"
 using namespace std;
 
 void ConnectionStatue_Default::processMessage(Connection* connection,
@@ -250,6 +250,10 @@ void ConnectionStatue_StartGame::processMessage(Connection* connection,
     if (type == "frame") {
         connection->push_listenerEvent(js);
     }
+
+    if (type == "ping") {
+        connection->push_listenerEvent(js);
+    }
 }
 
 void ConnectionStatue_StartGame::update(Connection* connection,
@@ -259,6 +263,9 @@ void ConnectionStatue_StartGame::processEvent(Connection* connection,
                                               const json& event) {
     string type = event["type"];
     if (type == "frame") {
+        connection->sendMessage(to_string(event));
+    }
+    if (type == "ping") {
         connection->sendMessage(to_string(event));
     }
 }

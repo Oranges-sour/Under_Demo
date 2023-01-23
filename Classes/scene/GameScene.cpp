@@ -1,5 +1,6 @@
 #include "GameScene.h"
 
+#include "RefLineLayer.h"
 #include "game/game_frame/GameFrame.h"
 #include "game/game_map/implements/MapDecorationCreator1.h"
 #include "game/game_map/implements/MapGenerator1.h"
@@ -21,6 +22,8 @@ bool GameScene::init() {
         return true;
     }
 
+    auto vs = Director::getInstance()->getVisibleSize();
+
     auto phyw = this->getPhysicsWorld();
     phyw->setGravity(Vec2::ZERO);
     // phyw->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
@@ -32,10 +35,64 @@ bool GameScene::init() {
     this->schedule([&](float dt) { Connection::instance()->update(dt * 1000); },
                    "web_upd");
 
+    this->schedule([&](float dt) { try_ping(); }, 0.1f, "try_ping");
+
+    auto ping_1 =
+        Label::createWithTTF("", "font_normal.otf", 48, Size(300, 80),
+                             TextHAlignment::RIGHT, TextVAlignment::TOP);
+    ping_1->setAnchorPoint(Vec2(1, 1));
+    ping_1->setPosition(vs.width - 100, vs.height - 50);
+    this->addChild(ping_1, 2);
+
+    auto ping_2 =
+        Label::createWithTTF("", "font_normal.otf", 48, Size(500, 80),
+                             TextHAlignment::RIGHT, TextVAlignment::TOP);
+    ping_2->setAnchorPoint(Vec2(1, 1));
+    ping_2->setPosition(vs.width - 100, vs.height - 120);
+    this->addChild(ping_2, 2);
+
+    this->schedule(
+        [&, ping_1, ping_2](float dt) {
+            ping_que.push_back(ping_ms);
+            while (ping_que.size() > 10) {
+                ping_que.pop_front();
+            }
+
+            {
+                stringstream ss;
+                ss << "ping: ";
+                ss << ping_ms;
+                ss << "ms";
+
+                ping_1->setString(ss.str());
+            }
+            int cnt = 0;
+            int ping_sum = 0;
+            for (auto& it : ping_que) {
+                ping_sum += it;
+                cnt += 1;
+            }
+            if (cnt == 0) {
+                return;
+            }
+            {
+                stringstream ss;
+                ss << "ping avg: ";
+                ss << ping_sum / cnt;
+                ss << "ms";
+
+                ping_2->setString(ss.str());
+            }
+        },
+        0.1f, "ping_l");
+
     auto listener = make_shared<ConnectionEventListener>(
         [&](const json& event) { notice(event); });
     Connection::instance()->regeist_event_listener(listener,
                                                    "GameScene_listener");
+
+    auto refline = RefLineLayer::create();
+    this->addChild(refline, 1000);
 
     return true;
 }
@@ -91,7 +148,6 @@ void GameScene::init_game() {
                    "frame_manager_upd");
 
     game_map_pre_renderer->afterPreRender(game_world->get_game_map_target());
-   
 
     game_world->setGameMap(game_map);
 
@@ -103,8 +159,7 @@ void GameScene::init_game() {
     dec->setDec2Pos(game_map_pre_renderer->getDec2Pos());
     dec->generate(game_world, &game_map->get(), seed);
 
-    
-     // 释放
+    // 释放
     game_map_pre_renderer.reset();
 
     auto game_bk = Sprite::create("game_bk.png");
@@ -118,7 +173,7 @@ void GameScene::init_game() {
 
     // 创建玩家
     for (auto& it : player_uid) {
-        auto ob = Player1::create(game_world, Vec2(300, 300), it);
+        auto ob = Player1::create(game_world, "player_1", Vec2(300, 300), it);
 
         players.insert({it, ob});
         if (it == Connection::instance()->get_uid()) {
@@ -169,16 +224,18 @@ void GameScene::init_game() {
     _dis->addEventListenerWithSceneGraphPriority(mouseListener, this);
     _dis->addEventListenerWithSceneGraphPriority(touchListener, this);
 
+    auto visible_size = Director::getInstance()->getVisibleSize();
+
     this->joystick_move =
         Joystick::create("joystick_large.png", "joystick_small.png",
                          "joystick_large_effect.png");
-    joystick_move->setOriginalPosition(Vec2(300, 300));
+    joystick_move->setOriginalPosition(Vec2(450, 300));
     this->addChild(joystick_move, 1);
 
     this->joystick_attack =
         Joystick::create("joystick_attack_bk.png", "joystick_attack.png",
                          "joystick_attack_bk_effect.png");
-    joystick_attack->setOriginalPosition(Vec2(1620, 300));
+    joystick_attack->setOriginalPosition(Vec2(visible_size.width - 450, 300));
     this->addChild(joystick_attack, 1);
 
     this->schedule(
@@ -202,6 +259,12 @@ void GameScene::init_game() {
             if (vec == Vec2::ZERO) {
                 return;
             }
+            if (vec.x < 0) {
+                vec.x = -1;
+            }
+            if (vec.x > 0) {
+                vec.x = 1;
+            }
             GameAct act;
             act.type = act_move_start;
             act.uid = Connection::instance()->get_uid();
@@ -210,11 +273,11 @@ void GameScene::init_game() {
 
             st.push(vec);
 
-            if (vec.y < 0.7) {
+            if (vec.y < 0.20) {
                 can_jump = true;
             }
 
-            if (vec.y > 0.7 && can_jump) {
+            if (vec.y > 0.20 && can_jump) {
                 can_jump = false;
                 GameAct act;
                 act.type = act_jump;
@@ -258,7 +321,6 @@ void GameScene::init_game() {
             _frame_manager->pushGameAct(act);
         },
         0.4f, "attack_upd");
-
 }
 
 void GameScene::notice(const json& event) {
@@ -275,13 +337,18 @@ void GameScene::notice(const json& event) {
             return;
         }
     }
+
+    if (type == "ping") {
+        ping_time1 = steady_clock::now();
+        ping_finish = true;
+
+        ping_ms =
+            duration_cast<duration<float>>(ping_time1 - ping_time0).count() *
+            1000 / 2;
+    }
 }
 
 void GameScene::keyDown(EventKeyboard::KeyCode key) {
-    GameAct act;
-    act.type = act_move_start;
-    act.uid = Connection::instance()->get_uid();
-
     switch (key) {
         case EventKeyboard::KeyCode::KEY_W: {
             GameAct act;
@@ -292,37 +359,58 @@ void GameScene::keyDown(EventKeyboard::KeyCode key) {
         case EventKeyboard::KeyCode::KEY_S: {
         } break;
         case EventKeyboard::KeyCode::KEY_A: {
+            GameAct act;
+            act.type = act_move_start;
+            act.uid = Connection::instance()->get_uid();
             act.param1 = -1;
-            act.param2 = 0;
+            _frame_manager->pushGameAct(act);
+
         } break;
         case EventKeyboard::KeyCode::KEY_D: {
+            GameAct act;
+            act.type = act_move_start;
+            act.uid = Connection::instance()->get_uid();
             act.param1 = 1;
-            act.param2 = 0;
+            _frame_manager->pushGameAct(act);
         } break;
     }
-
-    _frame_manager->pushGameAct(act);
 }
 
 void GameScene::keyUp(EventKeyboard::KeyCode key) {
-    GameAct act;
-    act.type = act_move_stop;
-    act.uid = Connection::instance()->get_uid();
-
     switch (key) {
         case EventKeyboard::KeyCode::KEY_W: {
         } break;
         case EventKeyboard::KeyCode::KEY_S: {
         } break;
         case EventKeyboard::KeyCode::KEY_A: {
+            GameAct act;
+            act.type = act_move_stop;
+            act.uid = Connection::instance()->get_uid();
             act.param1 = -1;
+            _frame_manager->pushGameAct(act);
         } break;
         case EventKeyboard::KeyCode::KEY_D: {
+            GameAct act;
+            act.type = act_move_stop;
+            act.uid = Connection::instance()->get_uid();
             act.param1 = 1;
+            _frame_manager->pushGameAct(act);
         } break;
     }
 
-    _frame_manager->pushGameAct(act);
+    
+}
+
+void GameScene::try_ping() {
+    if (!ping_finish) {
+        return;
+    }
+
+    json e;
+    e["type"] = "ping";
+    Connection::instance()->push_statueEvent(e);
+    ping_time0 = steady_clock::now();
+    ping_finish = false;
 }
 
 bool LoadingLayer::init() {

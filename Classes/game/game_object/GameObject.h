@@ -16,6 +16,7 @@ using namespace std;
 
 class PhysicsComponent;
 class GameComponent;
+class GameObjectFrameAction;
 
 enum GameObjectType {
     object_type_player,
@@ -109,7 +110,13 @@ public:
 
     Quad_node<GameObject*> quad_node;
 
+    // Ö¡¶¯»­
+    void switch_frame_action_statue(
+        shared_ptr<GameObjectFrameAction> new_action);
+
 private:
+    shared_ptr<GameObjectFrameAction> _frame_action;
+
     string uid;
 
     GameWorld* game_world;
@@ -135,6 +142,23 @@ public:
     virtual void receiveGameAct(GameObject* ob, const GameAct& event) = 0;
     virtual void receiveEvent(GameObject* ob, const json& event) = 0;
     virtual void updateAfterEvent(GameObject* ob) = 0;
+};
+
+class GameObjectFrameAction {
+public:
+    GameObjectFrameAction(
+        const vector<string>& sprite_frames,
+        const function<void(GameObject*, int)>& round_call_back);
+
+    void reset();
+
+    void play(GameObject* ob);
+
+private:
+    int round_cnt;
+    int cnt;
+    function<void(GameObject*, int)> round_call_back;
+    vector<string> sprite_frames;
 };
 
 #include "game/game_object/implements/physics_component/PhysicsComponent.h"

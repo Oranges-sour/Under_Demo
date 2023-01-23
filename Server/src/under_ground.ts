@@ -14,7 +14,7 @@ socket_server.on("connection", function (ws) {
 });
 
 
-const UPDATE_INTERVAL_MS = 16;
+const UPDATE_INTERVAL_MS = 10;
 
 setInterval(function () {
     main_update(UPDATE_INTERVAL_MS);

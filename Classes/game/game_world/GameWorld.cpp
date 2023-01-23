@@ -99,9 +99,11 @@ void GameWorld::main_update_logic() {
         {1, _gameMap->get().h}, {_gameMap->get().w, 1},
         [&](const iVec2& cor, GameObject* ob) { ob->main_update(); });
 
+    const auto visibleSize = Director::getInstance()->getVisibleSize();
+
     // 摄像机区域更新
-    const auto screenCenter = Vec2(1920, 1080) / 2;
-    mina_update_in_screen_rect(camera_pos - screenCenter, Size(1920, 1080));
+    const auto screenCenter = Vec2(visibleSize.width, visibleSize.height) / 2;
+    mina_update_in_screen_rect(camera_pos - screenCenter, visibleSize);
 
     this->updateGameObjectPosition();
 
@@ -140,13 +142,15 @@ void GameWorld::main_update_draw() {
     camera_pos +=
         _gameRenderer->calcu_camera_speed(camera_pos, camera_pos_target);
 
-    auto screenCenter = Vec2(1920, 1080) / 2;
+    const auto visibleSize = Director::getInstance()->getVisibleSize();
+
+    auto screenCenter = Vec2(visibleSize.width, visibleSize.height) / 2;
 
     _game_node->setPosition(-camera_pos + screenCenter);
 
     game_bk_target->setPosition((-camera_pos + screenCenter) / 5);
 
-    _gameRenderer->update(camera_pos - screenCenter, Size(1920, 1080), this);
+    _gameRenderer->update(camera_pos - screenCenter, visibleSize, this);
 }
 
 void GameWorld::processContact(PhysicsContact& conatct) {
