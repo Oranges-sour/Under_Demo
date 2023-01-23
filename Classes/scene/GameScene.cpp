@@ -173,7 +173,7 @@ void GameScene::init_game() {
 
     // ´´½¨Íæ¼Ò
     for (auto& it : player_uid) {
-        auto ob = Player1::create(game_world, "1", Vec2(300, 300), it);
+        auto ob = Player1::create(game_world, "player_1", Vec2(300, 300), it);
 
         players.insert({it, ob});
         if (it == Connection::instance()->get_uid()) {
