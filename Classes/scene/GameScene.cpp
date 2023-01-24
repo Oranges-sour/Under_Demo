@@ -11,6 +11,7 @@
 #include "game/game_world/GameWorld.h"
 #include "game/game_world/implements/WorldRenderer1.h"
 #include "scene/StartScene.h"
+#include "utility/GameObjectInfo.h"
 #include "utility/PhysicsShapeCache.h"
 #include "utility/touch/Joystick.h"
 #include "utility/touch/TouchesPool.h"
@@ -111,7 +112,6 @@ void GameScene::init_map(unsigned seed) {
     // 创建地图生成器
     auto map_generator = make_shared<MapGenerator1>();
     map_generator->init(seed);
-    // auto map_generator = make_shared<MapGenerator2>();
 
     auto map_helper = make_shared<MapHelper1>();
     auto map_physics = make_shared<MapPhysics1>();
@@ -139,6 +139,15 @@ void GameScene::init_map(unsigned seed) {
 }
 
 void GameScene::init_game() {
+    auto& info = GameObjectInfo::instance()->get("game_defaults");
+    string game_background = info["game_background"];
+    vector<string> res_joystick_move = info["joystick_move"];
+    float joystick_move_left = info["joystick_move_left"];
+    float joystick_move_bottom = info["joystick_move_bottom"];
+    vector<string> res_joysitck_attack = info["joysitck_attack"];
+    float joystick_attack_right = info["joystick_attack_right"];
+    float joystick_attack_bottom = info["joystick_attack_bottom"];
+
     this->game_world = GameWorld::create();
     this->addChild(game_world);
 
@@ -162,7 +171,7 @@ void GameScene::init_game() {
     // 释放
     game_map_pre_renderer.reset();
 
-    auto game_bk = Sprite::create("game_bk.png");
+    auto game_bk = Sprite::create(game_background);
     game_bk->setAnchorPoint(Vec2(0, 0));
     game_bk->setPosition(Vec2(0, 0));
     Texture2D::TexParams texParams = {GL_LINEAR, GL_LINEAR, GL_REPEAT,
@@ -226,16 +235,17 @@ void GameScene::init_game() {
 
     auto visible_size = Director::getInstance()->getVisibleSize();
 
-    this->joystick_move =
-        Joystick::create("joystick_large.png", "joystick_small.png",
-                         "joystick_large_effect.png");
-    joystick_move->setOriginalPosition(Vec2(450, 300));
-    this->addChild(joystick_move, 1);
+    this->joystick_move = Joystick::create(
+        res_joystick_move[0], res_joystick_move[1], res_joystick_move[2]);
 
-    this->joystick_attack =
-        Joystick::create("joystick_attack_bk.png", "joystick_attack.png",
-                         "joystick_attack_bk_effect.png");
-    joystick_attack->setOriginalPosition(Vec2(visible_size.width - 450, 300));
+    this->joystick_move->setOriginalPosition(
+        Vec2(joystick_move_left, joystick_move_bottom));
+    this->addChild(this->joystick_move, 1);
+
+    this->joystick_attack = Joystick::create(
+        res_joysitck_attack[0], res_joysitck_attack[1], res_joysitck_attack[2]);
+    joystick_attack->setOriginalPosition(Vec2(
+        visible_size.width - joystick_attack_right, joystick_attack_bottom));
     this->addChild(joystick_attack, 1);
 
     this->schedule(
@@ -301,15 +311,6 @@ void GameScene::init_game() {
                 last_statue.on_move = true;
                 last_statue.x = nx;
             }
-
-            // if (vec.y > 0.20 && can_jump) {
-            //     can_jump = false;
-            //     GameAct act;
-            //     act.type = act_jump;
-            //     act.uid = Connection::instance()->get_uid();
-            //     // act.param1 = vec.x;
-            //     _frame_manager->pushGameAct(act);
-            // }
         },
         0.03f, "move_upd");
 
@@ -441,18 +442,23 @@ bool LoadingLayer::init() {
         return false;
     }
 
+    auto& info = GameObjectInfo::instance()->get("loading_layer");
+    string res_bk = info["bk"];
+    string out_line = info["out_line"];
+    string blocks = info["blocks"];
+
     const auto visibleSize = Director::getInstance()->getVisibleSize();
 
-    this->bk = Sprite::create("blue_bk.png");
+    this->bk = Sprite::create(res_bk);
     bk->setPosition(visibleSize / 2);
     this->addChild(bk, 2);
 
-    this->spAct0 = Sprite::createWithSpriteFrameName("mapDrawWaitAct0.png");
+    this->spAct0 = Sprite::createWithSpriteFrameName(out_line);
     spAct0->setPosition(visibleSize / 2);
     this->addChild(spAct0, 3);
 
     for (int x = 0; x < 9; ++x) {
-        auto sp = Sprite::createWithSpriteFrameName("mapDrawWaitAct1.png");
+        auto sp = Sprite::createWithSpriteFrameName(blocks);
         loadingBlocks[x] = sp;
         auto pos = getLoadingBlocksPos(x, 1);
         sp->setPosition(pos);

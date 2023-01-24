@@ -1,6 +1,36 @@
 {
     "objects": [
         {
+            "name": "loading_layer",
+            "@info": "加载界面的资源",
+            "info": {
+                "bk": "blue_bk.png",
+                "out_line": "mapDrawWaitAct0.png",
+                "blocks": "mapDrawWaitAct1.png"
+            }
+        },
+        {
+            "name": "game_defaults",
+            "@info": "一些游戏最基本的元素，如操纵杆等其他参数",
+            "info": {
+                "game_background": "game_bk.png",
+                "joystick_move": [
+                    "joystick_large.png",
+                    "joystick_small.png",
+                    "joystick_large_effect.png"
+                ],
+                "joystick_move_left": 450,
+                "joystick_move_bottom": 300,
+                "joysitck_attack": [
+                    "joystick_attack_bk.png",
+                    "joystick_attack.png",
+                    "joystick_attack_bk_effect.png"
+                ],
+                "joystick_attack_right": 450,
+                "joystick_attack_bottom": 300
+            }
+        },
+        {
             "name": "bullet_1_particle",
             "@info": "给Particle1 使用的参数",
             "info": {
