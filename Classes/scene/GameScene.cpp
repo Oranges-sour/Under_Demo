@@ -240,53 +240,78 @@ void GameScene::init_game() {
 
     this->schedule(
         [&](float) {
-            static stack<Vec2> st;
-
-            static bool can_jump = true;
-
-            while (!st.empty()) {
-                auto vec = st.top();
-                st.pop();
-
+            const auto stop_move = [this](int x) {
                 GameAct act;
                 act.type = act_move_stop;
                 act.uid = Connection::instance()->get_uid();
-                act.param1 = vec.x;
+                act.param1 = x;
                 _frame_manager->pushGameAct(act);
-            }
+            };
+
+            const auto start_move = [this](int x) {
+                GameAct act;
+                act.type = act_move_start;
+                act.uid = Connection::instance()->get_uid();
+                act.param1 = x;
+                _frame_manager->pushGameAct(act);
+            };
+
+            static struct {
+                void reset() {
+                    on_move = false;
+                    x = 0;
+                }
+
+                bool on_move = false;
+                int x = 0;
+            } last_statue;
 
             auto vec = joystick_move->getMoveVec();
-            if (vec == Vec2::ZERO) {
+
+            if (abs(vec.x) < 0.01f) {
+                if (last_statue.on_move) {
+                    stop_move(last_statue.x);
+
+                    last_statue.reset();
+                }
                 return;
             }
+
+            int nx = -1;
             if (vec.x < 0) {
-                vec.x = -1;
+                nx = -1;
             }
             if (vec.x > 0) {
-                vec.x = 1;
-            }
-            GameAct act;
-            act.type = act_move_start;
-            act.uid = Connection::instance()->get_uid();
-            act.param1 = vec.x;
-            _frame_manager->pushGameAct(act);
-
-            st.push(vec);
-
-            if (vec.y < 0.20) {
-                can_jump = true;
+                nx = 1;
             }
 
-            if (vec.y > 0.20 && can_jump) {
-                can_jump = false;
-                GameAct act;
-                act.type = act_jump;
-                act.uid = Connection::instance()->get_uid();
-                // act.param1 = vec.x;
-                _frame_manager->pushGameAct(act);
+            if (last_statue.on_move) {
+                // 两次方向一致，说明移动方向一样，不用管
+                if (last_statue.x == nx) {
+                    return;
+                }
+                // 两次方向不一致，先停掉上一次，再开始这一次
+                if (last_statue.x != nx) {
+                    stop_move(last_statue.x);
+                    start_move(nx);
+                    last_statue.x = nx;
+                }
+            } else {
+                start_move(nx);
+                last_statue.on_move = true;
+                last_statue.x = nx;
             }
+
+            // if (vec.y > 0.20 && can_jump) {
+            //     can_jump = false;
+            //     GameAct act;
+            //     act.type = act_jump;
+            //     act.uid = Connection::instance()->get_uid();
+            //     // act.param1 = vec.x;
+            //     _frame_manager->pushGameAct(act);
+            // }
         },
-        0.0333f, "move_upd");
+        0.03f, "move_upd");
 
     this->schedule(
         [&](float) {
@@ -303,7 +328,7 @@ void GameScene::init_game() {
                 }
             }
         },
-        0.03f, "position_force_set");
+        0.1f, "position_force_set");
 
     this->schedule(
         [&](float) {
@@ -397,8 +422,6 @@ void GameScene::keyUp(EventKeyboard::KeyCode key) {
             _frame_manager->pushGameAct(act);
         } break;
     }
-
-    
 }
 
 void GameScene::try_ping() {
