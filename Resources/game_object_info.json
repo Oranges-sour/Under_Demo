@@ -1,6 +1,55 @@
 {
     "objects": [
         {
+            "name": "start_point",
+            "info": {
+                "sprite_frame": "start_point.png",
+                "particle_cnt_per_frame": 0.3,
+                "particle_name": "start_point_particle",
+                "offset_1_x": 40,
+                "offset_1_y": 54,
+                "offset_2_x": 151,
+                "offset_2_y": 54,
+                "world_lights": [
+                    {
+                        "key": "main_light",
+                        "type": 2,
+                        "r": 252,
+                        "g": 241,
+                        "b": 227,
+                        "radius": 400,
+                        "opacity": 1.0
+                    }
+                ]
+            }
+        },
+        {
+            "name": "start_point_particle",
+            "@info": "给Particle1 使用的参数",
+            "info": {
+                "sprite_frame": "start_point_particle.png",
+                "live_frame": 15,
+                "move_speed": 6,
+                "rotate_speed": 5,
+                "light_decrease_rate": 0.8,
+                "scale_decrease_rate": 0.9,
+                "opacity_decrease_rate": 0.9,
+                "direction_angle_min": 1.047197,
+                "direction_angle_max": 1.884955,
+                "world_lights": [
+                    {
+                        "key": "main_light",
+                        "type": 3,
+                        "r": 80,
+                        "g": 208,
+                        "b": 134,
+                        "radius": 340,
+                        "opacity": 1.0
+                    }
+                ]
+            }
+        },
+        {
             "name": "loading_layer",
             "@info": "加载界面的资源",
             "info": {
@@ -39,6 +88,10 @@
                 "move_speed": 60,
                 "rotate_speed": 40,
                 "light_decrease_rate": 0.8,
+                "scale_decrease_rate": 1.0,
+                "opacity_decrease_rate": 1.0,
+                "direction_angle_min": 0,
+                "direction_angle_max": 6.283185,
                 "world_lights": [
                     {
                         "key": "main_light",

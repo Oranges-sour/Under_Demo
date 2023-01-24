@@ -6,12 +6,7 @@
 class Particle1AI : public GameComponent {
 public:
     Particle1AI(const Vec2& direction, int live_frame, float move_speed,
-                float rotate_speed, float light_decrease_rate)
-        : live_frame(live_frame),
-          direction(direction),
-          move_speed(move_speed),
-          rotate_speed(move_speed),
-          light_decrease_rate(light_decrease_rate) {}
+                float rotate_speed, float light_decrease_rate);
 
     virtual void updateLogicInScreenRect(GameObject* ob) override {}
     virtual void updateLogic(GameObject* ob) override;

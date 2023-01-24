@@ -82,6 +82,12 @@
     <Filter Include="src\game\game_object\implements\physics_component">
       <UniqueIdentifier>{b63f5a3e-e82b-46bc-a737-4016dd765e4c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\game\game_object\implements\other">
+      <UniqueIdentifier>{7db277ad-73e4-4226-9078-d1e65109a0f7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\game\game_object\implements\other\start_point">
+      <UniqueIdentifier>{bdd993ba-31b7-440f-a7a0-91bbc3e41528}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -200,6 +206,12 @@
     </ClCompile>
     <ClCompile Include="..\Classes\scene\RefLineLayer.cpp">
       <Filter>src\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\game\game_object\implements\other\start_point\StartPoint.cpp">
+      <Filter>src\game\game_object\implements\other\start_point</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\game\game_object\implements\other\start_point\StartPointAI.cpp">
+      <Filter>src\game\game_object\implements\other\start_point</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -334,6 +346,12 @@
     </ClInclude>
     <ClInclude Include="..\Classes\scene\RefLineLayer.h">
       <Filter>src\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\game\game_object\implements\other\start_point\StartPoint.h">
+      <Filter>src\game\game_object\implements\other\start_point</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\game\game_object\implements\other\start_point\StartPointAI.h">
+      <Filter>src\game\game_object\implements\other\start_point</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

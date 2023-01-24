@@ -8,6 +8,7 @@
 #include "game/game_map/implements/MapPhysics1.h"
 #include "game/game_map/implements/MapPreRenderer1.h"
 #include "game/game_object/implements/player/player_1/Player1.h"
+#include "game/game_object/implements/other/start_point/StartPoint.h"
 #include "game/game_world/GameWorld.h"
 #include "game/game_world/implements/WorldRenderer1.h"
 #include "scene/StartScene.h"
@@ -182,13 +183,16 @@ void GameScene::init_game() {
 
     // 创建玩家
     for (auto& it : player_uid) {
-        auto ob = Player1::create(game_world, "player_1", Vec2(300, 300), it);
+        auto ob = Player1::create(game_world, "player_1", Vec2(3 * 64, 253 * 64), it);
 
         players.insert({it, ob});
         if (it == Connection::instance()->get_uid()) {
             game_world->camera_follow(ob);
         }
     }
+
+    //创建出生点
+    StartPoint::create(game_world, "start_point", Vec2(2 * 64, 248 * 64));
 
     auto keyboardListener = EventListenerKeyboard::create();
     keyboardListener->onKeyPressed = [&](EventKeyboard::KeyCode key,
