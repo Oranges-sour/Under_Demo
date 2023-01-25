@@ -66,13 +66,19 @@ void PhysicsComponent::WallContactComponent::updateAfterEvent(
     auto maph = ob->get_game_world()->getGameMap()->getMapHelper();
     auto& map = ob->get_game_world()->getGameMap()->get();
 
-    auto p0 = pos + left_top_offset;
-    auto p1 = pos + right_bottom_offset;
+    Vec2 p0, p1;
+    iVec2 ip0, ip1;
 
-    // 左下
-    auto ip0 = maph->convert_in_map(p0);
-    // 右上
-    auto ip1 = maph->convert_in_map(p1);
+    const auto convert = [&]() {
+        p0 = pos + left_top_offset;
+        p1 = pos + right_bottom_offset;
+        // 左下
+        ip0 = maph->convert_in_map(p0);
+        // 右上
+        ip1 = maph->convert_in_map(p1);
+    };
+
+    convert();
 
     if (speed.x > 0) {
         // 右侧
@@ -97,6 +103,9 @@ void PhysicsComponent::WallContactComponent::updateAfterEvent(
             }
         }
     }
+
+    pos.x += speed.x;
+    convert();
 
     if (speed.y > 0) {
         // 上侧
@@ -133,7 +142,9 @@ void PhysicsComponent::WallContactComponent::updateAfterEvent(
         }
     }
 
-    phy->posNow = pos + speed;
+    pos.y += speed.y;
+
+    phy->posNow = pos;
 }
 
 PhysicsComponent::GravityComponent::GravityComponent(
