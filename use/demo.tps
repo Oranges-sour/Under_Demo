@@ -419,6 +419,12 @@
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
+            <key type="filename">Res/man_attack_near_1.png</key>
+            <key type="filename">Res/man_attack_near_2.png</key>
+            <key type="filename">Res/man_attack_near_3.png</key>
+            <key type="filename">Res/man_attack_near_4.png</key>
+            <key type="filename">Res/man_attack_near_5.png</key>
+            <key type="filename">Res/man_attack_near_6.png</key>
             <key type="filename">Res/man_jump_1.png</key>
             <key type="filename">Res/man_jump_2.png</key>
             <key type="filename">Res/man_jump_3.png</key>
@@ -438,6 +444,36 @@
                 <rect>40,68,80,135</rect>
                 <key>scale9Paddings</key>
                 <rect>40,68,80,135</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">Res/start_point.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>48,16,96,32</rect>
+                <key>scale9Paddings</key>
+                <rect>48,16,96,32</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">Res/start_point_particle.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>5,5,10,10</rect>
+                <key>scale9Paddings</key>
+                <rect>5,5,10,10</rect>
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
@@ -486,6 +522,14 @@
                     <filename>Res/man_jump_1.png</filename>
                     <filename>Res/man_jump_2.png</filename>
                     <filename>Res/man_jump_3.png</filename>
+                    <filename>Res/start_point.png</filename>
+                    <filename>Res/start_point_particle.png</filename>
+                    <filename>Res/man_attack_near_1.png</filename>
+                    <filename>Res/man_attack_near_2.png</filename>
+                    <filename>Res/man_attack_near_3.png</filename>
+                    <filename>Res/man_attack_near_4.png</filename>
+                    <filename>Res/man_attack_near_5.png</filename>
+                    <filename>Res/man_attack_near_6.png</filename>
                 </array>
             </struct>
         </map>

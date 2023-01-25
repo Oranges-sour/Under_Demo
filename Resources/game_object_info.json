@@ -150,7 +150,7 @@
                 ],
                 "frame_action_jump": [
                     "man_jump_1.png",
-                    "man_jump_2.png",
+                    "man_jump_1.png",
                     "man_jump_3.png"
                 ],
                 "frame_action_jump_stay": [
