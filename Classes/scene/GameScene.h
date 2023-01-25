@@ -46,6 +46,10 @@ public:
     CREATE_FUNC(GameScene);
 
 private:
+    void move_upd();
+    void attack_upd();
+
+private:
     void keyDown(EventKeyboard::KeyCode key);
     void keyUp(EventKeyboard::KeyCode key);
 

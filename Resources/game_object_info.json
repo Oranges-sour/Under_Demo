@@ -156,6 +156,14 @@
                 "frame_action_jump_stay": [
                     "man_jump_3.png"
                 ],
+                "frame_action_attack_near": [
+                    "man_attack_near_1.png",
+                    "man_attack_near_2.png",
+                    "man_attack_near_3.png",
+                    "man_attack_near_4.png",
+                    "man_attack_near_5.png",
+                    "man_attack_near_6.png"
+                ],
                 "world_lights": [
                     {
                         "key": "main_light",

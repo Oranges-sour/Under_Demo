@@ -7,8 +7,8 @@
 #include <vector>
 using namespace std;
 
-#include "web/Connection.h"
 #include "utility/json/json.h"
+#include "web/Connection.h"
 
 class GameFrame;
 class GameWorld;
@@ -18,7 +18,8 @@ enum GameActType {
     act_move_start,
     act_move_stop,
     act_jump,
-    act_attack,
+    act_attack_start,
+    act_attack_stop,
     act_position_force_set,
 };
 

@@ -7,8 +7,8 @@
 #include "game/game_map/implements/MapHelper1.h"
 #include "game/game_map/implements/MapPhysics1.h"
 #include "game/game_map/implements/MapPreRenderer1.h"
-#include "game/game_object/implements/player/player_1/Player1.h"
 #include "game/game_object/implements/other/start_point/StartPoint.h"
+#include "game/game_object/implements/player/player_1/Player1.h"
 #include "game/game_world/GameWorld.h"
 #include "game/game_world/implements/WorldRenderer1.h"
 #include "scene/StartScene.h"
@@ -183,7 +183,8 @@ void GameScene::init_game() {
 
     // 创建玩家
     for (auto& it : player_uid) {
-        auto ob = Player1::create(game_world, "player_1", Vec2(3 * 64, 253 * 64), it);
+        auto ob =
+            Player1::create(game_world, "player_1", Vec2(3 * 64, 253 * 64), it);
 
         players.insert({it, ob});
         if (it == Connection::instance()->get_uid()) {
@@ -191,7 +192,7 @@ void GameScene::init_game() {
         }
     }
 
-    //创建出生点
+    // 创建出生点
     StartPoint::create(game_world, "start_point", Vec2(2 * 64, 248 * 64));
 
     auto keyboardListener = EventListenerKeyboard::create();
@@ -206,14 +207,14 @@ void GameScene::init_game() {
         auto b = eventMouse->getMouseButton();
         auto pos = eventMouse->getLocationInView();
         if (b == EventMouse::MouseButton::BUTTON_LEFT) {
-            GameAct act;
-            act.type = act_attack;
-            act.uid = players.find(Connection::instance()->get_uid())
-                          ->second->getUID();
+            /* GameAct act;
+             act.type = act_attack;
+             act.uid = players.find(Connection::instance()->get_uid())
+                           ->second->getUID();
 
-            act.param1 = 1;
-            act.param2 = 0;
-            _frame_manager->pushGameAct(act);
+             act.param1 = 1;
+             act.param2 = 0;
+             _frame_manager->pushGameAct(act);*/
         }
     };
 
@@ -254,69 +255,10 @@ void GameScene::init_game() {
 
     this->schedule(
         [&](float) {
-            const auto stop_move = [this](int x) {
-                GameAct act;
-                act.type = act_move_stop;
-                act.uid = Connection::instance()->get_uid();
-                act.param1 = x;
-                _frame_manager->pushGameAct(act);
-            };
-
-            const auto start_move = [this](int x) {
-                GameAct act;
-                act.type = act_move_start;
-                act.uid = Connection::instance()->get_uid();
-                act.param1 = x;
-                _frame_manager->pushGameAct(act);
-            };
-
-            static struct {
-                void reset() {
-                    on_move = false;
-                    x = 0;
-                }
-
-                bool on_move = false;
-                int x = 0;
-            } last_statue;
-
-            auto vec = joystick_move->getMoveVec();
-
-            if (abs(vec.x) < 0.01f) {
-                if (last_statue.on_move) {
-                    stop_move(last_statue.x);
-
-                    last_statue.reset();
-                }
-                return;
-            }
-
-            int nx = -1;
-            if (vec.x < 0) {
-                nx = -1;
-            }
-            if (vec.x > 0) {
-                nx = 1;
-            }
-
-            if (last_statue.on_move) {
-                // 两次方向一致，说明移动方向一样，不用管
-                if (last_statue.x == nx) {
-                    return;
-                }
-                // 两次方向不一致，先停掉上一次，再开始这一次
-                if (last_statue.x != nx) {
-                    stop_move(last_statue.x);
-                    start_move(nx);
-                    last_statue.x = nx;
-                }
-            } else {
-                start_move(nx);
-                last_statue.on_move = true;
-                last_statue.x = nx;
-            }
+            move_upd();
+            attack_upd();
         },
-        0.03f, "move_upd");
+        0.03f, "control_upd");
 
     this->schedule(
         [&](float) {
@@ -337,7 +279,7 @@ void GameScene::init_game() {
 
     this->schedule(
         [&](float) {
-            auto vec = joystick_attack->getMoveVec();
+            /*auto vec = joystick_attack->getMoveVec();
             if (vec == Vec2::ZERO) {
                 return;
             }
@@ -348,7 +290,7 @@ void GameScene::init_game() {
 
             act.param1 = vec.x;
             act.param2 = vec.y;
-            _frame_manager->pushGameAct(act);
+            _frame_manager->pushGameAct(act);*/
         },
         0.4f, "attack_upd");
 }
@@ -375,6 +317,134 @@ void GameScene::notice(const json& event) {
         ping_ms =
             duration_cast<duration<float>>(ping_time1 - ping_time0).count() *
             1000 / 2;
+    }
+}
+
+void GameScene::move_upd() {
+    const auto stop_move = [this](int x) {
+        GameAct act;
+        act.type = act_move_stop;
+        act.uid = Connection::instance()->get_uid();
+        act.param1 = x;
+        _frame_manager->pushGameAct(act);
+    };
+
+    const auto start_move = [this](int x) {
+        GameAct act;
+        act.type = act_move_start;
+        act.uid = Connection::instance()->get_uid();
+        act.param1 = x;
+        _frame_manager->pushGameAct(act);
+    };
+
+    static struct {
+        void reset() {
+            on_move = false;
+            x = 0;
+        }
+
+        bool on_move = false;
+        int x = 0;
+    } last_statue;
+
+    auto vec = joystick_move->getMoveVec();
+
+    if (abs(vec.x) < 0.01f) {
+        if (last_statue.on_move) {
+            stop_move(last_statue.x);
+
+            last_statue.reset();
+        }
+        return;
+    }
+
+    int nx = -1;
+    if (vec.x < 0) {
+        nx = -1;
+    }
+    if (vec.x > 0) {
+        nx = 1;
+    }
+
+    if (last_statue.on_move) {
+        // 两次方向一致，说明移动方向一样，不用管
+        if (last_statue.x == nx) {
+            return;
+        }
+        // 两次方向不一致，先停掉上一次，再开始这一次
+        if (last_statue.x != nx) {
+            stop_move(last_statue.x);
+            start_move(nx);
+            last_statue.x = nx;
+        }
+    } else {
+        start_move(nx);
+        last_statue.on_move = true;
+        last_statue.x = nx;
+    }
+}
+
+void GameScene::attack_upd() {
+    const auto stop_attack = [this](int x) {
+        GameAct act;
+        act.type = act_attack_stop;
+        act.uid = Connection::instance()->get_uid();
+        act.param1 = x;
+        _frame_manager->pushGameAct(act);
+    };
+
+    const auto start_attack = [this](int x) {
+        GameAct act;
+        act.type = act_attack_start;
+        act.uid = Connection::instance()->get_uid();
+        act.param1 = x;
+        _frame_manager->pushGameAct(act);
+    };
+
+    static struct {
+        void reset() {
+            on_attack = false;
+            x = 0;
+        }
+
+        bool on_attack = false;
+        int x = 0;
+    } last_statue;
+
+    auto vec = joystick_attack->getMoveVec();
+
+    if (abs(vec.x) < 0.01f) {
+        if (last_statue.on_attack) {
+            stop_attack(last_statue.x);
+
+            last_statue.reset();
+        }
+        return;
+    }
+
+    int nx = -1;
+    if (vec.x < 0) {
+        nx = -1;
+    }
+    if (vec.x > 0) {
+        nx = 1;
+    }
+
+    if (last_statue.on_attack) {
+        // 两次方向一致，说明移动方向一样，不用管
+        if (last_statue.x == nx) {
+            return;
+        }
+        // 两次方向不一致，先停掉上一次，再开始这一次
+        if (last_statue.x != nx) {
+            stop_attack(last_statue.x);
+            start_attack(nx);
+            last_statue.x = nx;
+        }
+    } else {
+        start_attack(nx);
+        last_statue.on_attack = true;
+        last_statue.x = nx;
     }
 }
 
