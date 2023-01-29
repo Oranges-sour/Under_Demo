@@ -36,9 +36,9 @@ bool DemoScene::init() {
     PhysicsShapeCache::getInstance()->addShapesWithFile("demo_physics.plist");
 
     //
-    // Connection::instance()->open("ws://101.43.196.171:23482");
+    Connection::instance()->open("ws://101.42.237.241:23482");
 
-    Connection::instance()->open("ws://127.0.0.1:23482");
+    //Connection::instance()->open("ws://127.0.0.1:23482");
 
     auto visibleSize = Director::getInstance()->getVisibleSize();
 
@@ -51,8 +51,8 @@ bool DemoScene::init() {
     this->schedule(
         [&, la](float) {
             if (Connection::instance()->is_error()) {
-                //  Connection::instance()->open("ws://101.43.196.171:23482");
-                Connection::instance()->open("ws://127.0.0.1:23482");
+                  Connection::instance()->open("ws://101.42.237.241:23482");
+                //Connection::instance()->open("ws://127.0.0.1:23482");
             } else if (Connection::instance()->is_open()) {
                 this->unschedule("check_server_online");
                 this->init_after_connect();
