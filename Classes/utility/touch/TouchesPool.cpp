@@ -4,7 +4,7 @@
 
 using namespace std;
 
-TouchesPool* TouchesPool::instance = new TouchesPool{};
+TouchesPool* TouchesPool::_instance = new TouchesPool{};
 
 TouchesPool::TouchesPool()
 {
@@ -16,50 +16,50 @@ TouchesPool::~TouchesPool()
 
 void TouchesPool::addToPool(Touch* touch)
 {
-	pool.push_back(touch);
+	_pool.push_back(touch);
 }
 
 const vector<Touch*>& TouchesPool::getAllTouches()
 {
-	return pool;
+	return _pool;
 }
 
 void TouchesPool::removeFromPool(Touch* touch)
 {
-	pool.erase(remove(pool.begin(), pool.end(), touch), pool.end());
-	auto iter = registedTouch.find(touch);
-	if (iter != registedTouch.end())
+	_pool.erase(remove(_pool.begin(), _pool.end(), touch), _pool.end());
+	auto iter = _registed_touch.find(touch);
+	if (iter != _registed_touch.end())
 	{
 		auto& callBacks = iter->second;
 		for (auto& it : callBacks)
 			it(touch);
-		registedTouch.erase(iter);
+		_registed_touch.erase(iter);
 	}
 }
 
 void TouchesPool::removeAllTouches()
 {
-	for (auto& touch : pool)
+	for (auto& touch : _pool)
 	{
-		auto iter = registedTouch.find(touch);
-		if (iter != registedTouch.end())
+		auto iter = _registed_touch.find(touch);
+		if (iter != _registed_touch.end())
 		{
 			auto& callBacks = iter->second;
 			for (auto& it : callBacks)
 				it(touch);
 		}
 	}
-	pool.clear();
-	registedTouch.clear();
+	_pool.clear();
+	_registed_touch.clear();
 }
 
 void TouchesPool::registTouch(Touch* touch, const function<void(Touch*)>& removeCallBack)
 {
-	auto iter = registedTouch.find(touch);
-	if (iter != registedTouch.end())
+	auto iter = _registed_touch.find(touch);
+	if (iter != _registed_touch.end())
 		iter->second.push_back(removeCallBack);
 	else
-		registedTouch.insert({ touch,{removeCallBack} });
+		_registed_touch.insert({ touch,{removeCallBack} });
 }
 
 Touch* TouchesPool::getNearest(const Vec2& pos)
@@ -70,7 +70,7 @@ Touch* TouchesPool::getNearest(const Vec2& pos)
 		Touch* touch = nullptr;
 	}temp;
 
-	for (auto it = pool.begin(); it != pool.end(); ++it)
+	for (auto it = _pool.begin(); it != _pool.end(); ++it)
 	{
 		auto& touch = *it;
 		float _distance = MyMath::distance(touch->getLocation(), pos);
@@ -91,7 +91,7 @@ Touch* TouchesPool::getNearestWithStartPos(const Vec2& pos)
 		Touch* touch = nullptr;
 	}temp;
 
-	for (auto it = pool.begin(); it != pool.end(); ++it)
+	for (auto it = _pool.begin(); it != _pool.end(); ++it)
 	{
 		auto& touch = *it;
 		float _distance = MyMath::distance(touch->getStartLocation(), pos);

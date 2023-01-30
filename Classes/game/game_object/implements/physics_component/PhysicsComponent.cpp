@@ -73,9 +73,9 @@ void PhysicsComponent::WallContactComponent::updateAfterEvent(
         p0 = pos + left_top_offset;
         p1 = pos + right_bottom_offset;
         // ×óÏÂ
-        ip0 = maph->convert_in_map(p0);
+        ip0 = maph->convertInMap(p0);
         // ÓÒÉÏ
-        ip1 = maph->convert_in_map(p1);
+        ip1 = maph->convertInMap(p1);
     };
 
     convert();

@@ -10,7 +10,7 @@ void GameMap::init(shared_ptr<MapGeneratorComponent> mapGenerator,
     this->_map_helper = mapHelper;
     this->_map_physics = mapPhysics;
 
-    mapGenerator->generate(w, h, this->map);
+    mapGenerator->generate(_w, _h, this->_map);
 }
 
 void GameMap::updateLogic(GameWorld* game_world) {
@@ -22,9 +22,9 @@ void GameMap::updateLogic(GameWorld* game_world) {
 /////////////////////////////////////////////////////////////////////////
 
 void MapGameObjectTileComponent::updateLogic(GameObject* ob) {
-    cnt -= 1;
-    if (cnt == 0) {
-        _dirty->erase(uid);
+    _cnt -= 1;
+    if (_cnt == 0) {
+        _dirty->erase(_uid);
         ob->removeFromParent();
     }
 }
@@ -33,6 +33,6 @@ void MapGameObjectTileComponent::receiveEvent(GameObject* ob,
                                               const json& event) {
     string type = event["type"];
     if (type == "refresh") {
-        cnt = 10;
+        _cnt = 10;
     }
 }

@@ -40,12 +40,12 @@ void ConnectionStatue_Default::processMessage(Connection* connection,
 }
 
 void ConnectionStatue_Default::update(Connection* connection, int interval_ms) {
-    if (!callOnce) {
-        callOnce = true;
+    if (!_call_once) {
+        _call_once = true;
 
-        string uid = Tools::random_string(8);
+        string uid = Tools::randomString(8);
 
-        connection->set_uid(uid);
+        connection->setUID(uid);
 
         json msg;
         msg["type"] = "client_check";
@@ -80,7 +80,7 @@ void ConnectionStatue_Normal::processMessage(Connection* connection,
         json event;
         event["type"] = "game_statue";
         event["games"] = vec;
-        connection->push_listenerEvent(event);
+        connection->pushListenerEvent(event);
         return;
     }
 
@@ -94,7 +94,7 @@ void ConnectionStatue_Normal::processMessage(Connection* connection,
         event["statue"] = js["statue"];
         event["info"] = js["info"];
 
-        connection->push_listenerEvent(event);
+        connection->pushListenerEvent(event);
         return;
     }
 }
@@ -148,7 +148,7 @@ void ConnectionStatue_InGame::processMessage(Connection* connection,
         event["uid"] = js["uid"];
         event["info"] = js["info"];
 
-        connection->push_listenerEvent(event);
+        connection->pushListenerEvent(event);
         return;
     }
     if (type == "quit_game_result") {
@@ -158,7 +158,7 @@ void ConnectionStatue_InGame::processMessage(Connection* connection,
             event["type"] = "quit_game_result";
             event["statue"] = "success";
 
-            connection->push_listenerEvent(event);
+            connection->pushListenerEvent(event);
 
             connection->switchStatue(make_shared<ConnectionStatue_Normal>());
         }
@@ -173,7 +173,7 @@ void ConnectionStatue_InGame::processMessage(Connection* connection,
         event["player_cnt"] = js["player_cnt"];
         event["player_uid"] = js["player_uid"];
 
-        connection->push_listenerEvent(event);
+        connection->pushListenerEvent(event);
     }
 }
 
@@ -241,18 +241,18 @@ void ConnectionStatue_StartGame::processMessage(Connection* connection,
             event["type"] = "quit_game_result";
             event["statue"] = "success";
 
-            connection->push_listenerEvent(event);
+            connection->pushListenerEvent(event);
 
             connection->switchStatue(make_shared<ConnectionStatue_Normal>());
         }
     }
 
     if (type == "frame") {
-        connection->push_listenerEvent(js);
+        connection->pushListenerEvent(js);
     }
 
     if (type == "ping") {
-        connection->push_listenerEvent(js);
+        connection->pushListenerEvent(js);
     }
 }
 

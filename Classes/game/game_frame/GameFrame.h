@@ -58,9 +58,9 @@ public:
                      bool role_back = true /*是否作用到自己*/);
 
 private:
-    shared_ptr<GameFrame> generate_frame(const json& event);
+    shared_ptr<GameFrame> generateFrame(const json& event);
 
-    json generate_json(shared_ptr<GameFrame> game_frame);
+    json generateJson(shared_ptr<GameFrame> game_frame);
 
 private:
     GameWorld* _game_world;
@@ -70,7 +70,7 @@ private:
 
 class GameFrame {
 public:
-    vector<GameAct> actions;
+    vector<GameAct> _actions;
 };
 
 #endif

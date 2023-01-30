@@ -18,7 +18,7 @@ public:
 
 class ConnectionStatue_Default : public ConnectionStatue {
 public:
-    ConnectionStatue_Default() { callOnce = false; }
+    ConnectionStatue_Default() { _call_once = false; }
     virtual void processMessage(Connection* connection,
                                 const string& message) override;
     virtual void update(Connection* connection, int interval_ms) override;
@@ -26,7 +26,7 @@ public:
                               const json& event) override {}
 
 private:
-    bool callOnce;
+    bool _call_once;
 };
 
 class ConnectionStatue_Normal : public ConnectionStatue {

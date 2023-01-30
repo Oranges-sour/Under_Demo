@@ -2,16 +2,16 @@
 
 void MapPreRenderer1::init(MapTile* map, unsigned int seed) {
     this->_map = map;
-    x_max = map->w / 16;
+    x_max = map->_w / 16;
     x_now = 0;
 
-    y_max = map->h / 16;
+    y_max = map->_h / 16;
     y_now = 0;
 
     _random = make_shared<Random>(seed);
 
-    mark1.resize((map->w + 1) * (map->h + 1), false);
-    mark.resize((map->w + 1) * (map->h + 1), false);
+    mark1.resize((map->_w + 1) * (map->_h + 1), false);
+    mark.resize((map->_w + 1) * (map->_h + 1), false);
 }
 
 bool MapPreRenderer1::isPreRenderFinish() { return _isPreRenderFinish; }
@@ -61,7 +61,7 @@ Size MapPreRenderer1::afterPreRender(Node* target) {
         tex->release();
     }
 
-    return Size(64 * _map->w, 64 * _map->h);
+    return Size(64 * _map->_w, 64 * _map->_h);
 }
 
 vector<iVec2> MapPreRenderer1::getDec2Pos() { return this->dec2_pos; }
@@ -102,7 +102,7 @@ Texture2D* MapPreRenderer1::render(const MapArea& area) {
     const int dy[8] = {1, 1, 1, 0, -1, -1, -1, 0};
 
     const auto inside = [&](int x, int y) {
-        if (x >= 1 && x <= _map->w && y >= 1 && y <= _map->h) {
+        if (x >= 1 && x <= _map->_w && y >= 1 && y <= _map->_h) {
             return true;
         }
         return false;
@@ -246,7 +246,7 @@ void MapPreRenderer1::createDec2(int x, int y, MapTileType type, int bit_mask,
 
     rand_int r2(0, 1);
 
-    if (type == grass && mark[y * _map->w + x] == false) {
+    if (type == grass && mark[y * _map->_w + x] == false) {
         bool all_grass = true;
         // ´ó¿é²ÝµÄ×°ÊÎ
         for (int k = 0; k < 2; ++k) {
@@ -261,7 +261,7 @@ void MapPreRenderer1::createDec2(int x, int y, MapTileType type, int bit_mask,
                 break;
             }
 
-            mark[ny * _map->w + nx] = true;
+            mark[ny * _map->_w + nx] = true;
         }
         if (all_grass) {
             bool all_air = true;
@@ -308,12 +308,12 @@ void MapPreRenderer1::createDec3(int x, int y, MapTileType type, int bit_mask,
     const int dx3[] = {0, 0, 1, 1};
     const int dy3[] = {-1, -2, -1, -2};
 
-    if (type == dirt && mark1[y * _map->w + x] == false) {
+    if (type == dirt && mark1[y * _map->_w + x] == false) {
         bool all_block = true;
         for (int k = 0; k < 2; ++k) {
             int nx = x + dx2[k];
             int ny = y + dy2[k];
-            if (!inside(nx, ny) || mark1[ny * _map->w + nx]) {
+            if (!inside(nx, ny) || mark1[ny * _map->_w + nx]) {
                 all_block = false;
                 break;
             }
@@ -337,8 +337,8 @@ void MapPreRenderer1::createDec3(int x, int y, MapTileType type, int bit_mask,
                 }
             }
             if (all_air) {
-                mark1[y * _map->w + x] = true;
-                mark1[y * _map->w + x + 1] = true;
+                mark1[y * _map->_w + x] = true;
+                mark1[y * _map->_w + x + 1] = true;
 
                 auto g =
                     Sprite::createWithSpriteFrameName(grass_decoration3[0]);
@@ -372,13 +372,13 @@ void MapPreRenderer1::createDec4(int x, int y, MapTileType type, int bit_mask,
     const int dx3[] = {0, 0, 1, 1};
     const int dy3[] = {-1, -2, -1, -2};
 
-    if (type == dirt && mark1[y * _map->w + x] == false) {
+    if (type == dirt && mark1[y * _map->_w + x] == false) {
         bool all_block = true;
         for (int k = 0; k < 2; ++k) {
             int nx = x + dx2[k];
             int ny = y + dy2[k];
 
-            if (!inside(nx, ny) || mark1[ny * _map->w + nx]) {
+            if (!inside(nx, ny) || mark1[ny * _map->_w + nx]) {
                 all_block = false;
                 break;
             }
@@ -402,8 +402,8 @@ void MapPreRenderer1::createDec4(int x, int y, MapTileType type, int bit_mask,
                 }
             }
             if (all_air) {
-                mark1[y * _map->w + x] = true;
-                mark1[y * _map->w + (x - 1)] = true;
+                mark1[y * _map->_w + x] = true;
+                mark1[y * _map->_w + (x - 1)] = true;
 
                 auto g =
                     Sprite::createWithSpriteFrameName(grass_decoration3[0]);
@@ -442,12 +442,12 @@ void MapPreRenderer1::createDec5(int x, int y, MapTileType type, int bit_mask,
     const int dx2[] = {0, 1, 0, 1, 0, 1};
     const int dy2[] = {-1, -1, -2, -2, -3, -3};
 
-    if ((*_map)[x][y] != air && mark1[y * _map->w + x] == false) {
+    if ((*_map)[x][y] != air && mark1[y * _map->_w + x] == false) {
         bool step1 = true;
         for (int k = 0; k < 1; ++k) {
             int nx = x + dx[k];
             int ny = y + dy[k];
-            if (!inside(nx, ny) || mark1[ny * _map->w + nx]) {
+            if (!inside(nx, ny) || mark1[ny * _map->_w + nx]) {
                 step1 = false;
                 break;
             }
@@ -492,8 +492,8 @@ void MapPreRenderer1::createDec5(int x, int y, MapTileType type, int bit_mask,
                     if (r1(*_random) <= 2) {
                         return;
                     }
-                    mark1[y * _map->w + x] = true;
-                    mark1[y * _map->w + (x + 1)] = true;
+                    mark1[y * _map->_w + x] = true;
+                    mark1[y * _map->_w + (x + 1)] = true;
 
                     rand_range += 1;
 
@@ -528,7 +528,7 @@ void MapPreRenderer1::createDec6(int x, int y, MapTileType type, int bit_mask,
 
     const int dx1[] = {0, 1, 2, 3, 0, 1, 2, 3};
     const int dy1[] = {-1, -1, -1, -1, -2, -2, -2, -2};
-    if (type != air && mark1[y * _map->w + x] == false) {
+    if (type != air && mark1[y * _map->_w + x] == false) {
         bool step1 = true;
         for (int k = 0; k < 3; ++k) {
             int nx = x + dx[k];
@@ -537,7 +537,7 @@ void MapPreRenderer1::createDec6(int x, int y, MapTileType type, int bit_mask,
                 step1 = false;
                 break;
             }
-            if ((*_map)[nx][ny] == air || mark1[ny * _map->w + nx]) {
+            if ((*_map)[nx][ny] == air || mark1[ny * _map->_w + nx]) {
                 step1 = false;
             }
         }
@@ -556,10 +556,10 @@ void MapPreRenderer1::createDec6(int x, int y, MapTileType type, int bit_mask,
                 }
             }
             if (suc) {
-                mark1[y * _map->w + x] = true;
-                mark1[y * _map->w + x + 1] = true;
-                mark1[y * _map->w + x + 2] = true;
-                mark1[y * _map->w + x + 3] = true;
+                mark1[y * _map->_w + x] = true;
+                mark1[y * _map->_w + x + 1] = true;
+                mark1[y * _map->_w + x + 2] = true;
+                mark1[y * _map->_w + x + 3] = true;
 
                 auto g = Sprite::createWithSpriteFrameName(grass_decoration[0]);
                 g->setAnchorPoint(Vec2(0, 1));

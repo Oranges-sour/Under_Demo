@@ -10,12 +10,12 @@ void GameFrameManager::init(GameWorld* game_world) {
     auto listener = make_shared<ConnectionEventListener>(
         [&](const json& event) { this->noitce(event); });
 
-    Connection::instance()->regeist_event_listener(listener,
+    Connection::instance()->addEventListener(listener,
                                                    "frame_manager_listener");
 }
 
 void GameFrameManager::release() {
-    Connection::instance()->remove_event_listener("frame_manager_listener");
+    Connection::instance()->removeEventListener("frame_manager_listener");
 }
 
 void GameFrameManager::noitce(const json& frame_event) {
@@ -23,25 +23,25 @@ void GameFrameManager::noitce(const json& frame_event) {
     if (type != "frame") {
         return;
     }
-    auto frame = this->generate_frame(frame_event);
+    auto frame = this->generateFrame(frame_event);
 
-    for (auto& it : frame->actions) {
+    for (auto& it : frame->_actions) {
         _game_world->pushGameAct(it);
     }
 }
 
 void GameFrameManager::update() {
-    if (_next_frame->actions.size() == 0) {
+    if (_next_frame->_actions.size() == 0) {
         return;
     }
 
-    auto js = this->generate_json(_next_frame);
-    Connection::instance()->push_statueEvent(js);
+    auto js = this->generateJson(_next_frame);
+    Connection::instance()->pushStatueEvent(js);
 
     _next_frame = make_shared<GameFrame>();
 }
 
-shared_ptr<GameFrame> GameFrameManager::generate_frame(const json& event) {
+shared_ptr<GameFrame> GameFrameManager::generateFrame(const json& event) {
     auto game_frame = make_shared<GameFrame>();
 
     string type = event["type"];
@@ -62,21 +62,21 @@ shared_ptr<GameFrame> GameFrameManager::generate_frame(const json& event) {
         act.param3 = it["param3"];
         act.param4 = it["param4"];
 
-        game_frame->actions.push_back(act);
+        game_frame->_actions.push_back(act);
     }
 
     return game_frame;
 }
 
-json GameFrameManager::generate_json(shared_ptr<GameFrame> game_frame) {
+json GameFrameManager::generateJson(shared_ptr<GameFrame> game_frame) {
     json js;
     js["type"] = "frame";
 
     json frame;
-    frame["player"] = Connection::instance()->get_uid();
+    frame["player"] = Connection::instance()->getUID();
 
     vector<json> vec;
-    for (auto& it : _next_frame->actions) {
+    for (auto& it : _next_frame->_actions) {
         json act;
         act["uid"] = it.uid;
         act["type"] = it.type;
@@ -95,7 +95,7 @@ json GameFrameManager::generate_json(shared_ptr<GameFrame> game_frame) {
 }
 
 void GameFrameManager::pushGameAct(const GameAct& act, bool role_back) {
-    _next_frame->actions.push_back(act);
+    _next_frame->_actions.push_back(act);
     if (role_back) {
         // Á¢¼´·¢»Ø
         _game_world->pushGameAct(act);

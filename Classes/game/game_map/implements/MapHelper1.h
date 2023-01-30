@@ -5,7 +5,7 @@
 
 class MapHelper1 : public MapHelperComponent {
 public:
-    virtual iVec2 convert_in_map(const Vec2& pos);
+    virtual iVec2 convertInMap(const Vec2& pos);
 };
 
 #endif

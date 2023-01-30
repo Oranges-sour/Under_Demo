@@ -110,7 +110,7 @@ public:
 
     GameWorld* getGameWorld() { return this->_game_world; }
 
-    Quad_node<GameObject*> _quad_node;
+    QuadNode<GameObject*> _quad_node;
 
     // Ö¡¶¯»­
     void switchFrameActionStatue(

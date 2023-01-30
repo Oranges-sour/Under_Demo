@@ -90,7 +90,7 @@ bool GameScene::init() {
 
     auto listener = make_shared<ConnectionEventListener>(
         [&](const json& event) { notice(event); });
-    Connection::instance()->regeist_event_listener(listener,
+    Connection::instance()->addEventListener(listener,
                                                    "GameScene_listener");
 
     auto refline = RefLineLayer::create();
@@ -157,13 +157,13 @@ void GameScene::init_game() {
     this->schedule([&](float) { _frame_manager->update(); },
                    "frame_manager_upd");
 
-    game_map_pre_renderer->afterPreRender(game_world->get_game_map_target());
+    game_map_pre_renderer->afterPreRender(game_world->getGameMapTarget());
 
     game_world->setGameMap(game_map);
 
     auto ren = make_shared<GameWorldRenderer1>();
     game_world->setGameRenderer(ren);
-    ren->init(game_world->get_game_renderer_target());
+    ren->init(game_world->getGameRendererTarget());
 
     auto dec = make_shared<MapDecorationCreator1>();
     dec->setDec2Pos(game_map_pre_renderer->getDec2Pos());
@@ -179,7 +179,7 @@ void GameScene::init_game() {
                                       GL_REPEAT};
     game_bk->getTexture()->setTexParameters(texParams);
     game_bk->setTextureRect(Rect(0, 0, 64 * 256, 64 * 256));
-    game_world->get_game_bk_target()->addChild(game_bk);
+    game_world->getGameBkTarget()->addChild(game_bk);
 
     // ´´½¨Íæ¼Ò
     for (auto& it : player_uid) {
@@ -187,8 +187,8 @@ void GameScene::init_game() {
             Player1::create(game_world, "player_1", Vec2(3 * 64, 253 * 64), it);
 
         players.insert({it, ob});
-        if (it == Connection::instance()->get_uid()) {
-            game_world->camera_follow(ob);
+        if (it == Connection::instance()->getUID()) {
+            game_world->setCameraFollow(ob);
         }
     }
 
@@ -209,7 +209,7 @@ void GameScene::init_game() {
         if (b == EventMouse::MouseButton::BUTTON_LEFT) {
             /* GameAct act;
              act.type = act_attack;
-             act._uid = players.find(Connection::instance()->get_uid())
+             act._uid = players.find(Connection::instance()->getUID())
                            ->second->getUID();
 
              act.param1 = 1;
@@ -223,13 +223,13 @@ void GameScene::init_game() {
     auto touchListener = EventListenerTouchAllAtOnce::create();
     touchListener->onTouchesBegan = [&](vector<Touch*> touch, Event*) -> void {
         for (auto& t : touch) {
-            TouchesPool::instance->addToPool(t);
+            TouchesPool::_instance->addToPool(t);
         }
     };
 
     touchListener->onTouchesEnded = [&](vector<Touch*> touch, Event*) -> void {
         for (auto& t : touch) {
-            TouchesPool::instance->removeFromPool(t);
+            TouchesPool::_instance->removeFromPool(t);
         }
     };
 
@@ -264,7 +264,7 @@ void GameScene::init_game() {
         [&](float) {
             for (auto& it : players) {
                 auto ob = it.second;
-                if (ob->getUID() == Connection::instance()->get_uid()) {
+                if (ob->getUID() == Connection::instance()->getUID()) {
                     GameAct act;
                     act.type = act_position_force_set;
                     act.uid = ob->getUID();
@@ -286,7 +286,7 @@ void GameScene::init_game() {
 
             GameAct act;
             act.type = act_attack;
-            act._uid = Connection::instance()->get_uid();
+            act._uid = Connection::instance()->getUID();
 
             act.param1 = vec.x;
             act.param2 = vec.y;
@@ -324,7 +324,7 @@ void GameScene::move_upd() {
     const auto stop_move = [this](int x) {
         GameAct act;
         act.type = act_move_stop;
-        act.uid = Connection::instance()->get_uid();
+        act.uid = Connection::instance()->getUID();
         act.param1 = x;
         _frame_manager->pushGameAct(act);
     };
@@ -332,7 +332,7 @@ void GameScene::move_upd() {
     const auto start_move = [this](int x) {
         GameAct act;
         act.type = act_move_start;
-        act.uid = Connection::instance()->get_uid();
+        act.uid = Connection::instance()->getUID();
         act.param1 = x;
         _frame_manager->pushGameAct(act);
     };
@@ -388,7 +388,7 @@ void GameScene::attack_upd() {
     const auto stop_attack = [this](int x) {
         GameAct act;
         act.type = act_attack_stop;
-        act.uid = Connection::instance()->get_uid();
+        act.uid = Connection::instance()->getUID();
         act.param1 = x;
         _frame_manager->pushGameAct(act);
     };
@@ -396,7 +396,7 @@ void GameScene::attack_upd() {
     const auto start_attack = [this](int x) {
         GameAct act;
         act.type = act_attack_start;
-        act.uid = Connection::instance()->get_uid();
+        act.uid = Connection::instance()->getUID();
         act.param1 = x;
         _frame_manager->pushGameAct(act);
     };
@@ -453,7 +453,7 @@ void GameScene::keyDown(EventKeyboard::KeyCode key) {
         case EventKeyboard::KeyCode::KEY_W: {
             GameAct act;
             act.type = act_jump;
-            act.uid = Connection::instance()->get_uid();
+            act.uid = Connection::instance()->getUID();
             _frame_manager->pushGameAct(act);
         } break;
         case EventKeyboard::KeyCode::KEY_S: {
@@ -461,7 +461,7 @@ void GameScene::keyDown(EventKeyboard::KeyCode key) {
         case EventKeyboard::KeyCode::KEY_A: {
             GameAct act;
             act.type = act_move_start;
-            act.uid = Connection::instance()->get_uid();
+            act.uid = Connection::instance()->getUID();
             act.param1 = -1;
             _frame_manager->pushGameAct(act);
 
@@ -469,7 +469,7 @@ void GameScene::keyDown(EventKeyboard::KeyCode key) {
         case EventKeyboard::KeyCode::KEY_D: {
             GameAct act;
             act.type = act_move_start;
-            act.uid = Connection::instance()->get_uid();
+            act.uid = Connection::instance()->getUID();
             act.param1 = 1;
             _frame_manager->pushGameAct(act);
         } break;
@@ -485,14 +485,14 @@ void GameScene::keyUp(EventKeyboard::KeyCode key) {
         case EventKeyboard::KeyCode::KEY_A: {
             GameAct act;
             act.type = act_move_stop;
-            act.uid = Connection::instance()->get_uid();
+            act.uid = Connection::instance()->getUID();
             act.param1 = -1;
             _frame_manager->pushGameAct(act);
         } break;
         case EventKeyboard::KeyCode::KEY_D: {
             GameAct act;
             act.type = act_move_stop;
-            act.uid = Connection::instance()->get_uid();
+            act.uid = Connection::instance()->getUID();
             act.param1 = 1;
             _frame_manager->pushGameAct(act);
         } break;
@@ -506,7 +506,7 @@ void GameScene::try_ping() {
 
     json e;
     e["type"] = "ping";
-    Connection::instance()->push_statueEvent(e);
+    Connection::instance()->pushStatueEvent(e);
     ping_time0 = steady_clock::now();
     ping_finish = false;
 }

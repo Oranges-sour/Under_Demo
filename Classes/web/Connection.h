@@ -46,12 +46,12 @@ public:
     virtual void onClose(WebSocket *ws);
     virtual void onError(WebSocket *ws, const WebSocket::ErrorCode &error);
 
-    void process_message(const string &message);
+    void processMessage(const string &message);
     void update(int interval_ms);
 
-    bool is_open() { return _is_open; }
+    bool isOpen() { return _is_open; }
 
-    bool is_error() { return _is_error; }
+    bool isError() { return _is_error; }
 
     void switchStatue(shared_ptr<ConnectionStatue> newStatue) {
         _statue = newStatue;
@@ -59,37 +59,37 @@ public:
 
     void sendMessage(const string &message) { _ws->send(message); }
 
-    void regeist_event_listener(shared_ptr<ConnectionEventListener> event,
+    void addEventListener(shared_ptr<ConnectionEventListener> event,
                                 const string &key) {
-        event_listener.insert({key, event});
+        _event_listener.insert({key, event});
     }
 
-    void remove_event_listener(const string &key) { event_listener.erase(key); }
+    void removeEventListener(const string &key) { _event_listener.erase(key); }
 
     // 将事件推给监听者
-    void push_listenerEvent(const json &event);
+    void pushListenerEvent(const json &event);
 
     // 将事件推给状态机
-    void push_statueEvent(const json &event);
+    void pushStatueEvent(const json &event);
 
-    void set_uid(const string &newid) { uid = newid; }
+    void setUID(const string &newid) { _uid = newid; }
 
-    string get_uid() { return uid; }
+    string getUID() { return _uid; }
 
 private:
-    string uid;
+    string _uid;
     bool _is_open;
     bool _is_error;
 
     bool _start;
 
     // 给监听者的事件队列（监听者处理事件
-    queue<json> listener_event_queue;
+    queue<json> _listener_event_queue;
 
     // 给连接状态机的时间队列（状态机处理事件
-    queue<json> statue_event_queue;
+    queue<json> _statue_event_queue;
 
-    map<string, shared_ptr<ConnectionEventListener>> event_listener;
+    map<string, shared_ptr<ConnectionEventListener>> _event_listener;
 
     shared_ptr<ConnectionStatue> _statue;
     shared_ptr<WebSocket> _ws;

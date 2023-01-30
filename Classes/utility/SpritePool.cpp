@@ -1,6 +1,6 @@
 #include "SpritePool.h"
 
-vector<GameObject*> SpritePool::pool = vector<GameObject*>{};
+vector<GameObject*> SpritePool::_pool = vector<GameObject*>{};
 GameObject* SpritePool::first_available = nullptr;
 int SpritePool::max_size = 0;
 

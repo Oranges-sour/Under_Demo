@@ -62,7 +62,7 @@ void Joystick::_update()
     };
 
     if (!isCatched) {
-        auto touch = TouchesPool::instance->getNearestWithStartPos(originalPos);
+        auto touch = TouchesPool::_instance->getNearestWithStartPos(originalPos);
         if (touch && isInside(touch->getStartLocation())) {
             startTouch(touch);
         }
@@ -87,7 +87,7 @@ void Joystick::startTouch(Touch* touch)
         effect->stopAllActions();
         effect->runAction(run);
     };
-    TouchesPool::instance->registTouch(touch, removeCallBack);
+    TouchesPool::_instance->registTouch(touch, removeCallBack);
 
     //控制杆的特效会有0.3s的淡入效果
     const auto act = FadeIn::create(0.3f);

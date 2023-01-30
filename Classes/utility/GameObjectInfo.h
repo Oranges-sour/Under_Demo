@@ -20,7 +20,7 @@ public:
     const json& get(const string& key);
 
 private:
-    json BAD_JSON;
+    json _BAD_JSON;
     map<string, json> _map;
 };
 

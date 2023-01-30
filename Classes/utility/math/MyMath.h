@@ -5,6 +5,8 @@
 USING_NS_CC;
 #include <cmath>
 
+#include "Random.h"
+
 /**
  *平方
  *@param t:要被平方的数
@@ -14,9 +16,9 @@ inline float POT(float t) { return t * t; }
 
 constexpr float PI = 3.1415926f;
 
-//三角函数,角度模式
+// 三角函数,角度模式
 class DEG {
-   public:
+public:
     static float tan(float d) { return tanf(CC_DEGREES_TO_RADIANS(d)); }
     static float sin(float d) { return sinf(CC_DEGREES_TO_RADIANS(d)); }
     static float cos(float d) { return cosf(CC_DEGREES_TO_RADIANS(d)); }
@@ -27,7 +29,7 @@ class DEG {
 };
 
 class MyMath {
-   public:
+public:
     /**
     *从from指向to时,精灵需要的旋转角度
     *@param from:起始点
@@ -78,7 +80,7 @@ class MyMath {
      *@param delta:判断精度(如果两个数字相差大小不超过此值则认为是相等)
      *@return 是否相等
      */
-    static bool float_equal(float num1, float num2, float delta = 0.000001f);
+    static bool fEq(float num1, float num2, float delta = 0.000001f);
 
     /**
      *随机一个坐标,以position为中心点,x和y的偏移量在正负min到max之间
@@ -87,7 +89,8 @@ class MyMath {
      *@param max:最大偏移量
      *@return
      */
-    static Vec2 randPos(const Vec2& position, float min, float max);
+    static Vec2 randPos(const Vec2& position, float min, float max,
+                        Random& random);
 
     /**
      *将float四舍五入一位到int
@@ -95,41 +98,18 @@ class MyMath {
      *@return 四舍五入后的整数
      */
     static int floatRoundInt(float num);
-
-    /**
-     *初始化屏幕的设计大小
-     *@param size:设计大小
-     *@return 无
-     */
-    static void setScreenSize(const Size& size);
-
-    /**
-     *获得屏幕的设计大小
-     *@return 屏幕大小
-     */
-    static Size getScreenSize();
-
-   private:
-    static Size screenSize;
 };
 
-inline float MyMath::distance(const Vec2& p1, const Vec2& p2)
-{
+inline float MyMath::distance(const Vec2& p1, const Vec2& p2) {
     return sqrt(POT(p1.x - p2.x) + POT(p1.y - p2.y));
 }
 
-inline bool MyMath::float_equal(float num1, float num2, float delta)
-{
+inline bool MyMath::fEq(float num1, float num2, float delta) {
     return (abs(num1 - num2) <= delta);
 }
 
-inline int MyMath::floatRoundInt(float num)
-{
+inline int MyMath::floatRoundInt(float num) {
     return static_cast<int>(num + 0.5f);
 }
-
-inline void MyMath::setScreenSize(const Size& size) { screenSize = size; }
-
-inline Size MyMath::getScreenSize() { return screenSize; }
 
 #endif

@@ -38,7 +38,7 @@ public:
     void notice(const json& event);
 
     virtual void cleanup() override {
-        Connection::instance()->remove_event_listener("GameScene_listener");
+        Connection::instance()->removeEventListener("GameScene_listener");
         _frame_manager->release();
         Scene::cleanup();
     }

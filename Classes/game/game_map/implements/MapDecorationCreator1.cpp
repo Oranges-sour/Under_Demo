@@ -19,15 +19,15 @@ void MapDecorationCreator1::generate_1(GameWorld* world, MapTile* map_tile,
     auto& map = *map_tile;
 
     const auto inside = [&](int x, int y) {
-        if (x >= 1 && x <= map.w && y >= 1 && y <= map.h) {
+        if (x >= 1 && x <= map._w && y >= 1 && y <= map._h) {
             return true;
         }
         return false;
     };
 
     // 先找出所有符合的
-    for (int x = 2; x <= map.w - 1; ++x) {
-        for (int y = 2; y <= map.h - 1; ++y) {
+    for (int x = 2; x <= map._w - 1; ++x) {
+        for (int y = 2; y <= map._h - 1; ++y) {
             auto t = map[x][y];
             if (t == MapTileType::grass) {
                 int nx = x;
