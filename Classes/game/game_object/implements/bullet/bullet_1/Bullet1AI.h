@@ -19,6 +19,7 @@ public:
     virtual void updateAfterEvent(GameObject* ob) override {}
 
 private:
+private:
     Vec2 direction;
     float move_speed;
     float rotate_speed;

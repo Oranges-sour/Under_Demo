@@ -2,11 +2,10 @@
 
 #include "game/game_map/GameMap.h"
 
-void PhysicsComponent::updateLogic(GameObject* ob) {
-    posOld = posNow;
-    rotationOld = rotationNow;
-    opacityOld = opacityNow;
-    scaleOld = scaleNow;
+PhysicsComponent::PhysicsComponent()
+    : scaleNow(Vec2(1.0, 1.0)), opacityNow(1.0), rotationNow(0.0) {
+    this->schedule([&](GameObject* ob) { upd(ob); }, 0,
+                   "physics_component_upd");
 }
 
 void PhysicsComponent::updateDraw(GameObject* ob, float rate) {
@@ -48,6 +47,13 @@ void PhysicsComponent::setSpeedComponent(shared_ptr<SpeedComponent> speed) {
 void PhysicsComponent::setGravityComponent(
     shared_ptr<GravityComponent> gravity) {
     this->gravity_component = gravity;
+}
+
+void PhysicsComponent::upd(GameObject* ob) {
+    posOld = posNow;
+    rotationOld = rotationNow;
+    opacityOld = opacityNow;
+    scaleOld = scaleNow;
 }
 
 PhysicsComponent::WallContactComponent::WallContactComponent(

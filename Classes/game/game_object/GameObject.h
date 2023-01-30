@@ -139,15 +139,16 @@ private:
 
 class GameComponent {
 public:
-    void schedule(const function<void(void)>& call_back, int interval,
+    void schedule(const function<void(GameObject* ob)>& call_back, int interval,
                   const string& key, int repeat_time = INT_MAX,
-                  int first_run_delay = 0);
-    void scheduleOnce(const function<void(void)>& call_back, int delay,
-                      const string& key);
+                  int first_run_delay = 0, int order = 0);
+    void scheduleOnce(const function<void(GameObject* ob)>& call_back,
+                      int delay, const string& key);
     void unschedule(const string& key);
 
-    virtual void updateLogicInScreenRect(GameObject* ob) = 0;
     void updateLogic(GameObject* ob);
+
+    virtual void updateLogicInScreenRect(GameObject* ob) = 0;
     virtual void updateDraw(GameObject* ob, float rate) = 0;
     virtual void receiveGameAct(GameObject* ob, const GameAct& event) = 0;
     virtual void receiveEvent(GameObject* ob, const json& event) = 0;
@@ -155,14 +156,14 @@ public:
 
 private:
     struct ScheduleBag {
-        ScheduleBag(const function<void(void)>& call_back, int interval,
-                    int repeat_time, int first_run_delay)
+        ScheduleBag(const function<void(GameObject* ob)>& call_back,
+                    int interval, int repeat_time, int first_run_delay)
             : call_back(call_back),
               interval(interval),
               repeat_time(repeat_time),
               first_run_delay(first_run_delay),
               cnt(0) {}
-        function<void(void)> call_back;
+        function<void(GameObject* ob)> call_back;
         int interval;
         int repeat_time;
         int first_run_delay;
@@ -170,7 +171,7 @@ private:
         int cnt;
     };
 
-    map<string, ScheduleBag> _schedule_bag;
+    map<int, map<string, ScheduleBag>> _schedule_bag;
 };
 
 class GameObjectFrameAction {

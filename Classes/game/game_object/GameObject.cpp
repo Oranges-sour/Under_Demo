@@ -125,48 +125,62 @@ void WorldLight::setWorldLight(const vector<json>& lights, GameObject* ob) {
     }
 }
 
-void GameComponent::schedule(const function<void(void)>& call_back,
-                             int interval, const string& key, int repeat_time,
-                             int first_run_delay) {
-    auto iter = _schedule_bag.find(key);
-    if (iter != _schedule_bag.end()) {
-        CCLOG("GameComponent::schedule(...): this key has existed before.");
+void GameComponent::schedule(const function<void(GameObject* ob)>& call_back,
+                             int interval, const string& key,
+                             int repeat_time = INT_MAX, int first_run_delay = 0,
+                             int order = 0) {
+    for (auto& m : _schedule_bag) {
+        auto iter = m.second.find(key);
+        if (iter != m.second.end()) {
+            CCLOG("GameComponent::schedule(...): this key has existed before.");
+            m.second.erase(iter);
+        }
     }
 
     ScheduleBag bag{call_back, interval, repeat_time, first_run_delay};
-    _schedule_bag.insert({key, bag});
+    if (_schedule_bag.find(order) == _schedule_bag.end()) {
+        _schedule_bag.insert({order, map<string, ScheduleBag>()});
+    }
+
+    _schedule_bag.find(order)->second.insert({key, bag});
 }
 
-void GameComponent::scheduleOnce(const function<void(void)>& call_back,
-                                 int delay, const string& key) {
+void GameComponent::scheduleOnce(
+    const function<void(GameObject* ob)>& call_back, int delay,
+    const string& key) {
     this->schedule(call_back, 0, key, 1, delay);
 }
 
-void GameComponent::unschedule(const string& key) { _schedule_bag.erase(key); }
+void GameComponent::unschedule(const string& key) {
+    for (auto& m : _schedule_bag) {
+        m.second.erase(key);
+    }
+}
 
 void GameComponent::updateLogic(GameObject* ob) {
     vector<string> need_to_erase;
+    for (auto& m : _schedule_bag) {
+        for (auto& it : m.second) {
+            auto& bag = it.second;
+            if (bag.first_run_delay > 0) {
+                bag.first_run_delay -= 1;
+                continue;
+            }
 
-    for (auto& it : _schedule_bag) {
-        auto& bag = it.second;
-        if (bag.first_run_delay > 0) {
-            bag.first_run_delay -= 1;
-            continue;
-        }
+            if (bag.repeat_time == 0) {
+                need_to_erase.push_back(it.first);
+                continue;
+            }
 
-        if (bag.repeat_time == 0) {
-            need_to_erase.push_back(it.first);
-            continue;
+            bag.cnt += 1;
+            if (bag.cnt > bag.interval) {
+                bag.cnt = 0;
+                bag.call_back(ob);
+                bag.repeat_time -= 1;
+            }
         }
-
-        bag.cnt += 1;
-        if (bag.cnt > bag.interval) {
-            bag.cnt = 0;
-            bag.call_back();
-            bag.repeat_time -= 1;
+        for (auto& it : need_to_erase) {
+            this->unschedule(it);
         }
-    }
-    for (auto& it : need_to_erase) {
-        this->unschedule(it);
     }
 }

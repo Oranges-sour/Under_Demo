@@ -5,10 +5,8 @@
 
 class PhysicsComponent : public GameComponent {
 public:
-    PhysicsComponent()
-        : scaleNow(Vec2(1.0, 1.0)), opacityNow(1.0), rotationNow(0.0) {}
+    PhysicsComponent();
     virtual void updateLogicInScreenRect(GameObject* ob) override {}
-    virtual void updateLogic(GameObject* ob) override;
     virtual void updateDraw(GameObject* ob, float rate) override;
     virtual void receiveGameAct(GameObject* ob, const GameAct& event) override {
     }
@@ -26,6 +24,9 @@ public:
     void setWallContactComponent(shared_ptr<WallContactComponent> wall_contact);
     void setSpeedComponent(shared_ptr<SpeedComponent> speed);
     void setGravityComponent(shared_ptr<GravityComponent> gravity);
+
+private:
+    void upd(GameObject* ob);
 
 protected:
     shared_ptr<WallContactComponent> wall_contact_component;
