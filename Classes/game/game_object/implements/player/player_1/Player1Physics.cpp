@@ -22,15 +22,15 @@ Player1Physics::Player1Physics(const Vec2& start_pos, float move_speed,
                                                    [&](GameObject*, int) {});
     frame_jump = make_shared<GameObjectFrameAction>(
         frame_action_jump, [&](GameObject* ob, int) {
-            ob->switch_frame_action_statue(frame_jump_stay);
+            ob->switchFrameActionStatue(frame_jump_stay);
         });
     frame_jump_stay = make_shared<GameObjectFrameAction>(
         frame_action_jump_stay, [&](GameObject* ob, int c) {
             if (c >= 8) {
                 if (run) {
-                    ob->switch_frame_action_statue(frame_run);
+                    ob->switchFrameActionStatue(frame_run);
                 } else {
-                    ob->switch_frame_action_statue(frame_stay);
+                    ob->switchFrameActionStatue(frame_stay);
                 }
             }
         });
@@ -60,9 +60,9 @@ void Player1Physics::receiveEvent(GameObject* ob, const json& event) {
             }
 
             if (run) {
-                ob->switch_frame_action_statue(frame_run);
+                ob->switchFrameActionStatue(frame_run);
             } else {
-                ob->switch_frame_action_statue(frame_stay);
+                ob->switchFrameActionStatue(frame_stay);
             }
             if (speed.x < 0) {
                 scaleNow.x = -1;
@@ -75,12 +75,12 @@ void Player1Physics::receiveEvent(GameObject* ob, const json& event) {
         attack += event["x"];
         if (abs(attack) > 0.1) {
             on_attack = true;
-            ob->switch_frame_action_statue(frame_attack_near);
+            ob->switchFrameActionStatue(frame_attack_near);
         } else {
             if (run) {
-                ob->switch_frame_action_statue(frame_run);
+                ob->switchFrameActionStatue(frame_run);
             } else {
-                ob->switch_frame_action_statue(frame_stay);
+                ob->switchFrameActionStatue(frame_stay);
             }
             on_attack = false;
         }
@@ -92,7 +92,7 @@ void Player1Physics::receiveEvent(GameObject* ob, const json& event) {
     }
     if (type == "jump") {
         if (speed_component) {
-            ob->switch_frame_action_statue(frame_jump);
+            ob->switchFrameActionStatue(frame_jump);
 
             auto speed = speed_component->getSpeed();
             speed.y = jump_speed;

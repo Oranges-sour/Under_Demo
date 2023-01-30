@@ -66,9 +66,9 @@ public:
     // 由GameWorld调用
     bool init(GameWorld* game_world);
 
-    void setUID(const string& new_uid) { this->uid = new_uid; }
+    void setUID(const string& new_uid) { this->_uid = new_uid; }
 
-    const string& getUID() { return this->uid; }
+    const string& getUID() { return this->_uid; }
 
     virtual void removeFromParent() override;
 
@@ -97,10 +97,10 @@ public:
     map<string, WorldLight>& getAllWorldLight() { return _world_light; }
     //////////////////////////////////
 
-    void main_update();
+    void mainUpdate();
 
     // 在屏幕显示区域内会调用
-    void main_update_in_screen_rect();
+    void mainUpdateInScreenRect();
 
     void setGameObjectType(GameObjectType new_type) {
         _game_object_type = new_type;
@@ -108,20 +108,20 @@ public:
 
     GameObjectType getGameObjectType() { return this->_game_object_type; }
 
-    GameWorld* getGameWorld() { return this->game_world; }
+    GameWorld* getGameWorld() { return this->_game_world; }
 
-    Quad_node<GameObject*> quad_node;
+    Quad_node<GameObject*> _quad_node;
 
     // 帧动画
-    void switch_frame_action_statue(
+    void switchFrameActionStatue(
         shared_ptr<GameObjectFrameAction> new_action);
 
 private:
     shared_ptr<GameObjectFrameAction> _frame_action;
 
-    string uid;
+    string _uid;
 
-    GameWorld* game_world;
+    GameWorld* _game_world;
 
     GameObjectType _game_object_type = object_type_unknow;
 
@@ -129,8 +129,8 @@ private:
 
     vector<shared_ptr<GameComponent>> _componets;
 
-    queue<GameAct> _componetGameActQueue;
-    queue<json> _componetEventQueue;
+    queue<GameAct> _componet_game_act_queue;
+    queue<json> _componet_event_queue;
 
     ActionTween _actionTween;
     EaseInOut _actionEase;

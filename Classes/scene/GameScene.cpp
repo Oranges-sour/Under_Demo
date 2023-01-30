@@ -209,7 +209,7 @@ void GameScene::init_game() {
         if (b == EventMouse::MouseButton::BUTTON_LEFT) {
             /* GameAct act;
              act.type = act_attack;
-             act.uid = players.find(Connection::instance()->get_uid())
+             act._uid = players.find(Connection::instance()->get_uid())
                            ->second->getUID();
 
              act.param1 = 1;
@@ -286,7 +286,7 @@ void GameScene::init_game() {
 
             GameAct act;
             act.type = act_attack;
-            act.uid = Connection::instance()->get_uid();
+            act._uid = Connection::instance()->get_uid();
 
             act.param1 = vec.x;
             act.param2 = vec.y;

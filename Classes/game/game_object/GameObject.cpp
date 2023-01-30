@@ -11,22 +11,22 @@ GameObject* GameObject::create() {
 }
 
 bool GameObject::init(GameWorld* game_world) {
-    this->game_world = game_world;
+    this->_game_world = game_world;
     return true;
 }
 
-void GameObject::removeFromParent() { game_world->removeObject(this); }
+void GameObject::removeFromParent() { _game_world->removeObject(this); }
 
 void GameObject::addGameComponent(shared_ptr<GameComponent> componet) {
     _componets.push_back(componet);
 }
 
 void GameObject::pushEvent(const json& event) {
-    _componetEventQueue.push(event);
+    _componet_event_queue.push(event);
 }
 
 void GameObject::pushGameAct(const GameAct& act) {
-    _componetGameActQueue.push(act);
+    _componet_game_act_queue.push(act);
 }
 
 void GameObject::updateTweenAction(float rate, const std::string& key) {
@@ -35,21 +35,21 @@ void GameObject::updateTweenAction(float rate, const std::string& key) {
     }
 }
 
-void GameObject::main_update() {
+void GameObject::mainUpdate() {
     for (auto& it : _componets) {
         it->updateLogic(this);
     }
-    while (!_componetGameActQueue.empty()) {
-        auto front = _componetGameActQueue.front();
-        _componetGameActQueue.pop();
+    while (!_componet_game_act_queue.empty()) {
+        auto front = _componet_game_act_queue.front();
+        _componet_game_act_queue.pop();
 
         for (auto& it : _componets) {
             it->receiveGameAct(this, front);
         }
     }
-    while (!_componetEventQueue.empty()) {
-        auto front = _componetEventQueue.front();
-        _componetEventQueue.pop();
+    while (!_componet_event_queue.empty()) {
+        auto front = _componet_event_queue.front();
+        _componet_event_queue.pop();
 
         for (auto& it : _componets) {
             it->receiveEvent(this, front);
@@ -71,13 +71,13 @@ void GameObject::main_update() {
     }
 }
 
-void GameObject::main_update_in_screen_rect() {
+void GameObject::mainUpdateInScreenRect() {
     for (auto& it : _componets) {
         it->updateLogicInScreenRect(this);
     }
 }
 
-void GameObject::switch_frame_action_statue(
+void GameObject::switchFrameActionStatue(
     shared_ptr<GameObjectFrameAction> new_action) {
     new_action->reset();
     this->_frame_action = new_action;

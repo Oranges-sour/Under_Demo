@@ -97,7 +97,7 @@ void GameWorld::main_update_logic() {
     // È«Í¼¸üÐÂ
     quad_tree.visit_in_rect(
         {1, _gameMap->get().h}, {_gameMap->get().w, 1},
-        [&](const iVec2& cor, GameObject* ob) { ob->main_update(); });
+        [&](const iVec2& cor, GameObject* ob) { ob->mainUpdate(); });
 
     const auto visibleSize = Director::getInstance()->getVisibleSize();
 
@@ -114,7 +114,7 @@ void GameWorld::main_update_logic() {
         _game_objects.insert({it.first->getUID(), it.first});
 
         auto quad_node = quad_tree.insert(it.second, it.first);
-        it.first->quad_node = quad_node;
+        it.first->_quad_node = quad_node;
     }
     needToAdd.clear();
 
@@ -124,7 +124,7 @@ void GameWorld::main_update_logic() {
             camera_follow_object = nullptr;
         }
 
-        it->quad_node.container->remove(it->quad_node.uid);
+        it->_quad_node.container->remove(it->_quad_node.uid);
 
         _game_objects.erase(it->getUID());
 
@@ -199,7 +199,7 @@ void GameWorld::updateGameObjectPosition() {
 
     for (auto& it : need_to_update) {
         auto& ob = it.first;
-        auto& node = ob->quad_node;
+        auto& node = ob->_quad_node;
         node.container->remove(node.uid);
 
         node = quad_tree.insert({it.second}, ob);
@@ -217,6 +217,6 @@ void GameWorld::mina_update_in_screen_rect(const Vec2& left_bottom,
     quad_tree.visit_in_rect({ilb.x - 5, ilb.y + isize.y + 5},
                             {ilb.x + isize.x + 5, ilb.y - 5},
                             [&](const iVec2& coor, GameObject* object) {
-                                object->main_update_in_screen_rect();
+                                object->mainUpdateInScreenRect();
                             });
 }
