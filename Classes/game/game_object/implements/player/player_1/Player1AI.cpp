@@ -33,7 +33,7 @@ void Player1AI::receiveGameAct(GameObject* ob, const GameAct& event) {
         ee["type"] = "attack";
         ee["x"] = event.param1;
         ob->pushEvent(ee);
-        // auto world = ob->get_game_world();
+        // auto world = ob->getGameWorld();
         // Bullet1::create(world, "bullet_1", ob->getPosition(),
         //                 Vec2(event.param1, event.param2));
     }

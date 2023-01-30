@@ -33,6 +33,8 @@ GameObject* Player1::create(GameWorld* world, const json& json_key,
     auto ob = world->newObject(layer_player, start_pos);
     ob->initWithSpriteFrameName(sprite_frame);
     PhysicsShapeCache::getInstance()->setBodyOnSprite(physics_shape, ob);
+    WorldLight::setWorldLight(lights, ob);
+
     ob->setGameObjectType(object_type_player);
     // Íæ¼ÒÓÐÌØÊâuid
     ob->setUID(uid);
@@ -57,20 +59,6 @@ GameObject* Player1::create(GameWorld* world, const json& json_key,
 
     ob->addGameComponent(phy);
     ob->addGameComponent(ai);
-
-    for (auto& it : lights) {
-        string key = it["key"];
-        int type = it["type"];
-        int r = it["r"];
-        int g = it["g"];
-        int b = it["b"];
-        float radius = it["radius"];
-        float opacity = it["opacity"];
-        WorldLight light(Color3B((GLubyte)r, (GLubyte)g, (GLubyte)b), radius,
-                         opacity, (WorldLight::WorldLightType)type);
-
-        ob->addWorldLight(light, key);
-    }
 
     return ob;
 }

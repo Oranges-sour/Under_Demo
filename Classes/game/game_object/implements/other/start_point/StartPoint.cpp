@@ -19,6 +19,7 @@ GameObject* StartPoint::create(GameWorld* world, const string& json_key,
 
     auto ob = world->newObject(layer_map_decoration, pos);
     ob->initWithSpriteFrameName(sprite_frame);
+    WorldLight::setWorldLight(lights, ob);
 
     ob->setAnchorPoint(Vec2(0, 0));
     ob->setPosition(pos);
@@ -27,20 +28,6 @@ GameObject* StartPoint::create(GameWorld* world, const string& json_key,
                                         Vec2(offset_1_x, offset_1_y),
                                         Vec2(offset_2_x, offset_2_y));
     ob->addGameComponent(ai);
-
-    for (auto& it : lights) {
-        string key = it["key"];
-        int type = it["type"];
-        int r = it["r"];
-        int g = it["g"];
-        int b = it["b"];
-        float radius = it["radius"];
-        float opacity = it["opacity"];
-        WorldLight light(Color3B((GLubyte)r, (GLubyte)g, (GLubyte)b), radius,
-                         opacity, (WorldLight::WorldLightType)type);
-        light.offset = Vec2(96, 0);
-        ob->addWorldLight(light, key);
-    }
 
     return ob;
 }

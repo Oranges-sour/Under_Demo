@@ -30,6 +30,8 @@ enum GameObjectType {
 };
 
 struct WorldLight {
+    static void setWorldLight(const vector<json>& lights, GameObject* ob);
+
     enum WorldLightType {
         world_light_type1 = 1,
         world_light_type2,
@@ -106,7 +108,7 @@ public:
 
     GameObjectType getGameObjectType() { return this->_game_object_type; }
 
-    GameWorld* get_game_world() { return this->game_world; }
+    GameWorld* getGameWorld() { return this->game_world; }
 
     Quad_node<GameObject*> quad_node;
 

@@ -63,8 +63,8 @@ void PhysicsComponent::WallContactComponent::updateAfterEvent(
 
     auto pos = phy->posOld;
 
-    auto maph = ob->get_game_world()->getGameMap()->getMapHelper();
-    auto& map = ob->get_game_world()->getGameMap()->get();
+    auto maph = ob->getGameWorld()->getGameMap()->getMapHelper();
+    auto& map = ob->getGameWorld()->getGameMap()->get();
 
     Vec2 p0, p1;
     iVec2 ip0, ip1;

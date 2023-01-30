@@ -25,6 +25,7 @@ GameObject* Particle1::create(GameWorld* world, const string& json_key,
     auto ob = world->newObject(layer_particle, start_pos);
     ob->initWithSpriteFrameName(sprite_frame);
     ob->setGameObjectType(object_type_particle);
+    WorldLight::setWorldLight(lights, ob);
 
     rand_float ran(direction_angle_min, direction_angle_max);
     float a = ran(*world->getGlobalRandom());
@@ -37,20 +38,6 @@ GameObject* Particle1::create(GameWorld* world, const string& json_key,
 
     ob->addGameComponent(ai);
     ob->addGameComponent(phy);
-
-    for (auto& it : lights) {
-        string key = it["key"];
-        int type = it["type"];
-        int r = it["r"];
-        int g = it["g"];
-        int b = it["b"];
-        float radius = it["radius"];
-        float opacity = it["opacity"];
-        WorldLight light(Color3B((GLubyte)r, (GLubyte)g, (GLubyte)b), radius,
-                         opacity, (WorldLight::WorldLightType)type);
-
-        ob->addWorldLight(light, key);
-    }
 
     return ob;
 }

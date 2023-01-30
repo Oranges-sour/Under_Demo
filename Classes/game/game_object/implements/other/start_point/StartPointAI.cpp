@@ -22,7 +22,7 @@ void StartPointAI::updateLogicInScreenRect(GameObject* ob) {
         cc += 1;
     }
 
-    auto world = ob->get_game_world();
+    auto world = ob->getGameWorld();
 
     auto pos = ob->getPosition();
 

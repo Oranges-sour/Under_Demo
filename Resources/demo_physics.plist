@@ -320,6 +320,63 @@
                 </array>
             </dict>
 
+            <key>enemy_bullet_0</key>
+            <dict>
+                <key>anchorpoint</key>
+                <string>{ 0.50000,0.51300 }</string>
+                <key>is_dynamic</key>
+                <true/>
+                <key>affected_by_gravity</key>
+                <true/>
+                <key>allows_rotation</key>
+                <true/>
+                <key>linear_damping</key>
+                <real>0</real>
+                <key>velocity_limit</key>
+                <real>1e+06</real>
+                <key>angular_damping</key>
+                <real>0</real>
+                <key>angular_velocity_limit</key>
+                <real>1e+06</real>
+                <key>fixtures</key>
+                <array>
+
+                    <dict>
+                        <key>density</key>
+                        <real>1</real>
+                        <key>restitution</key>
+                        <real>0.20000000298023224</real>
+                        <key>friction</key>
+                        <real>0.699999988079071</real>
+                        <key>tag</key>
+                        <integer>0</integer>
+                        <key>group</key>
+                        <integer>0</integer>
+                        <key>category_mask</key>
+                        <integer>4294967295</integer>
+                        <key>collision_mask</key>
+                        <integer>4294967295</integer>
+                        <key>contact_test_mask</key>
+                        <integer>0</integer>
+                        <key>fixture_type</key>
+                        <string>POLYGON</string>
+                        
+                        <key>polygons</key>
+                        <array>
+                            <array>
+                                <string>{ 8.00000,10.50000 }</string>
+                                <string>{ 8.00000,-18.50000 }</string>
+                                <string>{ -8.00000,-18.50000 }</string>
+                                <string>{ -8.00000,9.50000 }</string>
+                                <string>{ 2.00000,18.50000 }</string>
+                            </array>
+                        </array>
+                        
+                    </dict>
+
+                </array>
+            </dict>
+
         </dict>
     </dict>
 </plist>

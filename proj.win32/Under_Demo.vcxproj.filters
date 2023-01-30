@@ -88,6 +88,12 @@
     <Filter Include="src\game\game_object\implements\other\start_point">
       <UniqueIdentifier>{bdd993ba-31b7-440f-a7a0-91bbc3e41528}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\game\game_object\implements\enemy">
+      <UniqueIdentifier>{a15fa227-c341-4f1e-b5ef-7efbc12204b2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\game\game_object\implements\enemy\enemy_1">
+      <UniqueIdentifier>{1f69b2d3-944f-40db-8d9d-4aae0c1c8f0d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -212,6 +218,15 @@
     </ClCompile>
     <ClCompile Include="..\Classes\game\game_object\implements\other\start_point\StartPointAI.cpp">
       <Filter>src\game\game_object\implements\other\start_point</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\game\game_object\implements\enemy\enemy_1\Enemy1.cpp">
+      <Filter>src\game\game_object\implements\enemy\enemy_1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\game\game_object\implements\enemy\enemy_1\Enemy1AI.cpp">
+      <Filter>src\game\game_object\implements\enemy\enemy_1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\game\game_object\implements\enemy\enemy_1\Enemy1Physics.cpp">
+      <Filter>src\game\game_object\implements\enemy\enemy_1</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -352,6 +367,15 @@
     </ClInclude>
     <ClInclude Include="..\Classes\game\game_object\implements\other\start_point\StartPointAI.h">
       <Filter>src\game\game_object\implements\other\start_point</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\game\game_object\implements\enemy\enemy_1\Enemy1.h">
+      <Filter>src\game\game_object\implements\enemy\enemy_1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\game\game_object\implements\enemy\enemy_1\Enemy1AI.h">
+      <Filter>src\game\game_object\implements\enemy\enemy_1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\game\game_object\implements\enemy\enemy_1\Enemy1Physics.h">
+      <Filter>src\game\game_object\implements\enemy\enemy_1</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -105,3 +105,22 @@ void GameObjectFrameAction::play(GameObject* ob) {
         round_call_back(ob, round_cnt);
     }
 }
+
+void WorldLight::setWorldLight(const vector<json>& lights, GameObject* ob) {
+    for (auto& it : lights) {
+        string key = it["key"];
+        int type = it["type"];
+        int r = it["r"];
+        int g = it["g"];
+        int b = it["b"];
+        float radius = it["radius"];
+        float opacity = it["opacity"];
+        float offset_x = it["offset_x"];
+        float offset_y = it["offset_y"];
+        WorldLight light(Color3B((GLubyte)r, (GLubyte)g, (GLubyte)b), radius,
+                         opacity, (WorldLight::WorldLightType)type,
+                         Vec2(offset_x, offset_y));
+
+        ob->addWorldLight(light, key);
+    }
+}

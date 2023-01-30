@@ -31,7 +31,7 @@ void Bullet1Physics::receiveEvent(GameObject* ob, const json& event) {
 
             // ´´½¨Á£×Ó
             for (int i = 0; i < dead_particle_cnt; ++i) {
-                auto world = ob->get_game_world();
+                auto world = ob->getGameWorld();
                 Particle1::create(world, dead_particle_name, ob->getPosition());
             }
         }

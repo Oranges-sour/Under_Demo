@@ -167,6 +167,9 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)\Resources\" /D /E /I /F /Y
     <ClCompile Include="..\Classes\game\game_object\implements\bullet\bullet_1\Bullet1.cpp" />
     <ClCompile Include="..\Classes\game\game_object\implements\bullet\bullet_1\Bullet1AI.cpp" />
     <ClCompile Include="..\Classes\game\game_object\implements\bullet\bullet_1\Bullet1Physics.cpp" />
+    <ClCompile Include="..\Classes\game\game_object\implements\enemy\enemy_1\Enemy1.cpp" />
+    <ClCompile Include="..\Classes\game\game_object\implements\enemy\enemy_1\Enemy1AI.cpp" />
+    <ClCompile Include="..\Classes\game\game_object\implements\enemy\enemy_1\Enemy1Physics.cpp" />
     <ClCompile Include="..\Classes\game\game_object\implements\mpa_decoration\decoration_1\Decoration1.cpp" />
     <ClCompile Include="..\Classes\game\game_object\implements\mpa_decoration\decoration_1\Decoration1AI.cpp" />
     <ClCompile Include="..\Classes\game\game_object\implements\mpa_decoration\decoration_2\Decoration2.cpp" />
@@ -210,6 +213,9 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)\Resources\" /D /E /I /F /Y
     <ClInclude Include="..\Classes\game\game_object\implements\bullet\bullet_1\Bullet1.h" />
     <ClInclude Include="..\Classes\game\game_object\implements\bullet\bullet_1\Bullet1AI.h" />
     <ClInclude Include="..\Classes\game\game_object\implements\bullet\bullet_1\Bullet1Physics.h" />
+    <ClInclude Include="..\Classes\game\game_object\implements\enemy\enemy_1\Enemy1.h" />
+    <ClInclude Include="..\Classes\game\game_object\implements\enemy\enemy_1\Enemy1AI.h" />
+    <ClInclude Include="..\Classes\game\game_object\implements\enemy\enemy_1\Enemy1Physics.h" />
     <ClInclude Include="..\Classes\game\game_object\implements\mpa_decoration\decoration_1\Decoration1.h" />
     <ClInclude Include="..\Classes\game\game_object\implements\mpa_decoration\decoration_1\Decoration1AI.h" />
     <ClInclude Include="..\Classes\game\game_object\implements\mpa_decoration\decoration_2\Decoration2.h" />

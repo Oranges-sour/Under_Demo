@@ -21,6 +21,7 @@ public:
     class WallContactComponent;
     class SpeedComponent;
     class GravityComponent;
+    class ContactComponent;
 
     void setWallContactComponent(shared_ptr<WallContactComponent> wall_contact);
     void setSpeedComponent(shared_ptr<SpeedComponent> speed);
@@ -49,13 +50,14 @@ protected:
 class PhysicsComponent::Component {
 public:
     virtual void updateAfterEvent(GameObject* ob, PhysicsComponent* phy) = 0;
-    // virtual void notice(const json& event) = 0;
+    virtual void notice(const json& event) = 0;
 };
 
 class PhysicsComponent::SpeedComponent : public PhysicsComponent::Component {
 public:
     virtual void updateAfterEvent(GameObject* ob,
                                   PhysicsComponent* phy) override;
+    virtual void notice(const json&) override {}
 
     void setSpeed(const Vec2& new_speed);
     const Vec2& getSpeed();
@@ -73,6 +75,7 @@ public:
 
     virtual void updateAfterEvent(GameObject* ob,
                                   PhysicsComponent* phy) override;
+    virtual void notice(const json&) override {}
 
 private:
     shared_ptr<PhysicsComponent::SpeedComponent> speed_component;
@@ -87,6 +90,7 @@ public:
 
     virtual void updateAfterEvent(GameObject* ob,
                                   PhysicsComponent* phy) override;
+    virtual void notice(const json&) override {}
 
 private:
     shared_ptr<PhysicsComponent::SpeedComponent> speed_component;
