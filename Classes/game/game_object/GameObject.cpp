@@ -127,8 +127,8 @@ void WorldLight::setWorldLight(const vector<json>& lights, GameObject* ob) {
 
 void GameComponent::schedule(const function<void(GameObject* ob)>& call_back,
                              int interval, const string& key,
-                             int repeat_time = INT_MAX, int first_run_delay = 0,
-                             int order = 0) {
+                             int repeat_time, int first_run_delay,
+                             int order) {
     for (auto& m : _schedule_bag) {
         auto iter = m.second.find(key);
         if (iter != m.second.end()) {

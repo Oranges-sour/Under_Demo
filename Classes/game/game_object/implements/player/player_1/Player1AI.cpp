@@ -2,8 +2,6 @@
 
 #include "game/game_object/implements/bullet/bullet_1/Bullet1.h"
 
-void Player1AI::updateLogic(GameObject* ob) {}
-
 void Player1AI::receiveEvent(GameObject* ob, const json& event) {}
 
 void Player1AI::receiveGameAct(GameObject* ob, const GameAct& event) {

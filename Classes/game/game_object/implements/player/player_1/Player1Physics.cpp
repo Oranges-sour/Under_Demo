@@ -14,6 +14,8 @@ Player1Physics::Player1Physics(const Vec2& start_pos, float move_speed,
       jump_speed(jump_speed),
       attack(0),
       on_attack(false) {
+    this->schedule([&](GameObject* ob) { upd(ob); }, 0, "phy");
+
     this->posNow = start_pos;
 
     frame_stay = make_shared<GameObjectFrameAction>(frame_action_stay,
@@ -107,9 +109,7 @@ void Player1Physics::receiveEvent(GameObject* ob, const json& event) {
     }
 }
 
-void Player1Physics::updateLogic(GameObject* ob) {
-    PhysicsComponent::updateLogic(ob);
-
+void Player1Physics::upd(GameObject* ob) {
     if (on_attack) {
         if (speed_component) {
             auto sp1 = dynamic_pointer_cast<Player1Speed>(speed_component);

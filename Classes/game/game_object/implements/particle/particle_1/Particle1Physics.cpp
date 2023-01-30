@@ -4,6 +4,7 @@ Particle1Physics::Particle1Physics(const Vec2& pos, float scale_decrease_rate,
                                    float opacity_decrease_rate)
     : scale_decrease_rate(scale_decrease_rate),
       opacity_decrease_rate(opacity_decrease_rate) {
+    this->schedule([&](GameObject* ob) { upd(ob); }, 0, "phy");
     this->posNow = pos;
 }
 
@@ -22,8 +23,7 @@ void Particle1Physics::receiveEvent(GameObject* ob, const json& event) {
     }
 }
 
-void Particle1Physics::updateLogic(GameObject* ob) {
-    PhysicsComponent::updateLogic(ob);
+void Particle1Physics::upd(GameObject* ob) {
     scaleNow = scaleNow * scale_decrease_rate;
     opacityNow = opacityNow * opacity_decrease_rate;
 }

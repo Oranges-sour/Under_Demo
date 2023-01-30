@@ -9,6 +9,7 @@ using namespace cocos2d;
 #include <map>
 #include <memory>
 #include <queue>
+#include <climits>
 using namespace std;
 
 #include "game/game_frame/GameFrame.h"

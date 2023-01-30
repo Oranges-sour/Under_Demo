@@ -2,10 +2,12 @@
 
 #include "game/game_map/GameMap.h"
 
+#include <climits>
+
 PhysicsComponent::PhysicsComponent()
     : scaleNow(Vec2(1.0, 1.0)), opacityNow(1.0), rotationNow(0.0) {
-    this->schedule([&](GameObject* ob) { upd(ob); }, 0,
-                   "physics_component_upd");
+    this->schedule([&](GameObject* ob) { upd(ob); }, 0, "physics_component_upd",
+                   INT_MAX, 0, -1000);
 }
 
 void PhysicsComponent::updateDraw(GameObject* ob, float rate) {

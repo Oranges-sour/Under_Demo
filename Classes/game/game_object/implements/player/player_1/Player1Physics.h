@@ -14,7 +14,9 @@ public:
 
     virtual void receiveGameAct(GameObject* ob, const GameAct& act) override {}
     virtual void receiveEvent(GameObject* ob, const json& event) override;
-    virtual void updateLogic(GameObject* ob) override;
+
+private:
+    void upd(GameObject* ob);
 
 private:
     float move_speed;

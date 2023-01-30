@@ -7,9 +7,11 @@ Particle1AI::Particle1AI(const Vec2& direction, int live_frame,
       direction(direction),
       move_speed(move_speed),
       rotate_speed(move_speed),
-      light_decrease_rate(light_decrease_rate) {}
+      light_decrease_rate(light_decrease_rate) {
+    this->schedule([&](GameObject* ob) { upd(ob); }, 0, "ai");
+}
 
-void Particle1AI::updateLogic(GameObject* ob) {
+void Particle1AI::upd(GameObject* ob) {
     {
         json event;
         event["type"] = "move";

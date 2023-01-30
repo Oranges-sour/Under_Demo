@@ -9,7 +9,6 @@ public:
                  const Vec2& offset_1, const Vec2& offset_2);
 
     virtual void updateLogicInScreenRect(GameObject* ob) override;
-    virtual void updateLogic(GameObject* ob) override {}
     virtual void updateDraw(GameObject* ob, float rate) override {}
     virtual void receiveGameAct(GameObject* ob, const GameAct& event) override {
     }
