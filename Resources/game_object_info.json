@@ -87,6 +87,7 @@
                 "sprite_frame": "enemy_0.png",
                 "physics_shape": "enemy_0",
                 "bullet_json_key": "enemy_1_bullet",
+                "attack_speed": 3,
                 "detect_range": 600,
                 "world_lights": [
                     {

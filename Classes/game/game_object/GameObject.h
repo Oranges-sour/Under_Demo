@@ -5,6 +5,8 @@
 #include "cocos2d.h"
 using namespace cocos2d;
 
+#include <functional>
+#include <map>
 #include <memory>
 #include <queue>
 using namespace std;
@@ -113,8 +115,7 @@ public:
     QuadNode<GameObject*> _quad_node;
 
     // Ö¡¶¯»­
-    void switchFrameActionStatue(
-        shared_ptr<GameObjectFrameAction> new_action);
+    void switchFrameActionStatue(shared_ptr<GameObjectFrameAction> new_action);
 
 private:
     shared_ptr<GameObjectFrameAction> _frame_action;
@@ -138,12 +139,38 @@ private:
 
 class GameComponent {
 public:
+    void schedule(const function<void(void)>& call_back, int interval,
+                  const string& key, int repeat_time = INT_MAX,
+                  int first_run_delay = 0);
+    void scheduleOnce(const function<void(void)>& call_back, int delay,
+                      const string& key);
+    void unschedule(const string& key);
+
     virtual void updateLogicInScreenRect(GameObject* ob) = 0;
-    virtual void updateLogic(GameObject* ob) = 0;
+    void updateLogic(GameObject* ob);
     virtual void updateDraw(GameObject* ob, float rate) = 0;
     virtual void receiveGameAct(GameObject* ob, const GameAct& event) = 0;
     virtual void receiveEvent(GameObject* ob, const json& event) = 0;
     virtual void updateAfterEvent(GameObject* ob) = 0;
+
+private:
+    struct ScheduleBag {
+        ScheduleBag(const function<void(void)>& call_back, int interval,
+                    int repeat_time, int first_run_delay)
+            : call_back(call_back),
+              interval(interval),
+              repeat_time(repeat_time),
+              first_run_delay(first_run_delay),
+              cnt(0) {}
+        function<void(void)> call_back;
+        int interval;
+        int repeat_time;
+        int first_run_delay;
+
+        int cnt;
+    };
+
+    map<string, ScheduleBag> _schedule_bag;
 };
 
 class GameObjectFrameAction {

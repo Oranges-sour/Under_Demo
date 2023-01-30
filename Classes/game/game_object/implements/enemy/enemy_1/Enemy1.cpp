@@ -15,6 +15,7 @@ GameObject* Enemy1::create(GameWorld* world, const json& json_key,
     SC string sprite_frame = info["sprite_frame"];
     SC string physics_shape = info["physics_shape"];
     SC string bullet_json_key = info["bullet_json_key"];
+    SC int attack_speed = info["attack_speed"];
     SC float detect_range = info["detect_range"];
     SC vector<json> lights = info["world_lights"];
 
@@ -24,7 +25,8 @@ GameObject* Enemy1::create(GameWorld* world, const json& json_key,
     PhysicsShapeCache::getInstance()->setBodyOnSprite(physics_shape, ob);
     WorldLight::setWorldLight(lights, ob);
 
-    auto ai = make_shared<Enemy1AI>(detect_range, bullet_json_key);
+    auto ai =
+        make_shared<Enemy1AI>(detect_range, bullet_json_key, attack_speed);
     auto phy = make_shared<Enemy1Physics>();
 
     ob->addGameComponent(ai);

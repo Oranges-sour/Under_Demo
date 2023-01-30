@@ -5,7 +5,8 @@
 
 class Enemy1AI : public GameComponent {
 public:
-    Enemy1AI(float detect_range, const string& bullet_json_key);
+    Enemy1AI(float detect_range, const string& bullet_json_key,
+             int attack_speed);
 
     virtual void updateLogicInScreenRect(GameObject* ob) override {}
     virtual void updateLogic(GameObject* ob) override;
@@ -16,6 +17,8 @@ public:
     virtual void updateAfterEvent(GameObject* ob) override {}
 
 private:
+    int cnt;
+    int attack_speed;
     float detect_range;
     string bullet_json_key;
 };
