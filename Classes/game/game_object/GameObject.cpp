@@ -126,23 +126,10 @@ void WorldLight::setWorldLight(const vector<json>& lights, GameObject* ob) {
 }
 
 void GameComponent::schedule(const function<void(GameObject* ob)>& call_back,
-                             int interval, const string& key,
-                             int repeat_time, int first_run_delay,
-                             int order) {
-    for (auto& m : _schedule_bag) {
-        auto iter = m.second.find(key);
-        if (iter != m.second.end()) {
-            CCLOG("GameComponent::schedule(...): this key has existed before.");
-            m.second.erase(iter);
-        }
-    }
-
-    ScheduleBag bag{call_back, interval, repeat_time, first_run_delay};
-    if (_schedule_bag.find(order) == _schedule_bag.end()) {
-        _schedule_bag.insert({order, map<string, ScheduleBag>()});
-    }
-
-    _schedule_bag.find(order)->second.insert({key, bag});
+                             int interval, const string& key, int repeat_time,
+                             int first_run_delay, int order) {
+    _schedule_need_to_add.push_back(ScheduleBag(
+        call_back, interval, repeat_time, first_run_delay, order, key));
 }
 
 void GameComponent::scheduleOnce(
@@ -152,35 +139,55 @@ void GameComponent::scheduleOnce(
 }
 
 void GameComponent::unschedule(const string& key) {
-    for (auto& m : _schedule_bag) {
-        m.second.erase(key);
-    }
+    _schedule_need_to_erase.push_back(key);
 }
 
 void GameComponent::updateLogic(GameObject* ob) {
-    vector<string> need_to_erase;
+    for (auto& it : _schedule_need_to_add) {
+        for (auto& m : _schedule_bag) {
+            auto iter = m.second.find(it._key);
+            if (iter != m.second.end()) {
+                CCLOG(
+                    "GameComponent::schedule(...): this key has existed "
+                    "before.");
+                m.second.erase(iter);
+            }
+        }
+
+        if (_schedule_bag.find(it._order) == _schedule_bag.end()) {
+            _schedule_bag.insert({it._order, map<string, ScheduleBag>()});
+        }
+
+        _schedule_bag.find(it._order)->second.insert({it._key, it});
+    }
+    _schedule_need_to_add.clear();
+
     for (auto& m : _schedule_bag) {
         for (auto& it : m.second) {
             auto& bag = it.second;
-            if (bag.first_run_delay > 0) {
-                bag.first_run_delay -= 1;
+            if (bag._first_run_delay > 0) {
+                bag._first_run_delay -= 1;
                 continue;
             }
 
-            if (bag.repeat_time == 0) {
-                need_to_erase.push_back(it.first);
+            if (bag._repeat_time == 0) {
+                this->unschedule(it.first);
                 continue;
             }
 
-            bag.cnt += 1;
-            if (bag.cnt > bag.interval) {
-                bag.cnt = 0;
-                bag.call_back(ob);
-                bag.repeat_time -= 1;
+            bag._cnt += 1;
+            if (bag._cnt > bag._interval) {
+                bag._cnt = 0;
+                bag._call_back(ob);
+                bag._repeat_time -= 1;
             }
-        }
-        for (auto& it : need_to_erase) {
-            this->unschedule(it);
         }
     }
+
+    for (auto& it : _schedule_need_to_erase) {
+        for (auto& m : _schedule_bag) {
+            m.second.erase(it);
+        }
+    }
+    _schedule_need_to_erase.clear();
 }

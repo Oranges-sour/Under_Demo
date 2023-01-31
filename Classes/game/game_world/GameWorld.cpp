@@ -94,6 +94,8 @@ void GameWorld::mainUpdateLogic() {
         }
     }
 
+    CCLOG("--frame--");
+
     // È«Í¼¸üĞÂ
     _quad_tree.visitInRect(
         {1, _game_map->get()._h}, {_game_map->get()._w, 1},

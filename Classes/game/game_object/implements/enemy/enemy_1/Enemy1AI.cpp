@@ -7,14 +7,11 @@ Enemy1AI::Enemy1AI(float detect_range, const string& bullet_json_key,
                    int attack_speed)
     : detect_range(detect_range),
       bullet_json_key(bullet_json_key),
-      attack_speed(attack_speed),
-      cnt(0) {
+      attack_speed(attack_speed) {
     this->schedule([&](GameObject* ob) { upd(ob); }, 0, "enemy_ai");
 }
 
 void Enemy1AI::upd(GameObject* ob) {
-    cnt += 1;
-
     auto world = ob->getGameWorld();
     auto& quad = world->getGameObjects();
     auto map = world->getGameMap();

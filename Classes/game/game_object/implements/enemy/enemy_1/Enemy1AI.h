@@ -19,7 +19,6 @@ private:
     void upd(GameObject* ob);
 
 private:
-    int cnt;
     int attack_speed;
     float detect_range;
     string bullet_json_key;

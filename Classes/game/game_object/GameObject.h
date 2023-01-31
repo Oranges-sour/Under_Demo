@@ -5,11 +5,11 @@
 #include "cocos2d.h"
 using namespace cocos2d;
 
+#include <climits>
 #include <functional>
 #include <map>
 #include <memory>
 #include <queue>
-#include <climits>
 using namespace std;
 
 #include "game/game_frame/GameFrame.h"
@@ -158,20 +158,27 @@ public:
 private:
     struct ScheduleBag {
         ScheduleBag(const function<void(GameObject* ob)>& call_back,
-                    int interval, int repeat_time, int first_run_delay)
-            : call_back(call_back),
-              interval(interval),
-              repeat_time(repeat_time),
-              first_run_delay(first_run_delay),
-              cnt(0) {}
-        function<void(GameObject* ob)> call_back;
-        int interval;
-        int repeat_time;
-        int first_run_delay;
+                    int interval, int repeat_time, int first_run_delay,
+                    int order, const string& key)
+            : _call_back(call_back),
+              _interval(interval),
+              _repeat_time(repeat_time),
+              _first_run_delay(first_run_delay),
+              _order(order),
+              _key(key),
+              _cnt(interval) {}
+        function<void(GameObject* ob)> _call_back;
+        int _interval;
+        int _repeat_time;
+        int _first_run_delay;
+        int _order;
+        string _key;
 
-        int cnt;
+        int _cnt;
     };
 
+    vector<ScheduleBag> _schedule_need_to_add;
+    vector<string> _schedule_need_to_erase;
     map<int, map<string, ScheduleBag>> _schedule_bag;
 };
 
