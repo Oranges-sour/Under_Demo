@@ -4,20 +4,7 @@
 
 void Player1AI::receiveEvent(GameObject* ob, const json& event) {}
 
-Player1AI::Player1AI() {
-    // this->schedule([&](GameObject*) { CCLOG("test1"); }, 0, "123213");
-
-    // this->schedule([&](GameObject*) { CCLOG("test2"); }, 1, "123214");
-
-    this->scheduleOnce(
-        [&](GameObject*) {
-            CCLOG("set");
-
-            this->schedule([&](GameObject*) { CCLOG("test3"); }, 2, "123215", 3,
-                           0);
-        },
-        0, "123215");
-}
+Player1AI::Player1AI() {}
 
 void Player1AI::receiveGameAct(GameObject* ob, const GameAct& event) {
     if (event.type == act_move_start) {
