@@ -4,7 +4,7 @@
 #include "utility/PhysicsShapeCache.h"
 #include "utility/GameObjectInfo.h"
 
-// #define USE_AUDIO_ENGINE 1
+#define USE_AUDIO_ENGINE 1
 // #define USE_SIMPLE_AUDIO_ENGINE 1
 
 #if USE_AUDIO_ENGINE && USE_SIMPLE_AUDIO_ENGINE

@@ -1,6 +1,7 @@
 #include "GameScene.h"
 
 #include "RefLineLayer.h"
+#include "audio/include/AudioEngine.h"
 #include "game/game_frame/GameFrame.h"
 #include "game/game_map/implements/MapDecorationCreator1.h"
 #include "game/game_map/implements/MapGenerator1.h"
@@ -17,6 +18,7 @@
 #include "utility/PhysicsShapeCache.h"
 #include "utility/touch/Joystick.h"
 #include "utility/touch/TouchesPool.h"
+using namespace cocos2d::experimental;
 
 GameScene* GameScene::createScene() { return GameScene::create(); }
 
@@ -301,6 +303,9 @@ void GameScene::init_game() {
     auto tex = Director::getInstance()->getTextureCache();
     auto tex_info = tex->getCachedTextureInfo();
     CCLOG("%s", tex_info.c_str());
+
+    // Audio
+    AudioEngine::play2d("11.mp3", true, 0.6);
 }
 
 void GameScene::notice(const json& event) {

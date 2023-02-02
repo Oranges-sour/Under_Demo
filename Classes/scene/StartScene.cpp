@@ -4,12 +4,15 @@
 
 #include "RefLineLayer.h"
 #include "SimpleAudioEngine.h"
+#include "audio/include/AudioEngine.h"
 #include "game/game_frame/GameFrame.h"
 #include "game/game_object/GameObject.h"
 #include "scene/GameScene.h"
 #include "ui/CocosGUI.h"
 #include "utility/PhysicsShapeCache.h"
 #include "utility/json/json.h"
+
+using namespace cocos2d::experimental;
 
 USING_NS_CC;
 
@@ -38,7 +41,7 @@ bool DemoScene::init() {
     //
     Connection::instance()->open("ws://101.42.237.241:23482");
 
-    //Connection::instance()->open("ws://127.0.0.1:23482");
+    // Connection::instance()->open("ws://127.0.0.1:23482");
 
     auto visibleSize = Director::getInstance()->getVisibleSize();
 
@@ -51,8 +54,8 @@ bool DemoScene::init() {
     this->schedule(
         [&, la](float) {
             if (Connection::instance()->isError()) {
-                  Connection::instance()->open("ws://101.42.237.241:23482");
-                //Connection::instance()->open("ws://127.0.0.1:23482");
+                Connection::instance()->open("ws://101.42.237.241:23482");
+                // Connection::instance()->open("ws://127.0.0.1:23482");
             } else if (Connection::instance()->isOpen()) {
                 this->unschedule("check_server_online");
                 this->init_after_connect();
@@ -87,8 +90,7 @@ bool Lobby_Layer::init() {
 
     auto listener = make_shared<ConnectionEventListener>(
         [&](const json& event) { notice(event); });
-    Connection::instance()->addEventListener(listener,
-                                                   "Lobby_Layer_listener");
+    Connection::instance()->addEventListener(listener, "Lobby_Layer_listener");
 
     this->schedule(
         [&](float) {
