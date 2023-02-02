@@ -58,7 +58,7 @@ public:
     virtual bool init();
 
     virtual void cleanup() override {
-        Connection::instance()->remove_event_listener("Lobby_Layer_listener");
+        Connection::instance()->removeEventListener("Lobby_Layer_listener");
         Layer::cleanup();
     }
 

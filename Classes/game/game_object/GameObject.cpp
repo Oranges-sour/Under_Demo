@@ -11,22 +11,22 @@ GameObject* GameObject::create() {
 }
 
 bool GameObject::init(GameWorld* game_world) {
-    this->game_world = game_world;
+    this->_game_world = game_world;
     return true;
 }
 
-void GameObject::removeFromParent() { game_world->removeObject(this); }
+void GameObject::removeFromParent() { _game_world->removeObject(this); }
 
 void GameObject::addGameComponent(shared_ptr<GameComponent> componet) {
     _componets.push_back(componet);
 }
 
 void GameObject::pushEvent(const json& event) {
-    _componetEventQueue.push(event);
+    _componet_event_queue.push(event);
 }
 
 void GameObject::pushGameAct(const GameAct& act) {
-    _componetGameActQueue.push(act);
+    _componet_game_act_queue.push(act);
 }
 
 void GameObject::updateTweenAction(float rate, const std::string& key) {
@@ -35,21 +35,21 @@ void GameObject::updateTweenAction(float rate, const std::string& key) {
     }
 }
 
-void GameObject::main_update() {
+void GameObject::mainUpdate() {
     for (auto& it : _componets) {
         it->updateLogic(this);
     }
-    while (!_componetGameActQueue.empty()) {
-        auto front = _componetGameActQueue.front();
-        _componetGameActQueue.pop();
+    while (!_componet_game_act_queue.empty()) {
+        auto front = _componet_game_act_queue.front();
+        _componet_game_act_queue.pop();
 
         for (auto& it : _componets) {
             it->receiveGameAct(this, front);
         }
     }
-    while (!_componetEventQueue.empty()) {
-        auto front = _componetEventQueue.front();
-        _componetEventQueue.pop();
+    while (!_componet_event_queue.empty()) {
+        auto front = _componet_event_queue.front();
+        _componet_event_queue.pop();
 
         for (auto& it : _componets) {
             it->receiveEvent(this, front);
@@ -71,13 +71,13 @@ void GameObject::main_update() {
     }
 }
 
-void GameObject::main_update_in_screen_rect() {
+void GameObject::mainUpdateInScreenRect() {
     for (auto& it : _componets) {
         it->updateLogicInScreenRect(this);
     }
 }
 
-void GameObject::switch_frame_action_statue(
+void GameObject::switchFrameActionStatue(
     shared_ptr<GameObjectFrameAction> new_action) {
     new_action->reset();
     this->_frame_action = new_action;
@@ -104,4 +104,90 @@ void GameObjectFrameAction::play(GameObject* ob) {
         round_cnt += 1;
         round_call_back(ob, round_cnt);
     }
+}
+
+void WorldLight::setWorldLight(const vector<json>& lights, GameObject* ob) {
+    for (auto& it : lights) {
+        string key = it["key"];
+        int type = it["type"];
+        int r = it["r"];
+        int g = it["g"];
+        int b = it["b"];
+        float radius = it["radius"];
+        float opacity = it["opacity"];
+        float offset_x = it["offset_x"];
+        float offset_y = it["offset_y"];
+        WorldLight light(Color3B((GLubyte)r, (GLubyte)g, (GLubyte)b), radius,
+                         opacity, (WorldLight::WorldLightType)type,
+                         Vec2(offset_x, offset_y));
+
+        ob->addWorldLight(light, key);
+    }
+}
+
+void GameComponent::schedule(const function<void(GameObject* ob)>& call_back,
+                             int interval, const string& key, int repeat_time,
+                             int first_run_delay, int order) {
+    _schedule_need_to_add.push_back(ScheduleBag(
+        call_back, interval, repeat_time, first_run_delay, order, key));
+}
+
+void GameComponent::scheduleOnce(
+    const function<void(GameObject* ob)>& call_back, int delay,
+    const string& key) {
+    this->schedule(call_back, 0, key, 1, delay);
+}
+
+void GameComponent::unschedule(const string& key) {
+    _schedule_need_to_erase.push_back(key);
+}
+
+void GameComponent::updateLogic(GameObject* ob) {
+    for (auto& it : _schedule_need_to_add) {
+        for (auto& m : _schedule_bag) {
+            auto iter = m.second.find(it._key);
+            if (iter != m.second.end()) {
+                CCLOG(
+                    "GameComponent::schedule(...): this key has existed "
+                    "before.");
+                m.second.erase(iter);
+            }
+        }
+
+        if (_schedule_bag.find(it._order) == _schedule_bag.end()) {
+            _schedule_bag.insert({it._order, map<string, ScheduleBag>()});
+        }
+
+        _schedule_bag.find(it._order)->second.insert({it._key, it});
+    }
+    _schedule_need_to_add.clear();
+
+    for (auto& m : _schedule_bag) {
+        for (auto& it : m.second) {
+            auto& bag = it.second;
+            if (bag._first_run_delay > 0) {
+                bag._first_run_delay -= 1;
+                continue;
+            }
+
+            if (bag._repeat_time == 0) {
+                this->unschedule(it.first);
+                continue;
+            }
+
+            bag._cnt += 1;
+            if (bag._cnt > bag._interval) {
+                bag._cnt = 0;
+                bag._call_back(ob);
+                bag._repeat_time -= 1;
+            }
+        }
+    }
+
+    for (auto& it : _schedule_need_to_erase) {
+        for (auto& m : _schedule_bag) {
+            m.second.erase(it);
+        }
+    }
+    _schedule_need_to_erase.clear();
 }

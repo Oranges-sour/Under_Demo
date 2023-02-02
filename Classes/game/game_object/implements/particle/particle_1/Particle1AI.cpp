@@ -1,6 +1,17 @@
 #include "Particle1AI.h"
 
-void Particle1AI::updateLogic(GameObject* ob) {
+Particle1AI::Particle1AI(const Vec2& direction, int live_frame,
+                         float move_speed, float rotate_speed,
+                         float light_decrease_rate)
+    : live_frame(live_frame),
+      direction(direction),
+      move_speed(move_speed),
+      rotate_speed(move_speed),
+      light_decrease_rate(light_decrease_rate) {
+    this->schedule([&](GameObject* ob) { upd(ob); }, 0, "ai");
+}
+
+void Particle1AI::upd(GameObject* ob) {
     {
         json event;
         event["type"] = "move";

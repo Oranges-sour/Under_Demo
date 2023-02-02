@@ -9,7 +9,7 @@ void MapPhysics1::updateLogic(GameWorld* game_world) {
     auto _map = game_world->getGameMap();
 
     const auto inside = [&](int x, int y) {
-        if (x >= 1 && x <= _map->get().w && y >= 1 && y <= _map->get().h) {
+        if (x >= 1 && x <= _map->get()._w && y >= 1 && y <= _map->get()._h) {
             return true;
         }
         return false;
@@ -34,8 +34,8 @@ void MapPhysics1::updateLogic(GameWorld* game_world) {
         return string(ss.str());
     };
 
-    auto& quad = game_world->get_objects();
-    quad.visit_in_rect(
+    auto& quad = game_world->getGameObjects();
+    quad.visitInRect(
         {-1, 500}, {500, -1}, [&](const iVec2& cor, GameObject* ob) {
             auto type = ob->getGameObjectType();
             if (type != object_type_player && type != object_type_bullet &&
@@ -44,9 +44,9 @@ void MapPhysics1::updateLogic(GameWorld* game_world) {
             }
 
             auto box = ob->getBoundingBox();
-            auto left_bottom = _map->getMapHelper()->convert_in_map(box.origin);
+            auto left_bottom = _map->getMapHelper()->convertInMap(box.origin);
             auto right_top =
-                _map->getMapHelper()->convert_in_map(box.origin + box.size);
+                _map->getMapHelper()->convertInMap(box.origin + box.size);
 
             for (int xx = left_bottom.x; xx <= right_top.x; ++xx) {
                 for (int yy = left_bottom.y; yy <= right_top.y; ++yy) {
@@ -68,7 +68,7 @@ void MapPhysics1::updateLogic(GameWorld* game_world) {
                                  (yy - 1) * 64 + 5) /*保证落在格子里*/);
                         sp->initWithSpriteFrameName(
                             "game_map_tile_physics.png");
-                        sp->setVisible(false);
+                         sp->setVisible(false);
 
                         sp->setGameObjectType(object_type_wall);
                         sp->setAnchorPoint(Vec2(0, 0));

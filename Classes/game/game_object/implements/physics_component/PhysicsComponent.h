@@ -5,10 +5,8 @@
 
 class PhysicsComponent : public GameComponent {
 public:
-    PhysicsComponent()
-        : scaleNow(Vec2(1.0, 1.0)), opacityNow(1.0), rotationNow(0.0) {}
+    PhysicsComponent();
     virtual void updateLogicInScreenRect(GameObject* ob) override {}
-    virtual void updateLogic(GameObject* ob) override;
     virtual void updateDraw(GameObject* ob, float rate) override;
     virtual void receiveGameAct(GameObject* ob, const GameAct& event) override {
     }
@@ -21,10 +19,14 @@ public:
     class WallContactComponent;
     class SpeedComponent;
     class GravityComponent;
+    class ContactComponent;
 
     void setWallContactComponent(shared_ptr<WallContactComponent> wall_contact);
     void setSpeedComponent(shared_ptr<SpeedComponent> speed);
     void setGravityComponent(shared_ptr<GravityComponent> gravity);
+
+private:
+    void upd(GameObject* ob);
 
 protected:
     shared_ptr<WallContactComponent> wall_contact_component;
@@ -49,13 +51,14 @@ protected:
 class PhysicsComponent::Component {
 public:
     virtual void updateAfterEvent(GameObject* ob, PhysicsComponent* phy) = 0;
-    // virtual void notice(const json& event) = 0;
+    virtual void notice(const json& event) = 0;
 };
 
 class PhysicsComponent::SpeedComponent : public PhysicsComponent::Component {
 public:
     virtual void updateAfterEvent(GameObject* ob,
                                   PhysicsComponent* phy) override;
+    virtual void notice(const json&) override {}
 
     void setSpeed(const Vec2& new_speed);
     const Vec2& getSpeed();
@@ -73,6 +76,7 @@ public:
 
     virtual void updateAfterEvent(GameObject* ob,
                                   PhysicsComponent* phy) override;
+    virtual void notice(const json&) override {}
 
 private:
     shared_ptr<PhysicsComponent::SpeedComponent> speed_component;
@@ -87,6 +91,7 @@ public:
 
     virtual void updateAfterEvent(GameObject* ob,
                                   PhysicsComponent* phy) override;
+    virtual void notice(const json&) override {}
 
 private:
     shared_ptr<PhysicsComponent::SpeedComponent> speed_component;

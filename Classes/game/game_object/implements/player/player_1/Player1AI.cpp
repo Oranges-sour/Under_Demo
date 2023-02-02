@@ -2,9 +2,9 @@
 
 #include "game/game_object/implements/bullet/bullet_1/Bullet1.h"
 
-void Player1AI::updateLogic(GameObject* ob) {}
-
 void Player1AI::receiveEvent(GameObject* ob, const json& event) {}
+
+Player1AI::Player1AI() {}
 
 void Player1AI::receiveGameAct(GameObject* ob, const GameAct& event) {
     if (event.type == act_move_start) {
@@ -28,10 +28,20 @@ void Player1AI::receiveGameAct(GameObject* ob, const GameAct& event) {
         event["type"] = "jump";
         ob->pushEvent(event);
     }
-    if (event.type == act_attack) {
-        auto world = ob->get_game_world();
-        Bullet1::create(world, "bullet_1", ob->getPosition(),
-                        Vec2(event.param1, event.param2));
+    if (event.type == act_attack_start) {
+        json ee;
+        ee["type"] = "attack";
+        ee["x"] = event.param1;
+        ob->pushEvent(ee);
+        // auto world = ob->getGameWorld();
+        // Bullet1::create(world, "bullet_1", ob->getPosition(),
+        //                 Vec2(event.param1, event.param2));
+    }
+    if (event.type == act_attack_stop) {
+        json ee;
+        ee["type"] = "attack";
+        ee["x"] = -event.param1;
+        ob->pushEvent(ee);
     }
     if (event.type == act_position_force_set) {
         json ee;

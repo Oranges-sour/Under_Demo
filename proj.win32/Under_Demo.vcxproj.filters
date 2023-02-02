@@ -82,6 +82,21 @@
     <Filter Include="src\game\game_object\implements\physics_component">
       <UniqueIdentifier>{b63f5a3e-e82b-46bc-a737-4016dd765e4c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\game\game_object\implements\other">
+      <UniqueIdentifier>{7db277ad-73e4-4226-9078-d1e65109a0f7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\game\game_object\implements\other\start_point">
+      <UniqueIdentifier>{bdd993ba-31b7-440f-a7a0-91bbc3e41528}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\game\game_object\implements\enemy">
+      <UniqueIdentifier>{a15fa227-c341-4f1e-b5ef-7efbc12204b2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\game\game_object\implements\enemy\enemy_1">
+      <UniqueIdentifier>{1f69b2d3-944f-40db-8d9d-4aae0c1c8f0d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\game\game_object\implements\bullet\bullet_2">
+      <UniqueIdentifier>{e6a15444-e8ba-4a1e-b0f4-d4932124da12}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -150,9 +165,6 @@
     <ClCompile Include="..\Classes\game\game_world\implements\WorldRenderer1.cpp">
       <Filter>src\game\game_world\implements</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\game\game_object\implements\bullet\bullet_1\Bullet1AI.cpp">
-      <Filter>src\game\game_object\implements\bullet\bullet_1</Filter>
-    </ClCompile>
     <ClCompile Include="..\Classes\game\game_object\implements\bullet\bullet_1\Bullet1Physics.cpp">
       <Filter>src\game\game_object\implements\bullet\bullet_1</Filter>
     </ClCompile>
@@ -200,6 +212,30 @@
     </ClCompile>
     <ClCompile Include="..\Classes\scene\RefLineLayer.cpp">
       <Filter>src\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\game\game_object\implements\other\start_point\StartPoint.cpp">
+      <Filter>src\game\game_object\implements\other\start_point</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\game\game_object\implements\other\start_point\StartPointAI.cpp">
+      <Filter>src\game\game_object\implements\other\start_point</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\game\game_object\implements\enemy\enemy_1\Enemy1.cpp">
+      <Filter>src\game\game_object\implements\enemy\enemy_1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\game\game_object\implements\enemy\enemy_1\Enemy1AI.cpp">
+      <Filter>src\game\game_object\implements\enemy\enemy_1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\game\game_object\implements\enemy\enemy_1\Enemy1Physics.cpp">
+      <Filter>src\game\game_object\implements\enemy\enemy_1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\game\game_object\implements\bullet\bullet_2\Bullet2.cpp">
+      <Filter>src\game\game_object\implements\bullet\bullet_2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\game\game_object\implements\bullet\bullet_2\Bullet2Physics.cpp">
+      <Filter>src\game\game_object\implements\bullet\bullet_2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\game\game_object\implements\bullet\bullet_2\Bullet2AI.cpp">
+      <Filter>src\game\game_object\implements\bullet\bullet_2</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -284,9 +320,6 @@
     <ClInclude Include="..\Classes\game\game_world\implements\WorldRenderer1.h">
       <Filter>src\game\game_world\implements</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\game\game_object\implements\bullet\bullet_1\Bullet1AI.h">
-      <Filter>src\game\game_object\implements\bullet\bullet_1</Filter>
-    </ClInclude>
     <ClInclude Include="..\Classes\game\game_object\implements\bullet\bullet_1\Bullet1Physics.h">
       <Filter>src\game\game_object\implements\bullet\bullet_1</Filter>
     </ClInclude>
@@ -334,6 +367,30 @@
     </ClInclude>
     <ClInclude Include="..\Classes\scene\RefLineLayer.h">
       <Filter>src\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\game\game_object\implements\other\start_point\StartPoint.h">
+      <Filter>src\game\game_object\implements\other\start_point</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\game\game_object\implements\other\start_point\StartPointAI.h">
+      <Filter>src\game\game_object\implements\other\start_point</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\game\game_object\implements\enemy\enemy_1\Enemy1.h">
+      <Filter>src\game\game_object\implements\enemy\enemy_1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\game\game_object\implements\enemy\enemy_1\Enemy1AI.h">
+      <Filter>src\game\game_object\implements\enemy\enemy_1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\game\game_object\implements\enemy\enemy_1\Enemy1Physics.h">
+      <Filter>src\game\game_object\implements\enemy\enemy_1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\game\game_object\implements\bullet\bullet_2\Bullet2.h">
+      <Filter>src\game\game_object\implements\bullet\bullet_2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\game\game_object\implements\bullet\bullet_2\Bullet2Physics.h">
+      <Filter>src\game\game_object\implements\bullet\bullet_2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\game\game_object\implements\bullet\bullet_2\Bullet2AI.h">
+      <Filter>src\game\game_object\implements\bullet\bullet_2</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

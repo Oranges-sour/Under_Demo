@@ -38,12 +38,19 @@ public:
     void notice(const json& event);
 
     virtual void cleanup() override {
-        Connection::instance()->remove_event_listener("GameScene_listener");
+        Connection::instance()->removeEventListener("GameScene_listener");
         _frame_manager->release();
         Scene::cleanup();
     }
 
     CREATE_FUNC(GameScene);
+
+private:
+    void move_upd();
+    void jump_upd();
+    void attack_upd();
+
+    bool _can_jump = true;
 
 private:
     void keyDown(EventKeyboard::KeyCode key);

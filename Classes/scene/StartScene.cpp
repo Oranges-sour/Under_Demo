@@ -4,12 +4,15 @@
 
 #include "RefLineLayer.h"
 #include "SimpleAudioEngine.h"
+#include "audio/include/AudioEngine.h"
 #include "game/game_frame/GameFrame.h"
 #include "game/game_object/GameObject.h"
 #include "scene/GameScene.h"
 #include "ui/CocosGUI.h"
 #include "utility/PhysicsShapeCache.h"
 #include "utility/json/json.h"
+
+using namespace cocos2d::experimental;
 
 USING_NS_CC;
 
@@ -36,9 +39,9 @@ bool DemoScene::init() {
     PhysicsShapeCache::getInstance()->addShapesWithFile("demo_physics.plist");
 
     //
-    // Connection::instance()->open("ws://101.43.196.171:23482");
+    Connection::instance()->open("ws://101.42.237.241:23482");
 
-    Connection::instance()->open("ws://127.0.0.1:23482");
+    // Connection::instance()->open("ws://127.0.0.1:23482");
 
     auto visibleSize = Director::getInstance()->getVisibleSize();
 
@@ -50,10 +53,10 @@ bool DemoScene::init() {
 
     this->schedule(
         [&, la](float) {
-            if (Connection::instance()->is_error()) {
-                //  Connection::instance()->open("ws://101.43.196.171:23482");
-                Connection::instance()->open("ws://127.0.0.1:23482");
-            } else if (Connection::instance()->is_open()) {
+            if (Connection::instance()->isError()) {
+                Connection::instance()->open("ws://101.42.237.241:23482");
+                // Connection::instance()->open("ws://127.0.0.1:23482");
+            } else if (Connection::instance()->isOpen()) {
                 this->unschedule("check_server_online");
                 this->init_after_connect();
                 la->setVisible(false);
@@ -87,8 +90,7 @@ bool Lobby_Layer::init() {
 
     auto listener = make_shared<ConnectionEventListener>(
         [&](const json& event) { notice(event); });
-    Connection::instance()->regeist_event_listener(listener,
-                                                   "Lobby_Layer_listener");
+    Connection::instance()->addEventListener(listener, "Lobby_Layer_listener");
 
     this->schedule(
         [&](float) {
@@ -122,7 +124,7 @@ bool Lobby_Layer::init() {
         not_in_game->addChild(menu);
 
         auto text =
-            ui::TextField::create("Input Description", "font_normal.otf", 48);
+            cocos2d::ui::TextField::create("Input Description", "font_normal.otf", 48);
         text->setMaxLengthEnabled(true);
         text->setMaxLength(10);
         text->setPosition(Vec2(800, visibleSize.height - 200));
@@ -139,7 +141,7 @@ bool Lobby_Layer::init() {
             json event;
             event["type"] = "create_game";
             event["info"] = text->getString();
-            Connection::instance()->push_statueEvent(event);
+            Connection::instance()->pushStatueEvent(event);
         });
 
         button->setPosition(800, visibleSize.height - 100);
@@ -167,13 +169,13 @@ bool Lobby_Layer::init() {
         in_game->addChild(my_uid);
 
         auto text =
-            ui::TextField::create("input message", "font_normal.otf", 48);
+            cocos2d::ui::TextField::create("input message", "font_normal.otf", 48);
         text->setMaxLengthEnabled(true);
         text->setMaxLength(10);
         text->setPosition(Vec2(800, visibleSize.height - 400));
         in_game->addChild(text);
 
-        // ·¢ËÍÁÄÌìÏûÏ¢
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢
         {
             auto l = Label::createWithTTF(
                 "send message", "font_normal.otf", 48, Size(450, 100),
@@ -190,13 +192,13 @@ bool Lobby_Layer::init() {
                 event["type"] = "chat_connection_say";
                 event["info_1"] = str;
                 event["info_2"] = "";
-                Connection::instance()->push_statueEvent(event);
+                Connection::instance()->pushStatueEvent(event);
             });
             button->setPosition(Vec2(800, visibleSize.height - 500));
             menu->addChild(button);
         }
 
-        // ÍË³öµ±Ç°·¿¼ä
+        // ï¿½Ë³ï¿½ï¿½ï¿½Ç°ï¿½ï¿½ï¿½ï¿½
         {
             auto l = Label::createWithTTF(
                 "quit game", "font_normal.otf", 48, Size(450, 100),
@@ -204,15 +206,15 @@ bool Lobby_Layer::init() {
             auto button = MenuItemLabel::create(l, [&, text](Ref*) {
                 json event;
                 event["type"] = "quit_game";
-                event["info_1"] = Connection::instance()->get_uid();
+                event["info_1"] = Connection::instance()->getUID();
                 event["info_2"] = "";
-                Connection::instance()->push_statueEvent(event);
+                Connection::instance()->pushStatueEvent(event);
             });
             button->setPosition(Vec2(800, visibleSize.height - 600));
             menu->addChild(button);
         }
 
-        // ¿ªÊ¼ÓÎÏ·
+        // ï¿½ï¿½Ê¼ï¿½ï¿½Ï·
         {
             auto l = Label::createWithTTF(
                 "Start Game(Only Host)", "font_normal.otf", 48, Size(650, 100),
@@ -224,7 +226,7 @@ bool Lobby_Layer::init() {
                 json event;
                 event["type"] = "start_game";
                 event["info_1"] = to_string(1004);  // seed
-                Connection::instance()->push_statueEvent(event);
+                Connection::instance()->pushStatueEvent(event);
             });
             button->setPosition(Vec2(800, visibleSize.height - 700));
             menu->addChild(button);
@@ -275,7 +277,7 @@ void Lobby_Layer::notice(const json& event) {
         if (statue == "success") {
             stringstream ss;
             ss << "UID: ";
-            ss << Connection::instance()->get_uid();
+            ss << Connection::instance()->getUID();
 
             this->my_uid->setString(ss.str());
             this->is_in_game = true;
@@ -344,7 +346,7 @@ bool Lobby_Layer::GameInfo::init() {
         event["type"] = "join_game";
         event["info"] = uid;
 
-        Connection::instance()->push_statueEvent(event);
+        Connection::instance()->pushStatueEvent(event);
     });
     button->setPosition(0, 0);
     menu->addChild(button);

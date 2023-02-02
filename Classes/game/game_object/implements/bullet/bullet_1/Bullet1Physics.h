@@ -5,21 +5,23 @@
 
 class Bullet1Physics : public PhysicsComponent {
 public:
-    Bullet1Physics(const Vec2& pos, int dead_particle_cnt,
-                   const string& dead_particle_name)
-        : is_dead(false),
-          dead_particle_cnt(dead_particle_cnt),
-          dead_particle_name(dead_particle_name) {
-        this->posNow = pos;
-    }
+    Bullet1Physics(const Vec2& pos, const Vec2& direction, float move_speed,
+                   float rotate_speed, int dead_particle_cnt,
+                   const string& dead_particle_name);
 
     virtual void updateLogicInScreenRect(GameObject* ob) override {}
     virtual void receiveGameAct(GameObject* ob, const GameAct& act) override {}
     virtual void receiveEvent(GameObject* ob, const json& event) override;
 
 private:
+    void upd(GameObject* ob);
+
+private:
     int dead_particle_cnt;
     string dead_particle_name;
+    Vec2 direction;
+    float move_speed;
+    float rotate_speed;
 
     bool is_dead;
 };

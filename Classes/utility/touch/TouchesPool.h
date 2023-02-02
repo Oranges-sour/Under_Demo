@@ -11,7 +11,7 @@ USING_NS_CC;
 class TouchesPool
 {
 public:
-	static TouchesPool* instance;
+	static TouchesPool* _instance;
 private:
 	TouchesPool();
 	~TouchesPool();
@@ -66,8 +66,8 @@ public:
 	*/
 	Touch* getNearestWithStartPos(const Vec2& pos);
 private:
-	std::vector<Touch*> pool;
-	std::map<Touch*, std::vector<std::function<void(Touch*)>>> registedTouch;
+	std::vector<Touch*> _pool;
+	std::map<Touch*, std::vector<std::function<void(Touch*)>>> _registed_touch;
 };
 
 #endif

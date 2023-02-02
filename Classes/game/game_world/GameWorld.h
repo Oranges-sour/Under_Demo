@@ -31,23 +31,23 @@ enum ObjectLayer {
 
 class GameWorld : public Node {
 public:
-    GameWorld() : quad_tree({1, 256}, {256, 1}) {}
+    GameWorld() : _quad_tree({1, 256}, {256, 1}) {}
 
     static GameWorld* create();
 
     virtual bool init() override;
 
     ///////////////////////////////////////////
-    void setGameMap(shared_ptr<GameMap> gameMap) { this->_gameMap = gameMap; }
+    void setGameMap(shared_ptr<GameMap> gameMap) { this->_game_map = gameMap; }
 
-    shared_ptr<GameMap> getGameMap() { return this->_gameMap; }
+    shared_ptr<GameMap> getGameMap() { return this->_game_map; }
 
     void setGameRenderer(shared_ptr<GameWorldRenderer> gameRenderer) {
-        this->_gameRenderer = gameRenderer;
+        this->_game_renderer = gameRenderer;
     }
 
     shared_ptr<GameWorldRenderer> getGameRenderer() {
-        return this->_gameRenderer;
+        return this->_game_renderer;
     }
 
     void pushGameAct(const GameAct& act);
@@ -61,58 +61,56 @@ public:
 
     void removeObject(GameObject* ob);
 
-    Quad<GameObject*>& get_objects() { return this->quad_tree; }
+    Quad<GameObject*>& getGameObjects() { return this->_quad_tree; }
 
-    void main_update_logic();
+    void mainUpdateLogic();
 
-    void main_update_draw();
+    void mainUpdateDraw();
 
-    Node* get_game_map_target() { return game_map_target; }
+    Node* getGameMapTarget() { return _game_map_target; }
 
-    Node* get_game_renderer_target() { return game_renderer_target; }
+    Node* getGameRendererTarget() { return _game_renderer_target; }
 
-    Node* get_game_bk_target() { return game_bk_target; }
+    Node* getGameBkTarget() { return _game_bk_target; }
 
     // 摄像机跟随
-    void camera_follow(GameObject* object) { camera_follow_object = object; }
+    void setCameraFollow(GameObject* object) { _camera_follow_object = object; }
 
-    shared_ptr<Random> getGlobalRandom() { return this->_globalRandom; }
+    shared_ptr<Random> getGlobalRandom() { return this->_global_random; }
 
 private:
-    void mina_update_in_screen_rect(const Vec2& left_bottom, const Size& size);
+    void mainUpdateInScreenRect(const Vec2& left_bottom, const Size& size);
 
     void processContact(PhysicsContact& conatct);
     void updateGameObjectPosition();
 
-    void notice(const json& event);
-
 private:
-    float logic_update_dt;
+    float _logic_update_dt;
 
-    set<GameObject*> needToRemove;
-    map<GameObject*, iVec2> needToAdd;
+    set<GameObject*> _need_to_remove;
+    map<GameObject*, iVec2> _need_to_add;
 
     map<string, GameObject*> _game_objects;
 
     // 摄像机的中心点，坐标为地图中坐标
-    Vec2 camera_pos;
+    Vec2 _camera_pos;
     // 摄像机的目标坐标，实现缓动效果
-    Vec2 camera_pos_target;
+    Vec2 _camera_pos_target;
 
-    GameObject* camera_follow_object = nullptr;
+    GameObject* _camera_follow_object = nullptr;
 
-    Node* game_map_target;
-    Node* game_renderer_target;
+    Node* _game_map_target;
+    Node* _game_renderer_target;
     Node* _game_node;
-    Node* game_bk_target;
-    Quad<GameObject*> quad_tree;
-    shared_ptr<GameMap> _gameMap;
-    shared_ptr<GameWorldRenderer> _gameRenderer;
+    Node* _game_bk_target;
+    Quad<GameObject*> _quad_tree;
+    shared_ptr<GameMap> _game_map;
+    shared_ptr<GameWorldRenderer> _game_renderer;
 
     queue<GameAct> _game_act_que;
 
     // 游戏内的任何粒子创建，随机等，都必须用此随机引擎，保证一致性
-    shared_ptr<Random> _globalRandom;
+    shared_ptr<Random> _global_random;
 };
 
 class GameWorldRenderer {
@@ -121,7 +119,7 @@ public:
     virtual void release() = 0;
     virtual void update(const Vec2& left_bottom, const Size& size,
                         GameWorld* gameworld) = 0;
-    virtual Vec2 calcu_camera_speed(const Vec2& current_pos,
+    virtual Vec2 calcuCameraSpeed(const Vec2& current_pos,
                                     const Vec2& target_pos) = 0;
 };
 

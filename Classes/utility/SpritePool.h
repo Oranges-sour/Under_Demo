@@ -14,7 +14,7 @@ public:
     // static void saveBack(GameObject* game_object);
 
 private:
-    static vector<GameObject*> pool;
+    static vector<GameObject*> _pool;
     static GameObject* first_available;
     static int max_size;
 };

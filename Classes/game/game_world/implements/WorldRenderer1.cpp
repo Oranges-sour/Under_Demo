@@ -40,16 +40,16 @@ void GameWorldRenderer1::release() {
 void GameWorldRenderer1::update(const Vec2& left_bottom, const Size& size,
                                 GameWorld* gameworld) {
     auto gameMap = gameworld->getGameMap();
-    auto ilb = gameMap->getMapHelper()->convert_in_map(left_bottom);
+    auto ilb = gameMap->getMapHelper()->convertInMap(left_bottom);
 
     auto isize =
-        gameMap->getMapHelper()->convert_in_map(Vec2(size.width, size.height));
+        gameMap->getMapHelper()->convertInMap(Vec2(size.width, size.height));
 
-    auto& quad = gameworld->get_objects();
+    auto& quad = gameworld->getGameObjects();
 
     int cnt[3] = {0, 0, 0};
     // 边缘扩大一点，保证光源能够完整绘制
-    quad.visit_in_rect(
+    quad.visitInRect(
         {ilb.x - 5, ilb.y + isize.y + 5}, {ilb.x + isize.x + 5, ilb.y - 5},
         [&](const iVec2& coor, GameObject* object) {
             auto& pos = object->getPosition();
@@ -86,7 +86,7 @@ void GameWorldRenderer1::update(const Vec2& left_bottom, const Size& size,
     light->setBlendFunc({GL_DST_COLOR, GL_ZERO});
 }
 
-Vec2 GameWorldRenderer1::calcu_camera_speed(const Vec2& current_pos,
+Vec2 GameWorldRenderer1::calcuCameraSpeed(const Vec2& current_pos,
                                             const Vec2& target_pos) {
     // 更新摄像机坐标
     const auto calcuSpeed = [](float x) -> float {

@@ -2,11 +2,12 @@
 
 #include "game/game_map/GameMap.h"
 
-void PhysicsComponent::updateLogic(GameObject* ob) {
-    posOld = posNow;
-    rotationOld = rotationNow;
-    opacityOld = opacityNow;
-    scaleOld = scaleNow;
+#include <climits>
+
+PhysicsComponent::PhysicsComponent()
+    : scaleNow(Vec2(1.0, 1.0)), opacityNow(1.0), rotationNow(0.0) {
+    this->schedule([&](GameObject* ob) { upd(ob); }, 0, "physics_component_upd",
+                   INT_MAX, 0, -1000);
 }
 
 void PhysicsComponent::updateDraw(GameObject* ob, float rate) {
@@ -50,6 +51,13 @@ void PhysicsComponent::setGravityComponent(
     this->gravity_component = gravity;
 }
 
+void PhysicsComponent::upd(GameObject* ob) {
+    posOld = posNow;
+    rotationOld = rotationNow;
+    opacityOld = opacityNow;
+    scaleOld = scaleNow;
+}
+
 PhysicsComponent::WallContactComponent::WallContactComponent(
     const Vec2& left_top_offset, const Vec2& right_bottom_offset,
     shared_ptr<PhysicsComponent::SpeedComponent> speed_component)
@@ -63,16 +71,22 @@ void PhysicsComponent::WallContactComponent::updateAfterEvent(
 
     auto pos = phy->posOld;
 
-    auto maph = ob->get_game_world()->getGameMap()->getMapHelper();
-    auto& map = ob->get_game_world()->getGameMap()->get();
+    auto maph = ob->getGameWorld()->getGameMap()->getMapHelper();
+    auto& map = ob->getGameWorld()->getGameMap()->get();
 
-    auto p0 = pos + left_top_offset;
-    auto p1 = pos + right_bottom_offset;
+    Vec2 p0, p1;
+    iVec2 ip0, ip1;
 
-    // 左下
-    auto ip0 = maph->convert_in_map(p0);
-    // 右上
-    auto ip1 = maph->convert_in_map(p1);
+    const auto convert = [&]() {
+        p0 = pos + left_top_offset;
+        p1 = pos + right_bottom_offset;
+        // 左下
+        ip0 = maph->convertInMap(p0);
+        // 右上
+        ip1 = maph->convertInMap(p1);
+    };
+
+    convert();
 
     if (speed.x > 0) {
         // 右侧
@@ -97,6 +111,9 @@ void PhysicsComponent::WallContactComponent::updateAfterEvent(
             }
         }
     }
+
+    pos.x += speed.x;
+    convert();
 
     if (speed.y > 0) {
         // 上侧
@@ -133,7 +150,9 @@ void PhysicsComponent::WallContactComponent::updateAfterEvent(
         }
     }
 
-    phy->posNow = pos + speed;
+    pos.y += speed.y;
+
+    phy->posNow = pos;
 }
 
 PhysicsComponent::GravityComponent::GravityComponent(

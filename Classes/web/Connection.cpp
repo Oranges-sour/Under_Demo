@@ -8,26 +8,26 @@ Connection* Connection::_instance = new (std::nothrow) Connection();
 Connection* Connection::instance() { return Connection::_instance; }
 
 Connection::Connection() : _is_open(false), _is_error(false), _start(true) {
-    this->uid = "";
+    this->_uid = "";
 
     this->_thread = make_shared<thread>([&]() {
         while (_start) {
             unique_lock<mutex> lock(this->_statue_event_mutex);
             _cv.wait(lock);
 
-            while (!statue_event_queue.empty()) {
-                auto& t = statue_event_queue.front();
+            while (!_statue_event_queue.empty()) {
+                auto& t = _statue_event_queue.front();
 
                 this->_statue->processEvent(this, t);
 
-                statue_event_queue.pop();
+                _statue_event_queue.pop();
             }
         }
     });
 }
 
 Connection::~Connection() {
-    if (this->is_open()) {
+    if (this->isOpen()) {
         _ws->close();
     }
 
@@ -56,7 +56,7 @@ void Connection::close() {
 void Connection::onOpen(WebSocket* ws) { _is_open = true; }
 
 void Connection::onMessage(WebSocket* ws, const WebSocket::Data& data) {
-    this->process_message(data.bytes);
+    this->processMessage(data.bytes);
 }
 
 void Connection::onClose(WebSocket* ws) { _is_open = false; }
@@ -67,37 +67,37 @@ void Connection::onError(WebSocket* ws, const WebSocket::ErrorCode& error) {
     this->close();
 }
 
-void Connection::process_message(const string& message) {
+void Connection::processMessage(const string& message) {
     this->_statue->processMessage(this, message);
 }
 
 void Connection::update(int interval_ms) {
-    if (!is_open()) {
+    if (!isOpen()) {
         return;
     }
 
     this->_statue->update(this, interval_ms);
 
     unique_lock<mutex> loc(_listener_event_mutex);
-    while (!listener_event_queue.empty()) {
-        auto& t = listener_event_queue.front();
+    while (!_listener_event_queue.empty()) {
+        auto& t = _listener_event_queue.front();
 
-        for (auto& it : event_listener) {
+        for (auto& it : _event_listener) {
             it.second->notice(t);
         }
-        listener_event_queue.pop();
+        _listener_event_queue.pop();
     }
 }
 
-void Connection::push_listenerEvent(const json& event) {
+void Connection::pushListenerEvent(const json& event) {
     unique_lock<mutex> loc(_listener_event_mutex);
-    listener_event_queue.push(event);
+    _listener_event_queue.push(event);
 }
 
-void Connection::push_statueEvent(const json& event) {
+void Connection::pushStatueEvent(const json& event) {
     unique_lock<mutex> lock(_statue_event_mutex);
 
-    statue_event_queue.push(event);
+    _statue_event_queue.push(event);
 
     _cv.notify_one();
 }

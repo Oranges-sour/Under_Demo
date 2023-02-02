@@ -1,19 +1,24 @@
 #include "GameScene.h"
 
 #include "RefLineLayer.h"
+#include "audio/include/AudioEngine.h"
 #include "game/game_frame/GameFrame.h"
 #include "game/game_map/implements/MapDecorationCreator1.h"
 #include "game/game_map/implements/MapGenerator1.h"
 #include "game/game_map/implements/MapHelper1.h"
 #include "game/game_map/implements/MapPhysics1.h"
 #include "game/game_map/implements/MapPreRenderer1.h"
+#include "game/game_object/implements/enemy/enemy_1/Enemy1.h"
+#include "game/game_object/implements/other/start_point/StartPoint.h"
 #include "game/game_object/implements/player/player_1/Player1.h"
 #include "game/game_world/GameWorld.h"
 #include "game/game_world/implements/WorldRenderer1.h"
 #include "scene/StartScene.h"
+#include "utility/GameObjectInfo.h"
 #include "utility/PhysicsShapeCache.h"
 #include "utility/touch/Joystick.h"
 #include "utility/touch/TouchesPool.h"
+using namespace cocos2d::experimental;
 
 GameScene* GameScene::createScene() { return GameScene::create(); }
 
@@ -88,8 +93,7 @@ bool GameScene::init() {
 
     auto listener = make_shared<ConnectionEventListener>(
         [&](const json& event) { notice(event); });
-    Connection::instance()->regeist_event_listener(listener,
-                                                   "GameScene_listener");
+    Connection::instance()->addEventListener(listener, "GameScene_listener");
 
     auto refline = RefLineLayer::create();
     this->addChild(refline, 1000);
@@ -111,7 +115,6 @@ void GameScene::init_map(unsigned seed) {
     // 创建地图生成器
     auto map_generator = make_shared<MapGenerator1>();
     map_generator->init(seed);
-    // auto map_generator = make_shared<MapGenerator2>();
 
     auto map_helper = make_shared<MapHelper1>();
     auto map_physics = make_shared<MapPhysics1>();
@@ -132,13 +135,22 @@ void GameScene::init_map(unsigned seed) {
                 return;
             }
             // x2加速渲染
-            game_map_pre_renderer->preRender();
+            // game_map_pre_renderer->preRender();
             game_map_pre_renderer->preRender();
         },
         "pre_render");
 }
 
 void GameScene::init_game() {
+    auto& info = GameObjectInfo::instance()->get("game_defaults");
+    string game_background = info["game_background"];
+    vector<string> res_joystick_move = info["joystick_move"];
+    float joystick_move_left = info["joystick_move_left"];
+    float joystick_move_bottom = info["joystick_move_bottom"];
+    vector<string> res_joysitck_attack = info["joysitck_attack"];
+    float joystick_attack_right = info["joystick_attack_right"];
+    float joystick_attack_bottom = info["joystick_attack_bottom"];
+
     this->game_world = GameWorld::create();
     this->addChild(game_world);
 
@@ -147,13 +159,13 @@ void GameScene::init_game() {
     this->schedule([&](float) { _frame_manager->update(); },
                    "frame_manager_upd");
 
-    game_map_pre_renderer->afterPreRender(game_world->get_game_map_target());
+    game_map_pre_renderer->afterPreRender(game_world->getGameMapTarget());
 
     game_world->setGameMap(game_map);
 
     auto ren = make_shared<GameWorldRenderer1>();
     game_world->setGameRenderer(ren);
-    ren->init(game_world->get_game_renderer_target());
+    ren->init(game_world->getGameRendererTarget());
 
     auto dec = make_shared<MapDecorationCreator1>();
     dec->setDec2Pos(game_map_pre_renderer->getDec2Pos());
@@ -162,24 +174,31 @@ void GameScene::init_game() {
     // 释放
     game_map_pre_renderer.reset();
 
-    auto game_bk = Sprite::create("game_bk.png");
+    auto game_bk = Sprite::create(game_background);
     game_bk->setAnchorPoint(Vec2(0, 0));
     game_bk->setPosition(Vec2(0, 0));
     Texture2D::TexParams texParams = {GL_LINEAR, GL_LINEAR, GL_REPEAT,
                                       GL_REPEAT};
     game_bk->getTexture()->setTexParameters(texParams);
     game_bk->setTextureRect(Rect(0, 0, 64 * 256, 64 * 256));
-    game_world->get_game_bk_target()->addChild(game_bk);
+    game_world->getGameBkTarget()->addChild(game_bk);
 
     // 创建玩家
     for (auto& it : player_uid) {
-        auto ob = Player1::create(game_world, "player_1", Vec2(300, 300), it);
+        auto ob =
+            Player1::create(game_world, "player_1", Vec2(3 * 64, 253 * 64), it);
 
         players.insert({it, ob});
-        if (it == Connection::instance()->get_uid()) {
-            game_world->camera_follow(ob);
+        if (it == Connection::instance()->getUID()) {
+            game_world->setCameraFollow(ob);
         }
     }
+
+    //创建一个敌人
+    Enemy1::create(game_world, "enemy_1", Vec2(4 * 64, 251 * 64));
+
+    // 创建出生点
+    StartPoint::create(game_world, "start_point", Vec2(2 * 64, 248 * 64));
 
     auto keyboardListener = EventListenerKeyboard::create();
     keyboardListener->onKeyPressed = [&](EventKeyboard::KeyCode key,
@@ -193,14 +212,14 @@ void GameScene::init_game() {
         auto b = eventMouse->getMouseButton();
         auto pos = eventMouse->getLocationInView();
         if (b == EventMouse::MouseButton::BUTTON_LEFT) {
-            GameAct act;
-            act.type = act_attack;
-            act.uid = players.find(Connection::instance()->get_uid())
-                          ->second->getUID();
+            /* GameAct act;
+             act.type = act_attack;
+             act._uid = players.find(Connection::instance()->getUID())
+                           ->second->getUID();
 
-            act.param1 = 1;
-            act.param2 = 0;
-            _frame_manager->pushGameAct(act);
+             act.param1 = 1;
+             act.param2 = 0;
+             _frame_manager->pushGameAct(act);*/
         }
     };
 
@@ -209,13 +228,13 @@ void GameScene::init_game() {
     auto touchListener = EventListenerTouchAllAtOnce::create();
     touchListener->onTouchesBegan = [&](vector<Touch*> touch, Event*) -> void {
         for (auto& t : touch) {
-            TouchesPool::instance->addToPool(t);
+            TouchesPool::_instance->addToPool(t);
         }
     };
 
     touchListener->onTouchesEnded = [&](vector<Touch*> touch, Event*) -> void {
         for (auto& t : touch) {
-            TouchesPool::instance->removeFromPool(t);
+            TouchesPool::_instance->removeFromPool(t);
         }
     };
 
@@ -226,73 +245,32 @@ void GameScene::init_game() {
 
     auto visible_size = Director::getInstance()->getVisibleSize();
 
-    this->joystick_move =
-        Joystick::create("joystick_large.png", "joystick_small.png",
-                         "joystick_large_effect.png");
-    joystick_move->setOriginalPosition(Vec2(450, 300));
-    this->addChild(joystick_move, 1);
+    this->joystick_move = Joystick::create(
+        res_joystick_move[0], res_joystick_move[1], res_joystick_move[2]);
 
-    this->joystick_attack =
-        Joystick::create("joystick_attack_bk.png", "joystick_attack.png",
-                         "joystick_attack_bk_effect.png");
-    joystick_attack->setOriginalPosition(Vec2(visible_size.width - 450, 300));
+    this->joystick_move->setOriginalPosition(
+        Vec2(joystick_move_left, joystick_move_bottom));
+    this->addChild(this->joystick_move, 1);
+
+    this->joystick_attack = Joystick::create(
+        res_joysitck_attack[0], res_joysitck_attack[1], res_joysitck_attack[2]);
+    joystick_attack->setOriginalPosition(Vec2(
+        visible_size.width - joystick_attack_right, joystick_attack_bottom));
     this->addChild(joystick_attack, 1);
 
     this->schedule(
         [&](float) {
-            static stack<Vec2> st;
-
-            static bool can_jump = true;
-
-            while (!st.empty()) {
-                auto vec = st.top();
-                st.pop();
-
-                GameAct act;
-                act.type = act_move_stop;
-                act.uid = Connection::instance()->get_uid();
-                act.param1 = vec.x;
-                _frame_manager->pushGameAct(act);
-            }
-
-            auto vec = joystick_move->getMoveVec();
-            if (vec == Vec2::ZERO) {
-                return;
-            }
-            if (vec.x < 0) {
-                vec.x = -1;
-            }
-            if (vec.x > 0) {
-                vec.x = 1;
-            }
-            GameAct act;
-            act.type = act_move_start;
-            act.uid = Connection::instance()->get_uid();
-            act.param1 = vec.x;
-            _frame_manager->pushGameAct(act);
-
-            st.push(vec);
-
-            if (vec.y < 0.20) {
-                can_jump = true;
-            }
-
-            if (vec.y > 0.20 && can_jump) {
-                can_jump = false;
-                GameAct act;
-                act.type = act_jump;
-                act.uid = Connection::instance()->get_uid();
-                // act.param1 = vec.x;
-                _frame_manager->pushGameAct(act);
-            }
+            move_upd();
+            jump_upd();
+            attack_upd();
         },
-        0.0333f, "move_upd");
+        0.03f, "control_upd");
 
     this->schedule(
         [&](float) {
             for (auto& it : players) {
                 auto ob = it.second;
-                if (ob->getUID() == Connection::instance()->get_uid()) {
+                if (ob->getUID() == Connection::instance()->getUID()) {
                     GameAct act;
                     act.type = act_position_force_set;
                     act.uid = ob->getUID();
@@ -303,24 +281,31 @@ void GameScene::init_game() {
                 }
             }
         },
-        0.03f, "position_force_set");
+        0.1f, "position_force_set");
 
     this->schedule(
         [&](float) {
-            auto vec = joystick_attack->getMoveVec();
+            /*auto vec = joystick_attack->getMoveVec();
             if (vec == Vec2::ZERO) {
                 return;
             }
 
             GameAct act;
             act.type = act_attack;
-            act.uid = Connection::instance()->get_uid();
+            act._uid = Connection::instance()->getUID();
 
             act.param1 = vec.x;
             act.param2 = vec.y;
-            _frame_manager->pushGameAct(act);
+            _frame_manager->pushGameAct(act);*/
         },
         0.4f, "attack_upd");
+
+    auto tex = Director::getInstance()->getTextureCache();
+    auto tex_info = tex->getCachedTextureInfo();
+    CCLOG("%s", tex_info.c_str());
+
+    // Audio
+    AudioEngine::play2d("11.mp3", true, 0.6);
 }
 
 void GameScene::notice(const json& event) {
@@ -348,12 +333,156 @@ void GameScene::notice(const json& event) {
     }
 }
 
+void GameScene::move_upd() {
+    const auto stop_move = [this](int x) {
+        GameAct act;
+        act.type = act_move_stop;
+        act.uid = Connection::instance()->getUID();
+        act.param1 = x;
+        _frame_manager->pushGameAct(act);
+    };
+
+    const auto start_move = [this](int x) {
+        GameAct act;
+        act.type = act_move_start;
+        act.uid = Connection::instance()->getUID();
+        act.param1 = x;
+        _frame_manager->pushGameAct(act);
+    };
+
+    static struct {
+        void reset() {
+            on_move = false;
+            x = 0;
+        }
+
+        bool on_move = false;
+        int x = 0;
+    } last_statue;
+
+    auto vec = joystick_move->getMoveVec();
+
+    if (abs(vec.x) < 0.01f) {
+        if (last_statue.on_move) {
+            stop_move(last_statue.x);
+
+            last_statue.reset();
+        }
+        return;
+    }
+
+    int nx = -1;
+    if (vec.x < 0) {
+        nx = -1;
+    }
+    if (vec.x > 0) {
+        nx = 1;
+    }
+
+    if (last_statue.on_move) {
+        // 两次方向一致，说明移动方向一样，不用管
+        if (last_statue.x == nx) {
+            return;
+        }
+        // 两次方向不一致，先停掉上一次，再开始这一次
+        if (last_statue.x != nx) {
+            stop_move(last_statue.x);
+            start_move(nx);
+            last_statue.x = nx;
+        }
+    } else {
+        start_move(nx);
+        last_statue.on_move = true;
+        last_statue.x = nx;
+    }
+}
+
+void GameScene::jump_upd() {
+    if (!_can_jump) {
+        return;
+    }
+    auto vec = joystick_move->getMoveVec();
+    if (vec.y > 0.5) {
+        _can_jump = false;
+        this->schedule([&](float) { _can_jump = true; }, 0.7f, "reset_jump");
+
+        GameAct act;
+        act.type = act_jump;
+        act.uid = Connection::instance()->getUID();
+        _frame_manager->pushGameAct(act);
+    }
+}
+
+void GameScene::attack_upd() {
+    const auto stop_attack = [this](int x) {
+        GameAct act;
+        act.type = act_attack_stop;
+        act.uid = Connection::instance()->getUID();
+        act.param1 = x;
+        _frame_manager->pushGameAct(act);
+    };
+
+    const auto start_attack = [this](int x) {
+        GameAct act;
+        act.type = act_attack_start;
+        act.uid = Connection::instance()->getUID();
+        act.param1 = x;
+        _frame_manager->pushGameAct(act);
+    };
+
+    static struct {
+        void reset() {
+            on_attack = false;
+            x = 0;
+        }
+
+        bool on_attack = false;
+        int x = 0;
+    } last_statue;
+
+    auto vec = joystick_attack->getMoveVec();
+
+    if (abs(vec.x) < 0.01f) {
+        if (last_statue.on_attack) {
+            stop_attack(last_statue.x);
+
+            last_statue.reset();
+        }
+        return;
+    }
+
+    int nx = -1;
+    if (vec.x < 0) {
+        nx = -1;
+    }
+    if (vec.x > 0) {
+        nx = 1;
+    }
+
+    if (last_statue.on_attack) {
+        // 两次方向一致，说明移动方向一样，不用管
+        if (last_statue.x == nx) {
+            return;
+        }
+        // 两次方向不一致，先停掉上一次，再开始这一次
+        if (last_statue.x != nx) {
+            stop_attack(last_statue.x);
+            start_attack(nx);
+            last_statue.x = nx;
+        }
+    } else {
+        start_attack(nx);
+        last_statue.on_attack = true;
+        last_statue.x = nx;
+    }
+}
+
 void GameScene::keyDown(EventKeyboard::KeyCode key) {
     switch (key) {
         case EventKeyboard::KeyCode::KEY_W: {
             GameAct act;
             act.type = act_jump;
-            act.uid = Connection::instance()->get_uid();
+            act.uid = Connection::instance()->getUID();
             _frame_manager->pushGameAct(act);
         } break;
         case EventKeyboard::KeyCode::KEY_S: {
@@ -361,7 +490,7 @@ void GameScene::keyDown(EventKeyboard::KeyCode key) {
         case EventKeyboard::KeyCode::KEY_A: {
             GameAct act;
             act.type = act_move_start;
-            act.uid = Connection::instance()->get_uid();
+            act.uid = Connection::instance()->getUID();
             act.param1 = -1;
             _frame_manager->pushGameAct(act);
 
@@ -369,7 +498,7 @@ void GameScene::keyDown(EventKeyboard::KeyCode key) {
         case EventKeyboard::KeyCode::KEY_D: {
             GameAct act;
             act.type = act_move_start;
-            act.uid = Connection::instance()->get_uid();
+            act.uid = Connection::instance()->getUID();
             act.param1 = 1;
             _frame_manager->pushGameAct(act);
         } break;
@@ -385,20 +514,18 @@ void GameScene::keyUp(EventKeyboard::KeyCode key) {
         case EventKeyboard::KeyCode::KEY_A: {
             GameAct act;
             act.type = act_move_stop;
-            act.uid = Connection::instance()->get_uid();
+            act.uid = Connection::instance()->getUID();
             act.param1 = -1;
             _frame_manager->pushGameAct(act);
         } break;
         case EventKeyboard::KeyCode::KEY_D: {
             GameAct act;
             act.type = act_move_stop;
-            act.uid = Connection::instance()->get_uid();
+            act.uid = Connection::instance()->getUID();
             act.param1 = 1;
             _frame_manager->pushGameAct(act);
         } break;
     }
-
-    
 }
 
 void GameScene::try_ping() {
@@ -408,7 +535,7 @@ void GameScene::try_ping() {
 
     json e;
     e["type"] = "ping";
-    Connection::instance()->push_statueEvent(e);
+    Connection::instance()->pushStatueEvent(e);
     ping_time0 = steady_clock::now();
     ping_finish = false;
 }
@@ -418,18 +545,23 @@ bool LoadingLayer::init() {
         return false;
     }
 
+    auto& info = GameObjectInfo::instance()->get("loading_layer");
+    string res_bk = info["bk"];
+    string out_line = info["out_line"];
+    string blocks = info["blocks"];
+
     const auto visibleSize = Director::getInstance()->getVisibleSize();
 
-    this->bk = Sprite::create("blue_bk.png");
+    this->bk = Sprite::create(res_bk);
     bk->setPosition(visibleSize / 2);
     this->addChild(bk, 2);
 
-    this->spAct0 = Sprite::createWithSpriteFrameName("mapDrawWaitAct0.png");
+    this->spAct0 = Sprite::createWithSpriteFrameName(out_line);
     spAct0->setPosition(visibleSize / 2);
     this->addChild(spAct0, 3);
 
     for (int x = 0; x < 9; ++x) {
-        auto sp = Sprite::createWithSpriteFrameName("mapDrawWaitAct1.png");
+        auto sp = Sprite::createWithSpriteFrameName(blocks);
         loadingBlocks[x] = sp;
         auto pos = getLoadingBlocksPos(x, 1);
         sp->setPosition(pos);

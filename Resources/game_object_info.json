@@ -1,14 +1,184 @@
 {
     "objects": [
         {
+            "name": "enemy_1_bullet_particle_explode",
+            "@info": "给Particle1 使用的参数,enemy1的子弹爆炸时候的粒子",
+            "info": {
+                "sprite_frame": "enemy_bullet1_explode_particle0.png",
+                "live_frame": 4,
+                "move_speed": 20,
+                "rotate_speed": 10,
+                "light_decrease_rate": 0.7,
+                "scale_decrease_rate": 0.7,
+                "opacity_decrease_rate": 0.9,
+                "direction_angle_min": 0.0,
+                "direction_angle_max": 6.28,
+                "world_lights": []
+            }
+        },
+        {
+            "name": "enemy_1_bullet_particle_move",
+            "@info": "给Particle1 使用的参数,enemy1的子弹移动时的粒子",
+            "info": {
+                "sprite_frame": "bullet_0.png",
+                "live_frame": 15,
+                "move_speed": 3,
+                "rotate_speed": 5,
+                "light_decrease_rate": 0.8,
+                "scale_decrease_rate": 0.9,
+                "opacity_decrease_rate": 0.9,
+                "direction_angle_min": 0.0,
+                "direction_angle_max": 6.28,
+                "world_lights": []
+            }
+        },
+        {
+            "name": "enemy_1_bullet",
+            "@info": "enemy1的子弹",
+            "info": {
+                "sprite_frame": "enemy_bullet_0.png",
+                "physics_shape": "enemy_bullet_0",
+                "move_speed": 40,
+                "particle_move_json_key": "enemy_1_bullet_particle_move",
+                "particle_move_cnt_per_frame": 0.5,
+                "particle_explode_json_key": "enemy_1_bullet_particle_explode",
+                "particle_explode_cnt": 5,
+                "world_lights": [
+                    {
+                        "key": "main_light",
+                        "type": 2,
+                        "r": 252,
+                        "g": 241,
+                        "b": 227,
+                        "radius": 400,
+                        "opacity": 1.0,
+                        "offset_x": 0.0,
+                        "offset_y": 0.0
+                    }
+                ]
+            }
+        },
+        {
+            "name": "enemy_1",
+            "@info": "敌人,enemy1",
+            "info": {
+                "sprite_frame": "enemy_0.png",
+                "physics_shape": "enemy_0",
+                "bullet_json_key": "enemy_1_bullet",
+                "attack_speed": 12,
+                "detect_range": 600,
+                "world_lights": [
+                    {
+                        "key": "main_light",
+                        "type": 2,
+                        "r": 252,
+                        "g": 241,
+                        "b": 227,
+                        "radius": 400,
+                        "opacity": 1.0,
+                        "offset_x": 0.0,
+                        "offset_y": 0.0
+                    }
+                ]
+            }
+        },
+        {
+            "name": "start_point",
+            "@info": "游戏内玩家出生点",
+            "info": {
+                "sprite_frame": "start_point.png",
+                "particle_cnt_per_frame": 0.3,
+                "particle_name": "start_point_particle",
+                "offset_1_x": 40,
+                "offset_1_y": 54,
+                "offset_2_x": 151,
+                "offset_2_y": 54,
+                "world_lights": [
+                    {
+                        "key": "main_light",
+                        "type": 2,
+                        "r": 252,
+                        "g": 241,
+                        "b": 227,
+                        "radius": 400,
+                        "opacity": 1.0,
+                        "offset_x": 96.0,
+                        "offset_y": 0.0
+                    }
+                ]
+            }
+        },
+        {
+            "name": "start_point_particle",
+            "@info": "给Particle1 使用的参数,游戏出生点的火焰粒子",
+            "info": {
+                "sprite_frame": "start_point_particle.png",
+                "live_frame": 15,
+                "move_speed": 6,
+                "rotate_speed": 5,
+                "light_decrease_rate": 0.8,
+                "scale_decrease_rate": 0.9,
+                "opacity_decrease_rate": 0.9,
+                "direction_angle_min": 1.047197,
+                "direction_angle_max": 1.884955,
+                "world_lights": [
+                    {
+                        "key": "main_light",
+                        "type": 3,
+                        "r": 80,
+                        "g": 208,
+                        "b": 134,
+                        "radius": 340,
+                        "opacity": 1.0,
+                        "offset_x": 0.0,
+                        "offset_y": 0.0
+                    }
+                ]
+            }
+        },
+        {
+            "name": "loading_layer",
+            "@info": "加载界面的资源",
+            "info": {
+                "bk": "blue_bk.png",
+                "out_line": "mapDrawWaitAct0.png",
+                "blocks": "mapDrawWaitAct1.png"
+            }
+        },
+        {
+            "name": "game_defaults",
+            "@info": "一些游戏最基本的元素，如操纵杆等其他参数",
+            "info": {
+                "game_background": "game_bk.png",
+                "joystick_move": [
+                    "joystick_large.png",
+                    "joystick_small.png",
+                    "joystick_large_effect.png"
+                ],
+                "joystick_move_left": 450,
+                "joystick_move_bottom": 300,
+                "joysitck_attack": [
+                    "joystick_attack_bk.png",
+                    "joystick_attack.png",
+                    "joystick_attack_bk_effect.png"
+                ],
+                "joystick_attack_right": 450,
+                "joystick_attack_bottom": 300
+            }
+        },
+        {
             "name": "bullet_1_particle",
-            "@info": "给Particle1 使用的参数",
+            "@info": "给Particle1 使用的参数,目前给hero用的子弹的粒子",
             "info": {
                 "sprite_frame": "enemy_bullet_1_par.png",
                 "live_frame": 3,
                 "move_speed": 60,
                 "rotate_speed": 40,
                 "light_decrease_rate": 0.8,
+                "scale_decrease_rate": 1.0,
+                "opacity_decrease_rate": 1.0,
+                "direction_angle_min": 0,
+                "direction_angle_max": 6.283185,
                 "world_lights": [
                     {
                         "key": "main_light",
@@ -17,13 +187,16 @@
                         "g": 120,
                         "b": 194,
                         "radius": 140,
-                        "opacity": 1.0
+                        "opacity": 1.0,
+                        "offset_x": 0.0,
+                        "offset_y": 0.0
                     }
                 ]
             }
         },
         {
             "name": "bullet_1",
+            "@info": "给玩家用的子弹",
             "info": {
                 "sprite_frame": "enemy_bullet_1.png",
                 "physics_shape": "enemy_bullet_1",
@@ -39,13 +212,16 @@
                         "g": 120,
                         "b": 194,
                         "radius": 140,
-                        "opacity": 1.0
+                        "opacity": 1.0,
+                        "offset_x": 0.0,
+                        "offset_y": 0.0
                     }
                 ]
             }
         },
         {
             "name": "player_1",
+            "@info": "玩家的信息",
             "info": {
                 "sprite_frame": "man_stay.png",
                 "physics_shape": "man_stay",
@@ -67,11 +243,19 @@
                 ],
                 "frame_action_jump": [
                     "man_jump_1.png",
-                    "man_jump_2.png",
+                    "man_jump_1.png",
                     "man_jump_3.png"
                 ],
                 "frame_action_jump_stay": [
                     "man_jump_3.png"
+                ],
+                "frame_action_attack_near": [
+                    "man_attack_near_1.png",
+                    "man_attack_near_2.png",
+                    "man_attack_near_3.png",
+                    "man_attack_near_4.png",
+                    "man_attack_near_5.png",
+                    "man_attack_near_6.png"
                 ],
                 "world_lights": [
                     {
@@ -81,7 +265,9 @@
                         "g": 241,
                         "b": 227,
                         "radius": 600,
-                        "opacity": 1.0
+                        "opacity": 1.0,
+                        "offset_x": 0.0,
+                        "offset_y": 0.0
                     }
                 ]
             }

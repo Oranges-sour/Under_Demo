@@ -5,6 +5,9 @@
 #include "cocos2d.h"
 using namespace cocos2d;
 
+#include <climits>
+#include <functional>
+#include <map>
 #include <memory>
 #include <queue>
 using namespace std;
@@ -30,6 +33,8 @@ enum GameObjectType {
 };
 
 struct WorldLight {
+    static void setWorldLight(const vector<json>& lights, GameObject* ob);
+
     enum WorldLightType {
         world_light_type1 = 1,
         world_light_type2,
@@ -64,9 +69,9 @@ public:
     // 由GameWorld调用
     bool init(GameWorld* game_world);
 
-    void setUID(const string& new_uid) { this->uid = new_uid; }
+    void setUID(const string& new_uid) { this->_uid = new_uid; }
 
-    const string& getUID() { return this->uid; }
+    const string& getUID() { return this->_uid; }
 
     virtual void removeFromParent() override;
 
@@ -95,10 +100,10 @@ public:
     map<string, WorldLight>& getAllWorldLight() { return _world_light; }
     //////////////////////////////////
 
-    void main_update();
+    void mainUpdate();
 
     // 在屏幕显示区域内会调用
-    void main_update_in_screen_rect();
+    void mainUpdateInScreenRect();
 
     void setGameObjectType(GameObjectType new_type) {
         _game_object_type = new_type;
@@ -106,20 +111,19 @@ public:
 
     GameObjectType getGameObjectType() { return this->_game_object_type; }
 
-    GameWorld* get_game_world() { return this->game_world; }
+    GameWorld* getGameWorld() { return this->_game_world; }
 
-    Quad_node<GameObject*> quad_node;
+    QuadNode<GameObject*> _quad_node;
 
     // 帧动画
-    void switch_frame_action_statue(
-        shared_ptr<GameObjectFrameAction> new_action);
+    void switchFrameActionStatue(shared_ptr<GameObjectFrameAction> new_action);
 
 private:
     shared_ptr<GameObjectFrameAction> _frame_action;
 
-    string uid;
+    string _uid;
 
-    GameWorld* game_world;
+    GameWorld* _game_world;
 
     GameObjectType _game_object_type = object_type_unknow;
 
@@ -127,8 +131,8 @@ private:
 
     vector<shared_ptr<GameComponent>> _componets;
 
-    queue<GameAct> _componetGameActQueue;
-    queue<json> _componetEventQueue;
+    queue<GameAct> _componet_game_act_queue;
+    queue<json> _componet_event_queue;
 
     ActionTween _actionTween;
     EaseInOut _actionEase;
@@ -136,12 +140,46 @@ private:
 
 class GameComponent {
 public:
+    void schedule(const function<void(GameObject* ob)>& call_back, int interval,
+                  const string& key, int repeat_time = INT_MAX,
+                  int first_run_delay = 0, int order = 0);
+    void scheduleOnce(const function<void(GameObject* ob)>& call_back,
+                      int delay, const string& key);
+    void unschedule(const string& key);
+
+    void updateLogic(GameObject* ob);
+
     virtual void updateLogicInScreenRect(GameObject* ob) = 0;
-    virtual void updateLogic(GameObject* ob) = 0;
     virtual void updateDraw(GameObject* ob, float rate) = 0;
     virtual void receiveGameAct(GameObject* ob, const GameAct& event) = 0;
     virtual void receiveEvent(GameObject* ob, const json& event) = 0;
     virtual void updateAfterEvent(GameObject* ob) = 0;
+
+private:
+    struct ScheduleBag {
+        ScheduleBag(const function<void(GameObject* ob)>& call_back,
+                    int interval, int repeat_time, int first_run_delay,
+                    int order, const string& key)
+            : _call_back(call_back),
+              _interval(interval),
+              _repeat_time(repeat_time),
+              _first_run_delay(first_run_delay),
+              _order(order),
+              _key(key),
+              _cnt(interval) {}
+        function<void(GameObject* ob)> _call_back;
+        int _interval;
+        int _repeat_time;
+        int _first_run_delay;
+        int _order;
+        string _key;
+
+        int _cnt;
+    };
+
+    vector<ScheduleBag> _schedule_need_to_add;
+    vector<string> _schedule_need_to_erase;
+    map<int, map<string, ScheduleBag>> _schedule_bag;
 };
 
 class GameObjectFrameAction {

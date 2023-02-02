@@ -26,30 +26,32 @@ enum MapTileType { air = 0, rock, grass, dirt };
 
 class MapTileHelper final {
 public:
-    MapTileType& operator[](int y) { return map[y * w + x]; }
+    MapTileType& operator[](int y) { return _map[y * _w + _x]; }
 
 private:
     friend class MapTile;
     MapTileHelper(vector<MapTileType>& map, int x, int w)
-        : map(map), x(x), w(w) {}
-    int x, w;
-    vector<MapTileType>& map;
+        : _map(map), _x(x), _w(w) {}
+    int _x, _w;
+    vector<MapTileType>& _map;
 };
 
 class MapTile final {
 public:
-    MapTile(int w, int h) : w(w), h(h) { map.resize((w + 1) * (h + 1)); }
+    MapTile(int w, int h) : _w(w), _h(h) { _map.resize((w + 1) * (h + 1)); }
 
-    MapTileHelper operator[](int x) { return MapTileHelper(map, x, w); }
+    MapTileHelper operator[](int x) { return MapTileHelper(_map, x, _w); }
 
-    int w, h;
-    vector<MapTileType> map;
+    int _w, _h;
+
+private:
+    vector<MapTileType> _map;
 };
 
 // 地图
 class GameMap final {
 public:
-    GameMap(int w, int h) : map(w, h), w(w), h(h) {
+    GameMap(int w, int h) : _map(w, h), _w(w), _h(h) {
         assert(w % 16 == 0);
         assert(h % 16 == 0);
     }
@@ -57,7 +59,7 @@ public:
               shared_ptr<MapHelperComponent> mapHelper,
               shared_ptr<MapPhysicsComponent> mapPhysics);
 
-    MapTile& get() { return map; }
+    MapTile& get() { return _map; }
 
     void updateLogic(GameWorld* game_world);
 
@@ -70,9 +72,9 @@ public:
 private:
     shared_ptr<MapHelperComponent> _map_helper;
     shared_ptr<MapPhysicsComponent> _map_physics;
-    int w, h;
+    int _w, _h;
     // 方便对应，不使用下标0
-    MapTile map;
+    MapTile _map;
 };
 
 // 地图生成器
@@ -101,29 +103,33 @@ public:
 
 class MapGameObjectTileComponent : public GameComponent {
 public:
+    MapGameObjectTileComponent();
+
     void init(map<string, GameObject*>* _dirty, const string& uid) {
         this->_dirty = _dirty;
-        this->uid = uid;
+        this->_uid = uid;
+        _cnt = 10;
     }
 
     virtual void updateLogicInScreenRect(GameObject* ob) override {}
-    virtual void updateLogic(GameObject* ob);
     virtual void updateDraw(GameObject* ob, float rate) {}
     virtual void receiveEvent(GameObject* ob, const json& event);
     virtual void receiveGameAct(GameObject* ob, const GameAct& act) {}
     virtual void updateAfterEvent(GameObject* ob) override {}
 
+private:
+    void upd(GameObject* ob);
 
 private:
-    string uid;
+    string _uid;
     map<string, GameObject*>* _dirty;
-    int cnt = 10;
+    int _cnt;
 };
 
 // 地图附件
 class MapHelperComponent {
 public:
-    virtual iVec2 convert_in_map(const Vec2& pos) = 0;
+    virtual iVec2 convertInMap(const Vec2& pos) = 0;
 };
 
 // 地图物理组件

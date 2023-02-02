@@ -474,10 +474,16 @@ void MapGenerator1::generate(int w, int h, MapTile& map) {
     }
 
     // 测试区域掏空
-    for (int x = 3; x <= 6; ++x) {
-        for (int y = 3; y <= 6; ++y) {
+    for (int x = 3; x <= 8; ++x) {
+        for (int y = h - 7; y <= h - 2; ++y) {
             map[x][y] = air;
         }
+    }
+
+    // 生成平台
+    for (int x = 3; x <= 5; ++x) {
+        int y = h - 8;
+        map[x][y] = rock;
     }
 
     // HASH 验证
@@ -494,4 +500,3 @@ void MapGenerator1::generate(int w, int h, MapTile& map) {
     }
     CCLOG("GameMap HASH: %d", k);
 }
-
