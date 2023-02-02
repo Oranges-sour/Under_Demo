@@ -124,7 +124,7 @@ bool Lobby_Layer::init() {
         not_in_game->addChild(menu);
 
         auto text =
-            ui::TextField::create("Input Description", "font_normal.otf", 48);
+            cocos2d::ui::TextField::create("Input Description", "font_normal.otf", 48);
         text->setMaxLengthEnabled(true);
         text->setMaxLength(10);
         text->setPosition(Vec2(800, visibleSize.height - 200));
@@ -169,13 +169,13 @@ bool Lobby_Layer::init() {
         in_game->addChild(my_uid);
 
         auto text =
-            ui::TextField::create("input message", "font_normal.otf", 48);
+            cocos2d::ui::TextField::create("input message", "font_normal.otf", 48);
         text->setMaxLengthEnabled(true);
         text->setMaxLength(10);
         text->setPosition(Vec2(800, visibleSize.height - 400));
         in_game->addChild(text);
 
-        // ·¢ËÍÁÄÌìÏûÏ¢
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢
         {
             auto l = Label::createWithTTF(
                 "send message", "font_normal.otf", 48, Size(450, 100),
@@ -198,7 +198,7 @@ bool Lobby_Layer::init() {
             menu->addChild(button);
         }
 
-        // ÍË³öµ±Ç°·¿¼ä
+        // ï¿½Ë³ï¿½ï¿½ï¿½Ç°ï¿½ï¿½ï¿½ï¿½
         {
             auto l = Label::createWithTTF(
                 "quit game", "font_normal.otf", 48, Size(450, 100),
@@ -214,7 +214,7 @@ bool Lobby_Layer::init() {
             menu->addChild(button);
         }
 
-        // ¿ªÊ¼ÓÎÏ·
+        // ï¿½ï¿½Ê¼ï¿½ï¿½Ï·
         {
             auto l = Label::createWithTTF(
                 "Start Game(Only Host)", "font_normal.otf", 48, Size(650, 100),
