@@ -165,8 +165,10 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)\Resources\" /D /E /I /F /Y
     <ClCompile Include="..\Classes\game\game_map\implements\MapPreRenderer1.cpp" />
     <ClCompile Include="..\Classes\game\game_object\GameObject.cpp" />
     <ClCompile Include="..\Classes\game\game_object\implements\bullet\bullet_1\Bullet1.cpp" />
-    <ClCompile Include="..\Classes\game\game_object\implements\bullet\bullet_1\Bullet1AI.cpp" />
     <ClCompile Include="..\Classes\game\game_object\implements\bullet\bullet_1\Bullet1Physics.cpp" />
+    <ClCompile Include="..\Classes\game\game_object\implements\bullet\bullet_2\Bullet2.cpp" />
+    <ClCompile Include="..\Classes\game\game_object\implements\bullet\bullet_2\Bullet2AI.cpp" />
+    <ClCompile Include="..\Classes\game\game_object\implements\bullet\bullet_2\Bullet2Physics.cpp" />
     <ClCompile Include="..\Classes\game\game_object\implements\enemy\enemy_1\Enemy1.cpp" />
     <ClCompile Include="..\Classes\game\game_object\implements\enemy\enemy_1\Enemy1AI.cpp" />
     <ClCompile Include="..\Classes\game\game_object\implements\enemy\enemy_1\Enemy1Physics.cpp" />
@@ -211,8 +213,10 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)\Resources\" /D /E /I /F /Y
     <ClInclude Include="..\Classes\game\game_map\implements\MapPreRenderer1.h" />
     <ClInclude Include="..\Classes\game\game_object\GameObject.h" />
     <ClInclude Include="..\Classes\game\game_object\implements\bullet\bullet_1\Bullet1.h" />
-    <ClInclude Include="..\Classes\game\game_object\implements\bullet\bullet_1\Bullet1AI.h" />
     <ClInclude Include="..\Classes\game\game_object\implements\bullet\bullet_1\Bullet1Physics.h" />
+    <ClInclude Include="..\Classes\game\game_object\implements\bullet\bullet_2\Bullet2.h" />
+    <ClInclude Include="..\Classes\game\game_object\implements\bullet\bullet_2\Bullet2AI.h" />
+    <ClInclude Include="..\Classes\game\game_object\implements\bullet\bullet_2\Bullet2Physics.h" />
     <ClInclude Include="..\Classes\game\game_object\implements\enemy\enemy_1\Enemy1.h" />
     <ClInclude Include="..\Classes\game\game_object\implements\enemy\enemy_1\Enemy1AI.h" />
     <ClInclude Include="..\Classes\game\game_object\implements\enemy\enemy_1\Enemy1Physics.h" />

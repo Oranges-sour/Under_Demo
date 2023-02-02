@@ -52,7 +52,8 @@ Size MapPreRenderer1::afterPreRender(Node* target) {
         auto tex = it.second;
 
         auto sp = Sprite::createWithTexture(tex);
-        sp->setScaleY(-1);
+        sp->setScaleX(1 * scale_rate);
+        sp->setScaleY(-1 * scale_rate);
         sp->setAnchorPoint(Vec2(0, 1));
         sp->setPosition(Vec2((area.x - 1) * 64, (area.y - 1) * 64));
         target->addChild(sp);
@@ -151,7 +152,20 @@ Texture2D* MapPreRenderer1::render(const MapArea& area) {
 
     rt->end();
 
-    return rt->getSprite()->getTexture();
+    rt->getSprite()->setAnchorPoint(Vec2(0, 0));
+    rt->getSprite()->setPosition(0, 0);
+    rt->getSprite()->setScale(1.0 / scale_rate);
+
+
+    auto rt_scaled =
+        RenderTexture::create(pixleW / scale_rate, pixleH / scale_rate);
+    rt_scaled->beginWithClear(0, 0, 0, 0);
+
+    rt->getSprite()->visit();
+    rt_scaled->end();
+
+
+    return rt_scaled->getSprite()->getTexture();
 }
 
 void MapPreRenderer1::createTile(MapTileType type, int bit_mask,

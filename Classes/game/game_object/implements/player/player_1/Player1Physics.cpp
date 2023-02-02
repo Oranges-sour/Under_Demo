@@ -45,7 +45,8 @@ void Player1Physics::receiveEvent(GameObject* ob, const json& event) {
     string type = event["type"];
     if (type == "move") {
         if (speed_component) {
-            float x = event["x"] * move_speed;
+            float x = event["x"];
+            x *= move_speed;
 
             auto speed = speed_component->getSpeed();
             speed.x += x;
@@ -74,7 +75,8 @@ void Player1Physics::receiveEvent(GameObject* ob, const json& event) {
         }
     }
     if (type == "attack") {
-        attack += event["x"];
+        float x = event["x"];
+        attack += x;
         if (abs(attack) > 0.1) {
             on_attack = true;
             ob->switchFrameActionStatue(frame_attack_near);

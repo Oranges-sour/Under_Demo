@@ -20,13 +20,8 @@ void GameMap::updateLogic(GameWorld* game_world) {
 }
 
 /////////////////////////////////////////////////////////////////////////
-
-void MapGameObjectTileComponent::updateLogic(GameObject* ob) {
-    _cnt -= 1;
-    if (_cnt == 0) {
-        _dirty->erase(_uid);
-        ob->removeFromParent();
-    }
+MapGameObjectTileComponent::MapGameObjectTileComponent() {
+    this->schedule([&](GameObject* ob) { upd(ob); }, 0, "update");
 }
 
 void MapGameObjectTileComponent::receiveEvent(GameObject* ob,
@@ -34,5 +29,13 @@ void MapGameObjectTileComponent::receiveEvent(GameObject* ob,
     string type = event["type"];
     if (type == "refresh") {
         _cnt = 10;
+    }
+}
+
+void MapGameObjectTileComponent::upd(GameObject* ob) {
+    _cnt -= 1;
+    if (_cnt == 0) {
+        _dirty->erase(_uid);
+        ob->removeFromParent();
     }
 }

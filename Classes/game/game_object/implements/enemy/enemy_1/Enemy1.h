@@ -10,6 +10,7 @@ class GameObject;
 class GameWorld;
 
 class Enemy1 {
+public:
     static GameObject* create(GameWorld* world, const json& json_key,
                               const Vec2& start_pos);
 };

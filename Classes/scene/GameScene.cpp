@@ -7,6 +7,7 @@
 #include "game/game_map/implements/MapHelper1.h"
 #include "game/game_map/implements/MapPhysics1.h"
 #include "game/game_map/implements/MapPreRenderer1.h"
+#include "game/game_object/implements/enemy/enemy_1/Enemy1.h"
 #include "game/game_object/implements/other/start_point/StartPoint.h"
 #include "game/game_object/implements/player/player_1/Player1.h"
 #include "game/game_world/GameWorld.h"
@@ -90,8 +91,7 @@ bool GameScene::init() {
 
     auto listener = make_shared<ConnectionEventListener>(
         [&](const json& event) { notice(event); });
-    Connection::instance()->addEventListener(listener,
-                                                   "GameScene_listener");
+    Connection::instance()->addEventListener(listener, "GameScene_listener");
 
     auto refline = RefLineLayer::create();
     this->addChild(refline, 1000);
@@ -133,7 +133,7 @@ void GameScene::init_map(unsigned seed) {
                 return;
             }
             // x2加速渲染
-            game_map_pre_renderer->preRender();
+            // game_map_pre_renderer->preRender();
             game_map_pre_renderer->preRender();
         },
         "pre_render");
@@ -191,6 +191,9 @@ void GameScene::init_game() {
             game_world->setCameraFollow(ob);
         }
     }
+
+    //创建一个敌人
+    Enemy1::create(game_world, "enemy_1", Vec2(4 * 64, 251 * 64));
 
     // 创建出生点
     StartPoint::create(game_world, "start_point", Vec2(2 * 64, 248 * 64));
@@ -256,6 +259,7 @@ void GameScene::init_game() {
     this->schedule(
         [&](float) {
             move_upd();
+            jump_upd();
             attack_upd();
         },
         0.03f, "control_upd");
@@ -293,6 +297,10 @@ void GameScene::init_game() {
             _frame_manager->pushGameAct(act);*/
         },
         0.4f, "attack_upd");
+
+    auto tex = Director::getInstance()->getTextureCache();
+    auto tex_info = tex->getCachedTextureInfo();
+    CCLOG("%s", tex_info.c_str());
 }
 
 void GameScene::notice(const json& event) {
@@ -381,6 +389,22 @@ void GameScene::move_upd() {
         start_move(nx);
         last_statue.on_move = true;
         last_statue.x = nx;
+    }
+}
+
+void GameScene::jump_upd() {
+    if (!_can_jump) {
+        return;
+    }
+    auto vec = joystick_move->getMoveVec();
+    if (vec.y > 0.5) {
+        _can_jump = false;
+        this->schedule([&](float) { _can_jump = true; }, 0.7f, "reset_jump");
+
+        GameAct act;
+        act.type = act_jump;
+        act.uid = Connection::instance()->getUID();
+        _frame_manager->pushGameAct(act);
     }
 }
 

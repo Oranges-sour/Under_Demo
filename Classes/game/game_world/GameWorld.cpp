@@ -94,7 +94,7 @@ void GameWorld::mainUpdateLogic() {
         }
     }
 
-    CCLOG("--frame--");
+    //CCLOG("--frame--");
 
     // È«Í¼¸üÐÂ
     _quad_tree.visitInRect(

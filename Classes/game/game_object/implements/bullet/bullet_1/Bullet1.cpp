@@ -1,6 +1,5 @@
 #include "Bullet1.h"
 
-#include "Bullet1AI.h"
 #include "Bullet1Physics.h"
 #include "game/game_object/GameObject.h"
 #include "game/game_world/GameWorld.h"
@@ -24,14 +23,11 @@ GameObject* Bullet1::create(GameWorld* world, const string& json_key,
     PhysicsShapeCache::getInstance()->setBodyOnSprite(physics_shape, ob);
     WorldLight::setWorldLight(lights, ob);
 
-    auto ai = make_shared<Bullet1AI>(move_vec, move_speed, rotate_speed);
-    auto phy = make_shared<Bullet1Physics>(start_pos, dead_particle_cnt,
+    auto phy = make_shared<Bullet1Physics>(start_pos, move_vec, move_speed,
+                                           rotate_speed, dead_particle_cnt,
                                            dead_particle_name);
 
-    ob->addGameComponent(ai);
     ob->addGameComponent(phy);
-
-   
 
     return ob;
 }

@@ -53,6 +53,9 @@ private:
                     const Vec2& pos, const MapArea& area, vector<Node*>& dst);
 
 private:
+    //值：2的次幂，值越大，地图越模糊
+    const int scale_rate = 2;
+
     vector<iVec2> dec2_pos;
 
     shared_ptr<Random> _random;

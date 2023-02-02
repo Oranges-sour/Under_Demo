@@ -18,10 +18,14 @@ public:
 private:
     void upd(GameObject* ob);
 
+    void try_attack(GameObject* ob);
+
 private:
-    int attack_speed;
-    float detect_range;
-    string bullet_json_key;
+    bool _can_attack;
+
+    int _attack_speed;
+    float _detect_range;
+    string _bullet_json_key;
 };
 
 #endif

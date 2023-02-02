@@ -47,7 +47,10 @@ public:
 
 private:
     void move_upd();
+    void jump_upd();
     void attack_upd();
+
+    bool _can_jump = true;
 
 private:
     void keyDown(EventKeyboard::KeyCode key);

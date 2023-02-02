@@ -27,7 +27,7 @@ GameObject* Enemy1::create(GameWorld* world, const json& json_key,
 
     auto ai =
         make_shared<Enemy1AI>(detect_range, bullet_json_key, attack_speed);
-    auto phy = make_shared<Enemy1Physics>();
+    auto phy = make_shared<Enemy1Physics>(start_pos);
 
     ob->addGameComponent(ai);
     ob->addGameComponent(phy);

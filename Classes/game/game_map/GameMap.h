@@ -103,6 +103,8 @@ public:
 
 class MapGameObjectTileComponent : public GameComponent {
 public:
+    MapGameObjectTileComponent();
+
     void init(map<string, GameObject*>* _dirty, const string& uid) {
         this->_dirty = _dirty;
         this->_uid = uid;
@@ -110,11 +112,13 @@ public:
     }
 
     virtual void updateLogicInScreenRect(GameObject* ob) override {}
-    virtual void updateLogic(GameObject* ob);
     virtual void updateDraw(GameObject* ob, float rate) {}
     virtual void receiveEvent(GameObject* ob, const json& event);
     virtual void receiveGameAct(GameObject* ob, const GameAct& act) {}
     virtual void updateAfterEvent(GameObject* ob) override {}
+
+private:
+    void upd(GameObject* ob);
 
 private:
     string _uid;

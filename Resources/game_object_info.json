@@ -5,27 +5,15 @@
             "@info": "给Particle1 使用的参数,enemy1的子弹爆炸时候的粒子",
             "info": {
                 "sprite_frame": "enemy_bullet1_explode_particle0.png",
-                "live_frame": 15,
-                "move_speed": 6,
-                "rotate_speed": 5,
-                "light_decrease_rate": 0.8,
-                "scale_decrease_rate": 0.9,
+                "live_frame": 4,
+                "move_speed": 20,
+                "rotate_speed": 10,
+                "light_decrease_rate": 0.7,
+                "scale_decrease_rate": 0.7,
                 "opacity_decrease_rate": 0.9,
-                "direction_angle_min": 1.047197,
-                "direction_angle_max": 1.884955,
-                "world_lights": [
-                    {
-                        "key": "main_light",
-                        "type": 3,
-                        "r": 80,
-                        "g": 208,
-                        "b": 134,
-                        "radius": 340,
-                        "opacity": 1.0,
-                        "offset_x": 0.0,
-                        "offset_y": 0.0
-                    }
-                ]
+                "direction_angle_min": 0.0,
+                "direction_angle_max": 6.28,
+                "world_lights": []
             }
         },
         {
@@ -34,26 +22,14 @@
             "info": {
                 "sprite_frame": "bullet_0.png",
                 "live_frame": 15,
-                "move_speed": 6,
+                "move_speed": 3,
                 "rotate_speed": 5,
                 "light_decrease_rate": 0.8,
                 "scale_decrease_rate": 0.9,
                 "opacity_decrease_rate": 0.9,
-                "direction_angle_min": 1.047197,
-                "direction_angle_max": 1.884955,
-                "world_lights": [
-                    {
-                        "key": "main_light",
-                        "type": 3,
-                        "r": 80,
-                        "g": 208,
-                        "b": 134,
-                        "radius": 340,
-                        "opacity": 1.0,
-                        "offset_x": 0.0,
-                        "offset_y": 0.0
-                    }
-                ]
+                "direction_angle_min": 0.0,
+                "direction_angle_max": 6.28,
+                "world_lights": []
             }
         },
         {
@@ -62,9 +38,11 @@
             "info": {
                 "sprite_frame": "enemy_bullet_0.png",
                 "physics_shape": "enemy_bullet_0",
-                "move_speed": 20,
+                "move_speed": 40,
                 "particle_move_json_key": "enemy_1_bullet_particle_move",
+                "particle_move_cnt_per_frame": 0.5,
                 "particle_explode_json_key": "enemy_1_bullet_particle_explode",
+                "particle_explode_cnt": 5,
                 "world_lights": [
                     {
                         "key": "main_light",
@@ -87,7 +65,7 @@
                 "sprite_frame": "enemy_0.png",
                 "physics_shape": "enemy_0",
                 "bullet_json_key": "enemy_1_bullet",
-                "attack_speed": 3,
+                "attack_speed": 12,
                 "detect_range": 600,
                 "world_lights": [
                     {
