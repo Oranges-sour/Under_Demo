@@ -72,6 +72,7 @@ private:
 
     Joystick* joystick_move;
     Joystick* joystick_attack;
+    DrawNode* attack_draw;
 
     map<string, GameObject*> players;
 

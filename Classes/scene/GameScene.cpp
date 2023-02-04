@@ -16,6 +16,7 @@
 #include "scene/StartScene.h"
 #include "utility/GameObjectInfo.h"
 #include "utility/PhysicsShapeCache.h"
+#include "utility/math/MyMath.h"
 #include "utility/touch/Joystick.h"
 #include "utility/touch/TouchesPool.h"
 using namespace cocos2d::experimental;
@@ -135,7 +136,11 @@ void GameScene::init_map(unsigned seed) {
                 return;
             }
             // x2加速渲染
-            // game_map_pre_renderer->preRender();
+            game_map_pre_renderer->preRender();
+            game_map_pre_renderer->preRender();
+            game_map_pre_renderer->preRender();
+            game_map_pre_renderer->preRender();
+            game_map_pre_renderer->preRender();
             game_map_pre_renderer->preRender();
         },
         "pre_render");
@@ -194,7 +199,7 @@ void GameScene::init_game() {
         }
     }
 
-    //创建一个敌人
+    // 创建一个敌人
     Enemy1::create(game_world, "enemy_1", Vec2(4 * 64, 251 * 64));
 
     // 创建出生点
@@ -257,6 +262,51 @@ void GameScene::init_game() {
     joystick_attack->setOriginalPosition(Vec2(
         visible_size.width - joystick_attack_right, joystick_attack_bottom));
     this->addChild(joystick_attack, 1);
+
+    this->attack_draw = DrawNode::create();
+    this->addChild(attack_draw, 1);
+    {
+        float radius = 600;
+        // 离中心区域的位置没用线
+        float radius_1 = 50;
+        float r = 60;
+        float offset = 90;
+        Vec2 direction(DEG::cos(r), DEG::sin(r));
+        Vec2 direction_1(DEG::cos(r - offset), DEG::sin(r - offset));
+        Vec2 direction_2(DEG::cos(r + offset), DEG::sin(r + offset));
+
+        attack_draw->drawLine(Vec2(visible_size / 2) + direction_1 * radius_1,
+                              Vec2(visible_size / 2) + direction_1 * radius,
+                              Color4F(0.6, 0.6, 0.6, 1.0));
+        attack_draw->drawLine(Vec2(visible_size / 2) + direction_2 * radius_1,
+                              Vec2(visible_size / 2) + direction_2 * radius,
+                              Color4F(0.6, 0.6, 0.6, 1.0));
+
+        Vec2 vv[500];
+        int cnt = 0;
+        for (int i = 0; i < 500; ++i) {
+            vv[i] = Vec2::ZERO;
+        }
+        // 起点
+        vv[cnt] = Vec2(visible_size / 2) + direction_1 * radius_1;
+        cnt += 1;
+        // 大圆弧上
+        for (int an = r - offset; an <= r + offset; an += 5) {
+            vv[cnt] = Vec2(visible_size / 2) +
+                      Vec2(DEG::cos(an), DEG::sin(an)) * radius;
+            cnt += 1;
+        }
+        // 小圆弧上
+       /* for (int an = r + offset; an > r - offset; an -= 5) {
+            vv[cnt] = Vec2(visible_size / 2) +
+                      Vec2(DEG::cos(an), DEG::sin(an)) * radius_1;
+            cnt += 1;
+        }*/
+        // 终点
+         vv[cnt] = Vec2(visible_size / 2) + direction_2 * (radius_1 + 1);
+         cnt += 1;
+        attack_draw->drawSolidPoly(vv, cnt, Color4F(1.0, 1.0, 1.0, 0.1));
+    }
 
     this->schedule(
         [&](float) {
