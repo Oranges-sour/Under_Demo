@@ -322,7 +322,6 @@
 		C26FCA672A67D7B9009A3F6F /* PhysicsShapeCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhysicsShapeCache.h; sourceTree = "<group>"; };
 		C26FCA682A67D7B9009A3F6F /* PhysicsShapeCache.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PhysicsShapeCache.cpp; sourceTree = "<group>"; };
 		C26FCAC32A67D8FA009A3F6F /* Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Prefix.pch; sourceTree = "<group>"; };
-		C26FCAC42A67D922009A3F6F /* Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Prefix.pch; sourceTree = "<group>"; };
 		C26FCAC62A67D985009A3F6F /* bgm1.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = bgm1.wav; sourceTree = "<group>"; };
 		C26FCAC72A67D985009A3F6F /* font_normal.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = font_normal.otf; sourceTree = "<group>"; };
 		C26FCAC82A67D985009A3F6F /* loadingPage.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = loadingPage.plist; sourceTree = "<group>"; };
@@ -334,6 +333,7 @@
 		C26FCACE2A67D985009A3F6F /* blue_bk.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = blue_bk.png; sourceTree = "<group>"; };
 		C26FCACF2A67D985009A3F6F /* game_object_info.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = game_object_info.json; sourceTree = "<group>"; };
 		C26FCAD02A67D985009A3F6F /* demo-1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "demo-1.png"; sourceTree = "<group>"; };
+		C26FCAE72A67DBE2009A3F6F /* Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Prefix.pch; path = mac/Prefix.pch; sourceTree = "<group>"; };
 		D44C620B132DFF330009C878 /* OpenAL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenAL.framework; path = System/Library/Frameworks/OpenAL.framework; sourceTree = SDKROOT; };
 		D44C620D132DFF430009C878 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		D44C620F132DFF4E0009C878 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
@@ -509,9 +509,9 @@
 		503AE10617EB990700D1A890 /* mac */ = {
 			isa = PBXGroup;
 			children = (
+				C26FCAE72A67DBE2009A3F6F /* Prefix.pch */,
 				503AE0F517EB97AB00D1A890 /* Icons */,
 				503AE10317EB98FF00D1A890 /* main.cpp */,
-				C26FCAC42A67D922009A3F6F /* Prefix.pch */,
 			);
 			name = mac;
 			sourceTree = "<group>";
