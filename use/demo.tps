@@ -4,7 +4,7 @@
         <key>fileFormatVersion</key>
         <int>6</int>
         <key>texturePackerVersion</key>
-        <string>7.0.0</string>
+        <string>7.0.1</string>
         <key>autoSDSettings</key>
         <array>
             <struct type="AutoSDSettings">
@@ -464,6 +464,7 @@
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
+            <key type="filename">Res/man_attack_far_1.png</key>
             <key type="filename">Res/man_attack_near_1.png</key>
             <key type="filename">Res/man_attack_near_2.png</key>
             <key type="filename">Res/man_attack_near_3.png</key>
@@ -578,6 +579,7 @@
                     <filename>Res/enemy_bullet_0.png</filename>
                     <filename>Res/enemy_bullet1_explode_particle0.png</filename>
                     <filename>Res/bullet_0.png</filename>
+                    <filename>Res/man_attack_far_1.png</filename>
                 </array>
             </struct>
         </map>
