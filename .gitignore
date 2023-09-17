@@ -128,6 +128,7 @@ mono_crash.*
 x64/
 x86/
 [Ww][Ii][Nn]32/
+!cocos2d/cocos/platform/win32/
 [Aa][Rr][Mm]/
 [Aa][Rr][Mm]64/
 bld/
