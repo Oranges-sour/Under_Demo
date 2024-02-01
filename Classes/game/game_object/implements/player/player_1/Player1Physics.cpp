@@ -28,7 +28,7 @@ Player1Physics::Player1Physics(const Vec2& start_pos, float move_speed,
         });
     frame_jump_stay = make_shared<GameObjectFrameAction>(
         frame_action_jump_stay, [&](GameObject* ob, int c) {
-            if (c >= 8) {
+            if (c >= 14) {
                 if (run) {
                     ob->switchFrameActionStatue(frame_run);
                 } else {

@@ -62,7 +62,7 @@ struct WorldLight {
     WorldLightType type;
 };
 
-class GameObject : public Sprite, public ActionTweenDelegate {
+class GameObject : public Sprite {
 public:
     static GameObject* create();
 
@@ -80,13 +80,11 @@ public:
     void pushEvent(const json& event);
     void pushGameAct(const GameAct& act);
 
-    virtual void updateTweenAction(float rate, const std::string& key) override;
-
     // ตฦนโ
     void addWorldLight(const WorldLight& light, const string& key) {
         _world_light.insert({key, light});
     }
-
+    
     void removeWorldLight(const string& key) { _world_light.erase(key); }
 
     WorldLight* getWorldLight(const string& key) {
@@ -133,9 +131,6 @@ private:
 
     queue<GameAct> _componet_game_act_queue;
     queue<json> _componet_event_queue;
-
-    ActionTween _actionTween;
-    EaseInOut _actionEase;
 };
 
 class GameComponent {

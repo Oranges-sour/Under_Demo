@@ -34,8 +34,6 @@ protected:
     shared_ptr<GravityComponent> gravity_component;
 
 protected:
-    ActionTween action_tween;
-    EaseInOut action_ease;
 
     Vec2 scaleNow;
     float rotationNow;
@@ -80,8 +78,8 @@ public:
 
 private:
     shared_ptr<PhysicsComponent::SpeedComponent> speed_component;
-    Vec2 left_top_offset;
-    Vec2 right_bottom_offset;
+    Vec2 left_bottom_offset;
+    Vec2 right_top_offset;
 };
 
 class PhysicsComponent::GravityComponent : public PhysicsComponent::Component {

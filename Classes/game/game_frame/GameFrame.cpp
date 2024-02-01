@@ -35,8 +35,8 @@ void GameFrameManager::update() {
         return;
     }
 
-    auto js = this->generateJson(_next_frame);
-    Connection::instance()->pushStatueEvent(js);
+    /*auto js = this->generateJson(_next_frame);
+    Connection::instance()->pushStatueEvent(js);*/
 
     _next_frame = make_shared<GameFrame>();
 }

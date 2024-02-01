@@ -35,8 +35,6 @@ public:
 
     void init_game();
 
-    void notice(const json& event);
-
     virtual void cleanup() override {
         Connection::instance()->removeEventListener("GameScene_listener");
         _frame_manager->release();
@@ -56,14 +54,6 @@ private:
     void keyDown(EventKeyboard::KeyCode key);
     void keyUp(EventKeyboard::KeyCode key);
 
-private:
-    void try_ping();
-
-    int ping_ms = 1000;
-    list<int> ping_que;
-    bool ping_finish = true;
-    steady_clock::time_point ping_time0;
-    steady_clock::time_point ping_time1;
 
 private:
     unsigned int seed;
