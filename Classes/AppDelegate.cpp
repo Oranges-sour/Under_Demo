@@ -54,8 +54,8 @@ bool AppDelegate::applicationDidFinishLaunching() {
     (CC_TARGET_PLATFORM == CC_PLATFORM_MAC) ||   \
     (CC_TARGET_PLATFORM == CC_PLATFORM_LINUX)
         glview = GLViewImpl::createWithRect(
-            "Under_Demo", cocos2d::Rect(0, 0, 2340,
-                                        1080));
+            "Under_Demo", cocos2d::Rect(0, 0, 2340 / 2,
+                                        1080 / 2));
 #else
         glview = GLViewImpl::create("Under_Demo");
 #endif
