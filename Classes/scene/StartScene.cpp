@@ -39,7 +39,7 @@ bool DemoScene::init() {
     PhysicsShapeCache::getInstance()->addShapesWithFile("demo_physics.plist");
 
     //
-    Connection::instance()->open("ws://101.42.237.241:23482");
+    Connection::instance()->open("ws://127.0.0.1:23482");
 
     // Connection::instance()->open("ws://127.0.0.1:23482");
 
