@@ -29,12 +29,6 @@ void GameObject::pushGameAct(const GameAct& act) {
     _componet_game_act_queue.push(act);
 }
 
-void GameObject::updateTweenAction(float rate, const std::string& key) {
-    for (auto& it : _componets) {
-        it->updateDraw(this, rate);
-    }
-}
-
 void GameObject::mainUpdate() {
     for (auto& it : _componets) {
         it->updateLogic(this);
@@ -59,12 +53,9 @@ void GameObject::mainUpdate() {
         it->updateAfterEvent(this);
     }
 
-    this->stopAction(&_actionEase);
-
-    _actionTween.initWithDuration(0.05f, "phy", 0.0f, 1.0f);
-    _actionEase.initWithAction(&_actionTween, 1.1f);
-
-    this->runAction(&_actionEase);
+    for (auto& it : _componets) {
+        it->updateDraw(this, 1.0f);
+    }
 
     if (this->_frame_action) {
         this->_frame_action->play(this);

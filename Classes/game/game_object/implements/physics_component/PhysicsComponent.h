@@ -34,8 +34,6 @@ protected:
     shared_ptr<GravityComponent> gravity_component;
 
 protected:
-    ActionTween action_tween;
-    EaseInOut action_ease;
 
     Vec2 scaleNow;
     float rotationNow;

@@ -33,71 +33,20 @@ bool GameScene::init() {
     auto phyw = this->getPhysicsWorld();
     phyw->setGravity(Vec2::ZERO);
     // phyw->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
-    phyw->setUpdateRate(2);
+    //phyw->setUpdateRate(1);
 
     loading_layer = LoadingLayer::create();
     this->addChild(loading_layer, 1);
 
-    this->schedule([&](float dt) { Connection::instance()->update(dt * 1000); },
-                   "web_upd");
+    /*this->schedule([&](float dt) { Connection::instance()->update(dt * 1000); },
+                   "web_upd");*/
 
-    this->schedule([&](float dt) { try_ping(); }, 0.1f, "try_ping");
-
-    auto ping_1 =
-        Label::createWithTTF("", "font_normal.otf", 48, Size(300, 80),
-                             TextHAlignment::RIGHT, TextVAlignment::TOP);
-    ping_1->setAnchorPoint(Vec2(1, 1));
-    ping_1->setPosition(vs.width - 100, vs.height - 50);
-    this->addChild(ping_1, 2);
-
-    auto ping_2 =
-        Label::createWithTTF("", "font_normal.otf", 48, Size(500, 80),
-                             TextHAlignment::RIGHT, TextVAlignment::TOP);
-    ping_2->setAnchorPoint(Vec2(1, 1));
-    ping_2->setPosition(vs.width - 100, vs.height - 120);
-    this->addChild(ping_2, 2);
-
-    this->schedule(
-        [&, ping_1, ping_2](float dt) {
-            ping_que.push_back(ping_ms);
-            while (ping_que.size() > 10) {
-                ping_que.pop_front();
-            }
-
-            {
-                stringstream ss;
-                ss << "ping: ";
-                ss << ping_ms;
-                ss << "ms";
-
-                ping_1->setString(ss.str());
-            }
-            int cnt = 0;
-            int ping_sum = 0;
-            for (auto& it : ping_que) {
-                ping_sum += it;
-                cnt += 1;
-            }
-            if (cnt == 0) {
-                return;
-            }
-            {
-                stringstream ss;
-                ss << "ping avg: ";
-                ss << ping_sum / cnt;
-                ss << "ms";
-
-                ping_2->setString(ss.str());
-            }
-        },
-        0.1f, "ping_l");
-
-    auto listener = make_shared<ConnectionEventListener>(
+    /*auto listener = make_shared<ConnectionEventListener>(
         [&](const json& event) { notice(event); });
-    Connection::instance()->addEventListener(listener, "GameScene_listener");
+    Connection::instance()->addEventListener(listener, "GameScene_listener");*/
 
-    auto refline = RefLineLayer::create();
-    this->addChild(refline, 1000);
+    /*auto refline = RefLineLayer::create();
+    this->addChild(refline, 1000);*/
 
     return true;
 }
@@ -194,7 +143,7 @@ void GameScene::init_game() {
             Player1::create(game_world, "player_1", Vec2(3 * 64, 253 * 64), it);
 
         players.insert({it, ob});
-        if (it == Connection::instance()->getUID()) {
+        if (it == "abcdef") {
             game_world->setCameraFollow(ob);
         }
     }
@@ -219,7 +168,7 @@ void GameScene::init_game() {
         if (b == EventMouse::MouseButton::BUTTON_LEFT) {
             /* GameAct act;
              act.type = act_attack;
-             act._uid = players.find(Connection::instance()->getUID())
+             act._uid = players.find("abcdef")
                            ->second->getUID();
 
              act.param1 = 1;
@@ -320,7 +269,7 @@ void GameScene::init_game() {
         [&](float) {
             for (auto& it : players) {
                 auto ob = it.second;
-                if (ob->getUID() == Connection::instance()->getUID()) {
+                if (ob->getUID() == "abcdef") {
                     GameAct act;
                     act.type = act_position_force_set;
                     act.uid = ob->getUID();
@@ -342,7 +291,7 @@ void GameScene::init_game() {
 
             GameAct act;
             act.type = act_attack;
-            act._uid = Connection::instance()->getUID();
+            act._uid = "abcdef";
 
             act.param1 = vec.x;
             act.param2 = vec.y;
@@ -358,36 +307,12 @@ void GameScene::init_game() {
     AudioEngine::play2d("11.mp3", true, 0.6);
 }
 
-void GameScene::notice(const json& event) {
-    if (!event.contains("type")) {
-        return;
-    }
-
-    string type = event["type"];
-    if (type == "quit_game_result") {
-        string statue = event["statue"];
-        if (statue == "success") {
-            auto s = DemoScene::createScene();
-            Director::getInstance()->replaceScene(s);
-            return;
-        }
-    }
-
-    if (type == "ping") {
-        ping_time1 = steady_clock::now();
-        ping_finish = true;
-
-        ping_ms =
-            duration_cast<duration<float>>(ping_time1 - ping_time0).count() *
-            1000 / 2;
-    }
-}
 
 void GameScene::move_upd() {
     const auto stop_move = [this](int x) {
         GameAct act;
         act.type = act_move_stop;
-        act.uid = Connection::instance()->getUID();
+        act.uid = "abcdef";
         act.param1 = x;
         _frame_manager->pushGameAct(act);
     };
@@ -395,7 +320,7 @@ void GameScene::move_upd() {
     const auto start_move = [this](int x) {
         GameAct act;
         act.type = act_move_start;
-        act.uid = Connection::instance()->getUID();
+        act.uid = "abcdef";
         act.param1 = x;
         _frame_manager->pushGameAct(act);
     };
@@ -458,7 +383,7 @@ void GameScene::jump_upd() {
 
         GameAct act;
         act.type = act_jump;
-        act.uid = Connection::instance()->getUID();
+        act.uid = "abcdef";
         _frame_manager->pushGameAct(act);
     }
 }
@@ -467,7 +392,7 @@ void GameScene::attack_upd() {
     const auto stop_attack = [this](int x) {
         GameAct act;
         act.type = act_attack_stop;
-        act.uid = Connection::instance()->getUID();
+        act.uid = "abcdef";
         act.param1 = x;
         _frame_manager->pushGameAct(act);
     };
@@ -475,7 +400,7 @@ void GameScene::attack_upd() {
     const auto start_attack = [this](int x) {
         GameAct act;
         act.type = act_attack_start;
-        act.uid = Connection::instance()->getUID();
+        act.uid = "abcdef";
         act.param1 = x;
         _frame_manager->pushGameAct(act);
     };
@@ -532,7 +457,7 @@ void GameScene::keyDown(EventKeyboard::KeyCode key) {
         case EventKeyboard::KeyCode::KEY_W: {
             GameAct act;
             act.type = act_jump;
-            act.uid = Connection::instance()->getUID();
+            act.uid = "abcdef";
             _frame_manager->pushGameAct(act);
         } break;
         case EventKeyboard::KeyCode::KEY_S: {
@@ -540,7 +465,7 @@ void GameScene::keyDown(EventKeyboard::KeyCode key) {
         case EventKeyboard::KeyCode::KEY_A: {
             GameAct act;
             act.type = act_move_start;
-            act.uid = Connection::instance()->getUID();
+            act.uid = "abcdef";
             act.param1 = -1;
             _frame_manager->pushGameAct(act);
 
@@ -548,7 +473,7 @@ void GameScene::keyDown(EventKeyboard::KeyCode key) {
         case EventKeyboard::KeyCode::KEY_D: {
             GameAct act;
             act.type = act_move_start;
-            act.uid = Connection::instance()->getUID();
+            act.uid = "abcdef";
             act.param1 = 1;
             _frame_manager->pushGameAct(act);
         } break;
@@ -564,31 +489,20 @@ void GameScene::keyUp(EventKeyboard::KeyCode key) {
         case EventKeyboard::KeyCode::KEY_A: {
             GameAct act;
             act.type = act_move_stop;
-            act.uid = Connection::instance()->getUID();
+            act.uid = "abcdef";
             act.param1 = -1;
             _frame_manager->pushGameAct(act);
         } break;
         case EventKeyboard::KeyCode::KEY_D: {
             GameAct act;
             act.type = act_move_stop;
-            act.uid = Connection::instance()->getUID();
+            act.uid = "abcdef";
             act.param1 = 1;
             _frame_manager->pushGameAct(act);
         } break;
     }
 }
 
-void GameScene::try_ping() {
-    if (!ping_finish) {
-        return;
-    }
-
-    json e;
-    e["type"] = "ping";
-    Connection::instance()->pushStatueEvent(e);
-    ping_time0 = steady_clock::now();
-    ping_finish = false;
-}
 
 bool LoadingLayer::init() {
     if (!Layer::init()) {

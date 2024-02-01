@@ -88,7 +88,7 @@ private:
     float _logic_update_dt;
 
     set<GameObject*> _need_to_remove;
-    map<GameObject*, iVec2> _need_to_add;
+    map < GameObject*, pair<ObjectLayer,Vec2>> _need_to_add;
 
     map<string, GameObject*> _game_objects;
 

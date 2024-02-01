@@ -5,8 +5,8 @@
             "@info": "给Particle1 使用的参数,enemy1的子弹爆炸时候的粒子",
             "info": {
                 "sprite_frame": "enemy_bullet1_explode_particle0.png",
-                "live_frame": 4,
-                "move_speed": 20,
+                "live_frame": 8,
+                "move_speed": 10,
                 "rotate_speed": 10,
                 "light_decrease_rate": 0.7,
                 "scale_decrease_rate": 0.7,
@@ -22,8 +22,8 @@
             "info": {
                 "sprite_frame": "bullet_0.png",
                 "live_frame": 15,
-                "move_speed": 3,
-                "rotate_speed": 5,
+                "move_speed": 1,
+                "rotate_speed": 2,
                 "light_decrease_rate": 0.8,
                 "scale_decrease_rate": 0.9,
                 "opacity_decrease_rate": 0.9,
@@ -38,9 +38,9 @@
             "info": {
                 "sprite_frame": "enemy_bullet_0.png",
                 "physics_shape": "enemy_bullet_0",
-                "move_speed": 40,
+                "move_speed": 1,
                 "particle_move_json_key": "enemy_1_bullet_particle_move",
-                "particle_move_cnt_per_frame": 0.5,
+                "particle_move_cnt_per_frame": 0.2,
                 "particle_explode_json_key": "enemy_1_bullet_particle_explode",
                 "particle_explode_cnt": 5,
                 "world_lights": [
@@ -65,7 +65,7 @@
                 "sprite_frame": "enemy_0.png",
                 "physics_shape": "enemy_0",
                 "bullet_json_key": "enemy_1_bullet",
-                "attack_speed": 12,
+                "attack_speed": 60,
                 "detect_range": 600,
                 "world_lights": [
                     {
@@ -87,7 +87,7 @@
             "@info": "游戏内玩家出生点",
             "info": {
                 "sprite_frame": "start_point.png",
-                "particle_cnt_per_frame": 0.3,
+                "particle_cnt_per_frame": 0.1,
                 "particle_name": "start_point_particle",
                 "offset_1_x": 40,
                 "offset_1_y": 54,
@@ -225,20 +225,24 @@
             "info": {
                 "sprite_frame": "man_stay.png",
                 "physics_shape": "man_stay",
-                "move_speed": 25,
-                "jump_speed": 50,
+                "move_speed": 12,
+                "jump_speed": 23,
                 "wall_contact_left_top_x": -30,
                 "wall_contact_left_top_y": -135,
                 "wall_contact_right_bottom_x": 30,
                 "wall_contact_right_bottom_y": -15,
-                "gravity": 6,
+                "gravity": 1.2,
                 "frame_action_stay": [
                     "man_stay.png"
                 ],
                 "frame_action_run": [
                     "man_run_1.png",
+                    "man_run_1.png",
+                    "man_run_2.png",
                     "man_run_2.png",
                     "man_run_3.png",
+                    "man_run_3.png",
+                    "man_run_4.png",
                     "man_run_4.png"
                 ],
                 "frame_action_jump": [

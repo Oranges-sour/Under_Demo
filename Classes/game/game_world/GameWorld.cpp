@@ -16,7 +16,7 @@ bool GameWorld::init() {
     // 初始化全局随机数
     this->_global_random = make_shared<Random>(31415);
 
-    this->schedule([&](float) { mainUpdateLogic(); }, 0.05f, "update_logic");
+    this->schedule([&](float) { mainUpdateLogic(); }, "update_logic");
     this->schedule([&](float) { mainUpdateDraw(); }, "update_draw");
 
     this->_game_node = Node::create();
@@ -68,15 +68,10 @@ GameObject* GameWorld::newObject(ObjectLayer layer, const Vec2& startPos) {
     auto ob = GameObject::create();
     assert(ob != nullptr);
 
-    ob->init(this);
-    ob->setPosition(startPos);
-    _game_node->addChild(ob, layer);
-
-    auto p = this->_game_map->getMapHelper()->convertInMap(startPos);
-
+    ob->retain();
     ob->setUID(Tools::randomString(8, *_global_random));
 
-    _need_to_add.insert({ob, p});
+    _need_to_add.insert({ob, {layer, startPos}});
 
     return ob;
 }
@@ -94,7 +89,7 @@ void GameWorld::mainUpdateLogic() {
         }
     }
 
-    //CCLOG("--frame--");
+    // CCLOG("--frame--");
 
     // 全图更新
     _quad_tree.visitInRect(
@@ -113,10 +108,23 @@ void GameWorld::mainUpdateLogic() {
 
     // 添加
     for (auto& it : _need_to_add) {
-        _game_objects.insert({it.first->getUID(), it.first});
+        auto ob = it.first;
+        auto layer = it.second.first;
+        auto pos = it.second.second;
 
-        auto quad_node = _quad_tree.insert(it.second, it.first);
+        
+        _game_objects.insert({ob->getUID(), ob});
+
+        ob->init(this);
+        ob->setPosition(pos);
+        _game_node->addChild(ob, layer);
+
+        auto p = this->_game_map->getMapHelper()->convertInMap(pos);
+
+        auto quad_node = _quad_tree.insert(p, ob);
         it.first->_quad_node = quad_node;
+
+        ob->release();
     }
     _need_to_add.clear();
 
@@ -209,7 +217,7 @@ void GameWorld::updateGameObjectPosition() {
 }
 
 void GameWorld::mainUpdateInScreenRect(const Vec2& left_bottom,
-                                           const Size& size) {
+                                       const Size& size) {
     auto ilb = _game_map->getMapHelper()->convertInMap(left_bottom);
 
     auto isize =
@@ -217,8 +225,8 @@ void GameWorld::mainUpdateInScreenRect(const Vec2& left_bottom,
 
     // 边缘扩大一点
     _quad_tree.visitInRect({ilb.x - 5, ilb.y + isize.y + 5},
-                            {ilb.x + isize.x + 5, ilb.y - 5},
-                            [&](const iVec2& coor, GameObject* object) {
-                                object->mainUpdateInScreenRect();
-                            });
+                           {ilb.x + isize.x + 5, ilb.y - 5},
+                           [&](const iVec2& coor, GameObject* object) {
+                               object->mainUpdateInScreenRect();
+                           });
 }
