@@ -16,8 +16,12 @@ bool GameWorld::init() {
     // 初始化全局随机数
     this->_global_random = make_shared<Random>(31415);
 
-    this->schedule([&](float) { mainUpdateLogic(); }, "update_logic");
-    this->schedule([&](float) { mainUpdateDraw(); }, "update_draw");
+    this->schedule(
+        [&](float) {
+            mainUpdateLogic();
+            mainUpdateDraw();
+        },
+        "update");
 
     this->_game_node = Node::create();
     this->addChild(_game_node, 0);
@@ -112,7 +116,6 @@ void GameWorld::mainUpdateLogic() {
         auto layer = it.second.first;
         auto pos = it.second.second;
 
-        
         _game_objects.insert({ob->getUID(), ob});
 
         ob->init(this);

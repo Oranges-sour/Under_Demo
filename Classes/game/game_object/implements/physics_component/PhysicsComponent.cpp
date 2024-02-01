@@ -59,10 +59,10 @@ void PhysicsComponent::upd(GameObject* ob) {
 }
 
 PhysicsComponent::WallContactComponent::WallContactComponent(
-    const Vec2& left_top_offset, const Vec2& right_bottom_offset,
+    const Vec2& left_bottom_offset, const Vec2& right_top_offset,
     shared_ptr<PhysicsComponent::SpeedComponent> speed_component)
-    : left_top_offset(left_top_offset),
-      right_bottom_offset(right_bottom_offset),
+    : left_bottom_offset(left_bottom_offset),
+      right_top_offset(right_top_offset),
       speed_component(speed_component) {}
 
 void PhysicsComponent::WallContactComponent::updateAfterEvent(
@@ -78,8 +78,8 @@ void PhysicsComponent::WallContactComponent::updateAfterEvent(
     iVec2 ip0, ip1;
 
     const auto convert = [&]() {
-        p0 = pos + left_top_offset;
-        p1 = pos + right_bottom_offset;
+        p0 = pos + left_bottom_offset;
+        p1 = pos + right_top_offset;
         // вСоб
         ip0 = maph->convertInMap(p0);
         // срио

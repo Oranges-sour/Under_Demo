@@ -17,10 +17,10 @@ GameObject* Player1::create(GameWorld* world, const json& json_key,
     SC string physics_shape = info["physics_shape"];
     SC float move_speed = info["move_speed"];
     SC float jump_speed = info["jump_speed"];
-    SC float wall_contact_left_top_x = info["wall_contact_left_top_x"];
-    SC float wall_contact_left_top_y = info["wall_contact_left_top_y"];
-    SC float wall_contact_right_bottom_x = info["wall_contact_right_bottom_x"];
-    SC float wall_contact_right_bottom_y = info["wall_contact_right_bottom_y"];
+    SC float wall_contact_left_bottom_x = info["wall_contact_left_bottom_x"];
+    SC float wall_contact_left_bottom_y = info["wall_contact_left_bottom_y"];
+    SC float wall_contact_right_top_x = info["wall_contact_right_top_x"];
+    SC float wall_contact_right_top_y = info["wall_contact_right_top_y"];
     SC float gravity = info["gravity"];
     SC vector<string> frame_action_stay = info["frame_action_stay"];
     SC vector<string> frame_action_run = info["frame_action_run"];
@@ -49,8 +49,8 @@ GameObject* Player1::create(GameWorld* world, const json& json_key,
         make_shared<PhysicsComponent::GravityComponent>(gravity, speed_comp);
     auto wall_contact_comp =
         make_shared<PhysicsComponent::WallContactComponent>(
-            Vec2(wall_contact_left_top_x, wall_contact_left_top_y),
-            Vec2(wall_contact_right_bottom_x, wall_contact_right_bottom_y),
+            Vec2(wall_contact_left_bottom_x, wall_contact_left_bottom_y),
+            Vec2(wall_contact_right_top_x, wall_contact_right_top_y),
             speed_comp);
 
     phy->setGravityComponent(gravity_comp);
