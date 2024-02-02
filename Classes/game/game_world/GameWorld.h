@@ -63,7 +63,7 @@ public:
 
     Quad<GameObject*>& getGameObjects() { return this->_quad_tree; }
 
-    void mainUpdateLogic();
+    void mainUpdate();
 
     void mainUpdateCamera();
 

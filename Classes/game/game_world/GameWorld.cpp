@@ -18,7 +18,7 @@ bool GameWorld::init() {
 
     this->schedule(
         [&](float) {
-            mainUpdateLogic();
+            mainUpdate();
             mainUpdateCamera();
         },
         "update");
@@ -82,7 +82,7 @@ GameObject* GameWorld::newObject(ObjectLayer layer, const Vec2& startPos) {
 
 void GameWorld::removeObject(GameObject* ob) { _need_to_remove.insert(ob); }
 
-void GameWorld::mainUpdateLogic() {
+void GameWorld::mainUpdate() {
     while (!_game_act_que.empty()) {
         auto p = _game_act_que.front();
         _game_act_que.pop();
