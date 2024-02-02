@@ -65,7 +65,7 @@ public:
 
     void mainUpdateLogic();
 
-    void mainUpdateDraw();
+    void mainUpdateCamera();
 
     Node* getGameMapTarget() { return _game_map_target; }
 
