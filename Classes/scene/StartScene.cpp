@@ -12,6 +12,8 @@
 #include "utility/PhysicsShapeCache.h"
 #include "utility/json/json.h"
 
+const string PLAYER_UID = "playeruid";
+
 using namespace cocos2d::experimental;
 
 USING_NS_CC;
@@ -47,7 +49,7 @@ bool DemoScene::init() {
 
             int seed = 123;
             int player_cnt = 1;
-            vector<string> player_uid = {"abcdef"};
+            vector<string> player_uid = {PLAYER_UID};
             s->start(seed, player_cnt, player_uid);
         },
         0.1f, "123");

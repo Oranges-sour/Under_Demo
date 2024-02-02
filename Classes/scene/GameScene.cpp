@@ -21,6 +21,8 @@
 #include "utility/touch/TouchesPool.h"
 using namespace cocos2d::experimental;
 
+const string PLAYER_UID = "playeruid";
+
 GameScene* GameScene::createScene() { return GameScene::create(); }
 
 bool GameScene::init() {
@@ -131,7 +133,7 @@ void GameScene::init_game() {
             Player1::create(game_world, "player_1", Vec2(3 * 64, 253 * 64), it);
 
         players.insert({it, ob});
-        if (it == "abcdef") {
+        if (it == PLAYER_UID) {
             game_world->setCameraFollow(ob);
         }
     }
@@ -156,7 +158,7 @@ void GameScene::init_game() {
         if (b == EventMouse::MouseButton::BUTTON_LEFT) {
             /* GameAct act;
              act.type = act_attack;
-             act._uid = players.find("abcdef")
+             act._uid = players.find(PLAYER_UID)
                            ->second->getUID();
 
              act.param1 = 1;
@@ -262,7 +264,7 @@ void GameScene::init_game() {
 
             GameAct act;
             act.type = act_attack;
-            act._uid = "abcdef";
+            act._uid = PLAYER_UID;
 
             act.param1 = vec.x;
             act.param2 = vec.y;
@@ -283,14 +285,14 @@ void GameScene::move_upd() {
         GameEvent event{GameEventType::control_move_stop, "", 0, 0, 0, ""};
         event.param1.f_val = x;
 
-        game_world->pushGameEvent(event, "abcdef");
+        game_world->pushGameEvent(event, PLAYER_UID);
     };
 
     const auto start_move = [this](int x) {
         GameEvent event{GameEventType::control_move_start, "", 0, 0, 0, ""};
         event.param1.f_val = x;
 
-        game_world->pushGameEvent(event, "abcdef");
+        game_world->pushGameEvent(event, PLAYER_UID);
     };
 
     static struct {
@@ -350,7 +352,7 @@ void GameScene::jump_upd() {
         this->schedule([&](float) { _can_jump = true; }, 0.7f, "reset_jump");
 
         GameEvent event{GameEventType::control_jump, "", 0, 0, 0, ""};
-        game_world->pushGameEvent(event, "abcdef");
+        game_world->pushGameEvent(event, PLAYER_UID);
     }
 }
 
@@ -359,14 +361,14 @@ void GameScene::attack_upd() {
         GameEvent event{GameEventType::control_attack_stop, "", 0, 0, 0, ""};
         event.param1.f_val = x;
 
-        game_world->pushGameEvent(event, "abcdef");
+        game_world->pushGameEvent(event, PLAYER_UID);
     };
 
     const auto start_attack = [this](int x) {
         GameEvent event{GameEventType::control_attack_start, "", 0, 0, 0, ""};
         event.param1.f_val = x;
 
-        game_world->pushGameEvent(event, "abcdef");
+        game_world->pushGameEvent(event, PLAYER_UID);
     };
 
     static struct {
@@ -421,7 +423,7 @@ void GameScene::keyDown(EventKeyboard::KeyCode key) {
         case EventKeyboard::KeyCode::KEY_W: {
             GameEvent event{
                 GameEventType::control_jump, "", 0, 0, 0, ""};
-            game_world->pushGameEvent(event, "abcdef");
+            game_world->pushGameEvent(event, PLAYER_UID);
         } break;
         case EventKeyboard::KeyCode::KEY_S: {
         } break;
@@ -430,14 +432,14 @@ void GameScene::keyDown(EventKeyboard::KeyCode key) {
                 GameEventType::control_move_start, "", 0, 0, 0, ""};
             event.param1.f_val = -1;
 
-            game_world->pushGameEvent(event, "abcdef");
+            game_world->pushGameEvent(event, PLAYER_UID);
 
         } break;
         case EventKeyboard::KeyCode::KEY_D: {
             GameEvent event{GameEventType::control_move_start, "", 0, 0, 0, ""};
             event.param1.f_val = 1;
 
-            game_world->pushGameEvent(event, "abcdef");
+            game_world->pushGameEvent(event, PLAYER_UID);
         } break;
     }
 }
@@ -452,13 +454,13 @@ void GameScene::keyUp(EventKeyboard::KeyCode key) {
             GameEvent event{GameEventType::control_move_stop, "", 0, 0, 0, ""};
             event.param1.f_val = -1;
 
-            game_world->pushGameEvent(event, "abcdef");
+            game_world->pushGameEvent(event, PLAYER_UID);
         } break;
         case EventKeyboard::KeyCode::KEY_D: {
             GameEvent event{GameEventType::control_move_stop, "", 0, 0, 0, ""};
             event.param1.f_val = 1;
 
-            game_world->pushGameEvent(event, "abcdef");
+            game_world->pushGameEvent(event, PLAYER_UID);
         } break;
     }
 }
