@@ -12,16 +12,13 @@ Bullet1Physics::Bullet1Physics(const Vec2& pos, const Vec2& direction,
       direction(direction),
       move_speed(move_speed),
       rotate_speed(rotate_speed) {
-
     this->posNow = pos;
     this->schedule([&](GameObject* ob) { upd(ob); }, 0, "upd");
 }
 
-void Bullet1Physics::receiveEvent(GameObject* ob, const json& event) {
-    string type = event["type"];
-    if (type == "contact") {
-        long long data = event["object"];
-        GameObject* tar = (GameObject*)data;
+void Bullet1Physics::receiveEvent(GameObject* ob, const GameEvent& event) {
+    if (event.type == GameEventType::contact) {
+        GameObject* tar = event.param1.p_val;
         auto t = tar->getGameObjectType();
         if (t == object_type_wall) {
             if (is_dead) {

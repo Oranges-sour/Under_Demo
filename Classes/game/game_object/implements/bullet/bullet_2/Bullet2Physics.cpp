@@ -14,27 +14,25 @@ Bullet2Physics::Bullet2Physics(const Vec2& start_pos, const Vec2& end_pos,
     this->rotationNow = MyMath::getRotation(start_pos, end_pos) - 90;
 }
 
-void Bullet2Physics::receiveEvent(GameObject* ob, const json& event) {
-    string type = event["type"];
-    if (type == "move") {
+void Bullet2Physics::receiveEvent(GameObject* ob, const GameEvent& event) {
+    if (event.type == GameEventType::move) {
         Vec2 m;
-        m.x = event["x"];
-        m.y = event["y"];
+        m.x = event.param1.f_val;
+        m.y = event.param2.f_val;
 
         posNow += m * _move_speed;
     }
 
-    if (type == "contact") {
-        long long data = event["object"];
-        GameObject* tar = (GameObject*)data;
-        auto t = tar->getGameObjectType();
-        if (t == object_type_wall || t == object_type_player) {
-            if (_is_dead) {
-                return;
-            }
-            _is_dead = true;
-            ob->setVisible(false);
-            ob->removeFromParent();
+     if (event.type == GameEventType::contact) {
+         GameObject* tar = event.param1.p_val;
+         auto t = tar->getGameObjectType();
+         if (t == object_type_wall || t == object_type_player) {
+             if (_is_dead) {
+                 return;
+             }
+             _is_dead = true;
+             ob->setVisible(false);
+             ob->removeFromParent();
 
             // ´´½¨Á£×Ó
             for (int i = 0; i < _particle_explode_cnt; ++i) {

@@ -39,7 +39,7 @@ vector<float> perlinNoise2D(int width, int height, int octaves, float bias,
 
             output[y * width + x] = fNoise / fScaleAcc;
         }
-    return move(output);
+    return std::move(output);
 }
 
 // 清除不联通区域的算法
@@ -333,7 +333,7 @@ void MapGenerator1::generate(int w, int h, MapTile& map) {
     }
 
     vector<float> noise2D =
-        move(perlinNoise2D(w, h, octaveCount, scalingBias, noiseSeed));
+        std::move(perlinNoise2D(w, h, octaveCount, scalingBias, noiseSeed));
 
     for (int i = 1; i <= w; ++i) {
         for (int j = 1; j <= h; ++j) {

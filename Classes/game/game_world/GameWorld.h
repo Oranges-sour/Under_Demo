@@ -29,6 +29,41 @@ enum ObjectLayer {
     layer_map_physics,
 };
 
+enum GameEventType {
+    nothing,
+    // 控制杆
+    control_move_start,
+    control_move_stop,
+    control_jump,
+    control_attack_start,
+    control_attack_stop,
+
+    // 物理碰撞
+    contact,
+
+    // 常用事件
+    move,
+    rotate,
+    jump,
+
+    // game_object 组件内的自定义事件
+    other_compoment,
+};
+
+struct GameEvent final {
+    GameEventType type;
+
+    string user_type;
+
+    union {
+        float f_val;
+        int i_val;
+        GameObject* p_val;
+    } param1, param2, param3;
+
+    string param4;
+};
+
 class GameWorld : public Node {
 public:
     GameWorld() : _quad_tree({1, 256}, {256, 1}) {}
@@ -49,8 +84,6 @@ public:
     shared_ptr<GameWorldRenderer> getGameRenderer() {
         return this->_game_renderer;
     }
-
-    void pushGameAct(const GameAct& act);
 
     virtual void cleanup() override;
 
@@ -78,6 +111,8 @@ public:
 
     shared_ptr<Random> getGlobalRandom() { return this->_global_random; }
 
+    void pushGameEvent(const GameEvent& event, const string& uid);
+
 private:
     void mainUpdateInScreenRect(const Vec2& left_bottom, const Size& size);
 
@@ -87,8 +122,6 @@ private:
     void addGameObject();
 
     void removeGameObject();
-
-    void updateGameAct();
 
 private:
 
@@ -111,8 +144,6 @@ private:
     Quad<GameObject*> _quad_tree;
     shared_ptr<GameMap> _game_map;
     shared_ptr<GameWorldRenderer> _game_renderer;
-
-    queue<GameAct> _game_act_que;
 
     // 游戏内的任何粒子创建，随机等，都必须用此随机引擎，保证一致性
     shared_ptr<Random> _global_random;

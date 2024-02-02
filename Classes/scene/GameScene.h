@@ -35,11 +35,11 @@ public:
 
     void init_game();
 
-    virtual void cleanup() override {
-        Connection::instance()->removeEventListener("GameScene_listener");
-        _frame_manager->release();
-        Scene::cleanup();
-    }
+    //virtual void cleanup() override {
+    //    Connection::instance()->removeEventListener("GameScene_listener");
+    //    _frame_manager->release();
+    //    Scene::cleanup();
+    //}
 
     CREATE_FUNC(GameScene);
 
@@ -70,7 +70,7 @@ private:
     shared_ptr<GameMap> game_map;
     shared_ptr<MapPreRenderer1> game_map_pre_renderer;
 
-    shared_ptr<GameFrameManager> _frame_manager;
+    //shared_ptr<GameFrameManager> _frame_manager;
 
     LoadingLayer* loading_layer;
 };

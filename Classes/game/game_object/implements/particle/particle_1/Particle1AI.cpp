@@ -13,18 +13,15 @@ Particle1AI::Particle1AI(const Vec2& direction, int live_frame,
 
 void Particle1AI::upd(GameObject* ob) {
     {
-        json event;
-        event["type"] = "move";
-        event["x"] = direction.x * move_speed;
-        event["y"] = direction.y * move_speed;
-
+        GameEvent event{GameEventType::move, "", 0, 0, 0, ""};
+        event.param1.f_val = direction.x * move_speed;
+        event.param2.f_val = direction.y * move_speed;
         ob->pushEvent(event);
     }
-    {
-        json event;
-        event["type"] = "rotate";
-        event["r"] = rotate_speed;
 
+    {
+        GameEvent event{GameEventType::rotate, "", 0, 0, 0, ""};
+        event.param1.f_val = rotate_speed;
         ob->pushEvent(event);
     }
 

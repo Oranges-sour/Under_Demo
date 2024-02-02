@@ -59,7 +59,7 @@ bool GameWorld::init() {
     return true;
 }
 
-void GameWorld::pushGameAct(const GameAct& act) { _game_act_que.push(act); }
+// void GameWorld::pushGameAct(const GameAct& act) { _game_act_que.push(act); }
 
 void GameWorld::cleanup() {
     if (_game_renderer) {
@@ -83,7 +83,6 @@ GameObject* GameWorld::newObject(ObjectLayer layer, const Vec2& startPos) {
 void GameWorld::removeObject(GameObject* ob) { _need_to_remove.insert(ob); }
 
 void GameWorld::mainUpdate() {
-    this->updateGameAct();
 
     // CCLOG("--frame--");
 
@@ -140,16 +139,14 @@ void GameWorld::processContact(PhysicsContact& conatct) {
     }
 
     {
-        json event;
-        event["type"] = "contact";
-        event["object"] = (long long)objectB;
+        GameEvent event{GameEventType::contact, "", 0, 0, 0, ""};
+        event.param1.p_val = objectB;
         objectA->pushEvent(event);
     }
 
     {
-        json event;
-        event["type"] = "contact";
-        event["object"] = (long long)objectA;
+        GameEvent event{GameEventType::contact, "", 0, 0, 0, ""};
+        event.param1.p_val = objectA;
         objectB->pushEvent(event);
     }
 }
@@ -219,16 +216,11 @@ void GameWorld::removeGameObject() {
     _need_to_remove.clear();
 }
 
-void GameWorld::updateGameAct() {
-    while (!_game_act_que.empty()) {
-        auto p = _game_act_que.front();
-        _game_act_que.pop();
-
-        auto iter = _game_objects.find(p.uid);
-        if (iter != _game_objects.end()) {
-            iter->second->pushGameAct(p);
-        }
-    }
+void GameWorld::pushGameEvent(const GameEvent& event, const string& uid) {
+    auto iter = _game_objects.find(uid);
+    if (iter != _game_objects.end()) {
+        iter->second->pushEvent(event);
+    }    
 }
 
 void GameWorld::mainUpdateInScreenRect(const Vec2& left_bottom,

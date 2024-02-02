@@ -21,33 +21,24 @@ void GameObject::addGameComponent(shared_ptr<GameComponent> componet) {
     _componets.push_back(componet);
 }
 
-void GameObject::pushEvent(const json& event) {
+void GameObject::pushEvent(const GameEvent& event) {
     _componet_event_queue.push(event);
-}
-
-void GameObject::pushGameAct(const GameAct& act) {
-    _componet_game_act_queue.push(act);
 }
 
 void GameObject::mainUpdate() {
     for (auto& it : _componets) {
         it->updateLogic(this);
     }
-    while (!_componet_game_act_queue.empty()) {
-        auto front = _componet_game_act_queue.front();
-        _componet_game_act_queue.pop();
 
-        for (auto& it : _componets) {
-            it->receiveGameAct(this, front);
-        }
-    }
     while (!_componet_event_queue.empty()) {
-        auto front = _componet_event_queue.front();
-        _componet_event_queue.pop();
+        const auto& front = _componet_event_queue.front();
+        
 
         for (auto& it : _componets) {
             it->receiveEvent(this, front);
         }
+
+        _componet_event_queue.pop();
     }
     for (auto& it : _componets) {
         it->updateAfterEvent(this);

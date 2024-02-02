@@ -1,6 +1,8 @@
 #ifndef __CONNECTION_STATUE_H__
 #define __CONNECTION_STATUE_H__
 
+#if 0
+
 #include <string>
 using namespace std;
 
@@ -58,5 +60,7 @@ public:
     virtual void processEvent(Connection* connection,
                               const json& event) override;
 };
+
+#endif
 
 #endif

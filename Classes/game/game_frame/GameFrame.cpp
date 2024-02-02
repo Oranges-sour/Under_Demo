@@ -1,5 +1,7 @@
 #include "GameFrame.h"
 
+#if 0
+
 #include "game/game_world/GameWorld.h"
 
 GameFrameManager::GameFrameManager() { _next_frame = make_shared<GameFrame>(); }
@@ -101,3 +103,5 @@ void GameFrameManager::pushGameAct(const GameAct& act, bool role_back) {
         _game_world->pushGameAct(act);
     }
 }
+
+#endif

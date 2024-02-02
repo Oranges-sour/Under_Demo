@@ -17,10 +17,9 @@ Bullet2AI::Bullet2AI(const Vec2& start_pos, const Vec2& end_pos,
 }
 
 void Bullet2AI::upd(GameObject* ob) {
-    json event;
-    event["type"] = "move";
-    event["x"] = _direction.x;
-    event["y"] = _direction.y;
+    GameEvent event{GameEventType::move, "", 0, 0, 0, ""};
+    event.param1.f_val = _direction.x;
+    event.param2.f_val = _direction.y;
     ob->pushEvent(event);
 }
 

@@ -1,6 +1,8 @@
 #ifndef __CONNECTION_H__
 #define __CONNECTION_H__
 
+#if 0
+
 #include <condition_variable>
 #include <functional>
 #include <map>
@@ -99,5 +101,7 @@ private:
     mutex _listener_event_mutex;
     condition_variable _cv;
 };
+
+#endif
 
 #endif
