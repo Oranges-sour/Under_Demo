@@ -129,7 +129,8 @@ void GameWorld::mainUpdateCamera() {
 }
 
 void GameWorld::processContact(PhysicsContact& conatct) {
-    auto const shapeA = conatct.getShapeA();
+    //TODO 
+    /*auto const shapeA = conatct.getShapeA();
     auto const shapeB = conatct.getShapeB();
 
     auto objectA = dynamic_cast<GameObject*>(shapeA->getBody()->getNode());
@@ -151,7 +152,7 @@ void GameWorld::processContact(PhysicsContact& conatct) {
         event["type"] = "contact";
         event["object"] = (long long)objectA;
         objectB->pushEvent(event);
-    }
+    }*/
 }
 
 void GameWorld::updateGameObjectPosition() {

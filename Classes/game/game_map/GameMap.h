@@ -113,7 +113,7 @@ public:
 
     virtual void updateLogicInScreenRect(GameObject* ob) override {}
     virtual void updateDraw(GameObject* ob, float rate) {}
-    virtual void receiveEvent(GameObject* ob, const json& event);
+    virtual void receiveEvent(GameObject* ob, const GameEvent& event) override;
     virtual void updateAfterEvent(GameObject* ob) override {}
 
 private:

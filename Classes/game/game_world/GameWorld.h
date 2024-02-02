@@ -29,8 +29,31 @@ enum ObjectLayer {
     layer_map_physics,
 };
 
-struct GameEvent {
+struct GameEvent final {
+    enum {
+        nothing,
+        //控制杆
+        control_move_start,
+        control_move_stop,
+        control_jump,
+        control_attack_start,
+        control_attack_stop,
 
+        //物理碰撞
+        contact,
+        //game_object 组件内的事件
+        other_compoment,
+    }type;
+
+    string user_type;
+
+    union {
+        float f_val;
+        int i_val;
+        void* p_val;
+    } param1, param2, param3;
+
+    string param4;
 };
 
 class GameWorld : public Node {

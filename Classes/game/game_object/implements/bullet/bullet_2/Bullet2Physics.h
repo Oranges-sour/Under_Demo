@@ -11,7 +11,7 @@ public:
                    const string& particle_explode_json_key);
 
     virtual void updateLogicInScreenRect(GameObject* ob) override {}
-    virtual void receiveEvent(GameObject* ob, const json& event) override;
+    virtual void receiveEvent(GameObject* ob, const GameEvent& event) override;
 
 private:
     //void upd(GameObject* ob);

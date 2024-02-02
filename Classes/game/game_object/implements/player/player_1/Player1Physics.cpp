@@ -41,8 +41,9 @@ Player1Physics::Player1Physics(const Vec2& start_pos, float move_speed,
         frame_action_attack_near, [&](GameObject* ob, int) {});
 }
 
-void Player1Physics::receiveEvent(GameObject* ob, const json& event) {
-    string type = event["type"];
+void Player1Physics::receiveEvent(GameObject* ob, const GameEvent& event) {
+    //TODO : 
+    /*string type = event["type"];
     if (type == "move") {
         if (speed_component) {
             float x = event["x"];
@@ -108,7 +109,7 @@ void Player1Physics::receiveEvent(GameObject* ob, const json& event) {
         float y = event["y"];
 
         posNow = Vec2(x, y);
-    }
+    }*/
 }
 
 void Player1Physics::upd(GameObject* ob) {

@@ -17,11 +17,12 @@ Bullet2AI::Bullet2AI(const Vec2& start_pos, const Vec2& end_pos,
 }
 
 void Bullet2AI::upd(GameObject* ob) {
-    json event;
+    //TODO:
+    /*json event;
     event["type"] = "move";
     event["x"] = _direction.x;
     event["y"] = _direction.y;
-    ob->pushEvent(event);
+    ob->pushEvent(event);*/
 }
 
 void Bullet2AI::create_particle(GameObject* ob) {

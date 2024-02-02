@@ -14,34 +14,35 @@ Bullet2Physics::Bullet2Physics(const Vec2& start_pos, const Vec2& end_pos,
     this->rotationNow = MyMath::getRotation(start_pos, end_pos) - 90;
 }
 
-void Bullet2Physics::receiveEvent(GameObject* ob, const json& event) {
-    string type = event["type"];
-    if (type == "move") {
-        Vec2 m;
-        m.x = event["x"];
-        m.y = event["y"];
+void Bullet2Physics::receiveEvent(GameObject* ob, const GameEvent& event) {
+    //TODO :
+    //string type = event["type"];
+    //if (type == "move") {
+    //    Vec2 m;
+    //    m.x = event["x"];
+    //    m.y = event["y"];
 
-        posNow += m * _move_speed;
-    }
+    //    posNow += m * _move_speed;
+    //}
 
-    if (type == "contact") {
-        long long data = event["object"];
-        GameObject* tar = (GameObject*)data;
-        auto t = tar->getGameObjectType();
-        if (t == object_type_wall || t == object_type_player) {
-            if (_is_dead) {
-                return;
-            }
-            _is_dead = true;
-            ob->setVisible(false);
-            ob->removeFromParent();
+    //if (type == "contact") {
+    //    long long data = event["object"];
+    //    GameObject* tar = (GameObject*)data;
+    //    auto t = tar->getGameObjectType();
+    //    if (t == object_type_wall || t == object_type_player) {
+    //        if (_is_dead) {
+    //            return;
+    //        }
+    //        _is_dead = true;
+    //        ob->setVisible(false);
+    //        ob->removeFromParent();
 
-            // 创建粒子
-            for (int i = 0; i < _particle_explode_cnt; ++i) {
-                auto world = ob->getGameWorld();
-                Particle1::create(world, _particle_explode_json_key,
-                                  ob->getPosition());
-            }
-        }
-    }
+    //        // 创建粒子
+    //        for (int i = 0; i < _particle_explode_cnt; ++i) {
+    //            auto world = ob->getGameWorld();
+    //            Particle1::create(world, _particle_explode_json_key,
+    //                              ob->getPosition());
+    //        }
+    //    }
+    //}
 }

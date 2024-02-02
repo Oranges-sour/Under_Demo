@@ -2,7 +2,7 @@
 
 #include "game/game_object/implements/bullet/bullet_1/Bullet1.h"
 
-void Player1AI::receiveEvent(GameObject* ob, const json& event) {}
+void Player1AI::receiveEvent(GameObject* ob, const GameEvent& event) {}
 
 Player1AI::Player1AI() {}
 

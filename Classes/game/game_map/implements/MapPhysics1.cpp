@@ -58,9 +58,11 @@ void MapPhysics1::updateLogic(GameWorld* game_world) {
                     auto uid = make_uid({xx, yy});
                     auto iter = _dirty.find(uid);
                     if (iter != _dirty.end()) {
-                        json event;
+                        //TODO
+
+                        /*json event;
                         event["type"] = "refresh";
-                        iter->second->pushEvent(event);
+                        iter->second->pushEvent(event);*/
                     } else {
                         auto sp = game_world->newObject(
                             layer_map_physics,

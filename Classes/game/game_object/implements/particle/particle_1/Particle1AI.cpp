@@ -12,7 +12,8 @@ Particle1AI::Particle1AI(const Vec2& direction, int live_frame,
 }
 
 void Particle1AI::upd(GameObject* ob) {
-    {
+    //TODO:
+    /*{
         json event;
         event["type"] = "move";
         event["x"] = direction.x * move_speed;
@@ -26,7 +27,7 @@ void Particle1AI::upd(GameObject* ob) {
         event["r"] = rotate_speed;
 
         ob->pushEvent(event);
-    }
+    }*/
 
     auto& lights = ob->getAllWorldLight();
     for (auto& it : lights) {

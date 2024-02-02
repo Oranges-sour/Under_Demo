@@ -8,7 +8,7 @@ public:
     Particle1Physics(const Vec2& pos, float scale_decrease_rate,
                      float opacity_decrease_rate);
 
-    virtual void receiveEvent(GameObject* ob, const json& event) override;
+    virtual void receiveEvent(GameObject* ob, const GameEvent& event) override;
 
 private:
     void upd(GameObject* ob);

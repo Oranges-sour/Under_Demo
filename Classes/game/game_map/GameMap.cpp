@@ -25,11 +25,12 @@ MapGameObjectTileComponent::MapGameObjectTileComponent() {
 }
 
 void MapGameObjectTileComponent::receiveEvent(GameObject* ob,
-                                              const json& event) {
-    string type = event["type"];
+                                              const GameEvent& event) {
+    //TODO : 
+    /*string type = event["type"];
     if (type == "refresh") {
         _cnt = 10;
-    }
+    }*/
 }
 
 void MapGameObjectTileComponent::upd(GameObject* ob) {

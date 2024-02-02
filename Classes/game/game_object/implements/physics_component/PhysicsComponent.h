@@ -8,7 +8,7 @@ public:
     PhysicsComponent();
     virtual void updateLogicInScreenRect(GameObject* ob) override {}
     virtual void updateDraw(GameObject* ob, float rate) override;
-    virtual void receiveEvent(GameObject* ob, const json& event) override {}
+    virtual void receiveEvent(GameObject* ob, const GameEvent& event) override {}
     virtual void updateAfterEvent(GameObject* ob) override;
 
     class Component;
