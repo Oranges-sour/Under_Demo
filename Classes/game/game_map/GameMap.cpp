@@ -13,7 +13,7 @@ void GameMap::init(shared_ptr<MapGeneratorComponent> mapGenerator,
     mapGenerator->generate(_w, _h, this->_map);
 }
 
-void GameMap::updateLogic(GameWorld* game_world) {
+void GameMap::update(GameWorld* game_world) {
     if (_map_physics) {
         _map_physics->updateLogic(game_world);
     }

@@ -84,6 +84,10 @@ private:
     void processContact(PhysicsContact& conatct);
     void updateGameObjectPosition();
 
+    void addGameObject();
+
+    void removeGameObject();
+
 private:
 
     set<GameObject*> _need_to_remove;
