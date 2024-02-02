@@ -6,7 +6,7 @@ void Player1AI::receiveEvent(GameObject* ob, const json& event) {}
 
 Player1AI::Player1AI() {}
 
-void Player1AI::receiveGameAct(GameObject* ob, const GameAct& event) {
+//void Player1AI::receiveGameAct(GameObject* ob, const GameAct& event) {
     //if (event.type == act_move_start) {
     //    if (ob->getUID() == event.uid) {
     //        json ee;
@@ -51,4 +51,4 @@ void Player1AI::receiveGameAct(GameObject* ob, const GameAct& event) {
 
     //    ob->pushEvent(ee);
     //}
-}
+//}

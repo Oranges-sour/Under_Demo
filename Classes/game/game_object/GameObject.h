@@ -78,7 +78,6 @@ public:
     void addGameComponent(shared_ptr<GameComponent> componet);
 
     void pushEvent(const json& event);
-    void pushGameAct(const GameAct& act);
 
     // ตฦนโ
     void addWorldLight(const WorldLight& light, const string& key) {
@@ -129,7 +128,6 @@ private:
 
     vector<shared_ptr<GameComponent>> _componets;
 
-    queue<GameAct> _componet_game_act_queue;
     queue<json> _componet_event_queue;
 };
 
@@ -146,7 +144,6 @@ public:
 
     virtual void updateLogicInScreenRect(GameObject* ob) = 0;
     virtual void updateDraw(GameObject* ob, float rate) = 0;
-    virtual void receiveGameAct(GameObject* ob, const GameAct& event) = 0;
     virtual void receiveEvent(GameObject* ob, const json& event) = 0;
     virtual void updateAfterEvent(GameObject* ob) = 0;
 

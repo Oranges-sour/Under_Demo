@@ -29,7 +29,7 @@ enum ObjectLayer {
     layer_map_physics,
 };
 
-struct GameAct {
+struct GameEvent {
 
 };
 
@@ -54,7 +54,7 @@ public:
         return this->_game_renderer;
     }
 
-    void pushGameAct(const GameAct& act);
+    //void pushGameAct(const GameAct& act);
 
     virtual void cleanup() override;
 
@@ -115,8 +115,6 @@ private:
     Quad<GameObject*> _quad_tree;
     shared_ptr<GameMap> _game_map;
     shared_ptr<GameWorldRenderer> _game_renderer;
-
-    queue<GameAct> _game_act_que;
 
     // 游戏内的任何粒子创建，随机等，都必须用此随机引擎，保证一致性
     shared_ptr<Random> _global_random;

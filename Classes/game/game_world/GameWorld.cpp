@@ -59,7 +59,7 @@ bool GameWorld::init() {
     return true;
 }
 
-void GameWorld::pushGameAct(const GameAct& act) { _game_act_que.push(act); }
+//void GameWorld::pushGameAct(const GameAct& act) { _game_act_que.push(act); }
 
 void GameWorld::cleanup() {
     if (_game_renderer) {
