@@ -232,9 +232,9 @@
                 "physics_shape": "man_stay",
                 "move_speed": 6,
                 "jump_speed": 10,
-                "wall_contact_left_bottom_x": -30,
+                "wall_contact_left_bottom_x": -25,
                 "wall_contact_left_bottom_y": -135,
-                "wall_contact_right_top_x": 30,
+                "wall_contact_right_top_x": 25,
                 "wall_contact_right_top_y": -15,
                 "gravity": 0.3,
                 "frame_action_stay": [

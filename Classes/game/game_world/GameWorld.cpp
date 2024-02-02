@@ -18,8 +18,8 @@ bool GameWorld::init() {
 
     this->schedule(
         [&](float) {
-            mainUpdateLogic();
-            mainUpdateDraw();
+            mainUpdate();
+            mainUpdateCamera();
         },
         "update");
 
@@ -82,16 +82,8 @@ GameObject* GameWorld::newObject(ObjectLayer layer, const Vec2& startPos) {
 
 void GameWorld::removeObject(GameObject* ob) { _need_to_remove.insert(ob); }
 
-void GameWorld::mainUpdateLogic() {
-    while (!_game_act_que.empty()) {
-        auto p = _game_act_que.front();
-        _game_act_que.pop();
-
-        auto iter = _game_objects.find(p.uid);
-        if (iter != _game_objects.end()) {
-            iter->second->pushGameAct(p);
-        }
-    }
+void GameWorld::mainUpdate() {
+    this->updateGameAct();
 
     // CCLOG("--frame--");
 
@@ -108,46 +100,16 @@ void GameWorld::mainUpdateLogic() {
 
     this->updateGameObjectPosition();
 
-    _game_map->updateLogic(this);
+    _game_map->update(this);
 
     // Ìí¼Ó
-    for (auto& it : _need_to_add) {
-        auto ob = it.first;
-        auto layer = it.second.first;
-        auto pos = it.second.second;
-
-        _game_objects.insert({ob->getUID(), ob});
-
-        ob->init(this);
-        ob->setPosition(pos);
-        _game_node->addChild(ob, layer);
-
-        auto p = this->_game_map->getMapHelper()->convertInMap(pos);
-
-        auto quad_node = _quad_tree.insert(p, ob);
-        it.first->_quad_node = quad_node;
-
-        ob->release();
-    }
-    _need_to_add.clear();
+    this->addGameObject();
 
     // ÒÆ³ý
-    for (auto& it : _need_to_remove) {
-        if (it == _camera_follow_object) {
-            _camera_follow_object = nullptr;
-        }
-
-        it->_quad_node._container->remove(it->_quad_node._uid);
-
-        _game_objects.erase(it->getUID());
-
-        it->Sprite::removeFromParent();
-        // SpritePool::saveBack(it);
-    }
-    _need_to_remove.clear();
+    this->removeGameObject();
 }
 
-void GameWorld::mainUpdateDraw() {
+void GameWorld::mainUpdateCamera() {
     if (_camera_follow_object) {
         _camera_pos_target = _camera_follow_object->getPosition();
     }
@@ -216,6 +178,56 @@ void GameWorld::updateGameObjectPosition() {
         node._container->remove(node._uid);
 
         node = _quad_tree.insert({it.second}, ob);
+    }
+}
+
+void GameWorld::addGameObject() {
+    for (auto& it : _need_to_add) {
+        auto ob = it.first;
+        auto layer = it.second.first;
+        auto pos = it.second.second;
+
+        _game_objects.insert({ob->getUID(), ob});
+
+        ob->init(this);
+        ob->setPosition(pos);
+        _game_node->addChild(ob, layer);
+
+        auto p = this->_game_map->getMapHelper()->convertInMap(pos);
+
+        auto quad_node = _quad_tree.insert(p, ob);
+        it.first->_quad_node = quad_node;
+
+        ob->release();
+    }
+    _need_to_add.clear();
+}
+
+void GameWorld::removeGameObject() {
+    for (auto& it : _need_to_remove) {
+        if (it == _camera_follow_object) {
+            _camera_follow_object = nullptr;
+        }
+
+        it->_quad_node._container->remove(it->_quad_node._uid);
+
+        _game_objects.erase(it->getUID());
+
+        it->Sprite::removeFromParent();
+        // SpritePool::saveBack(it);
+    }
+    _need_to_remove.clear();
+}
+
+void GameWorld::updateGameAct() {
+    while (!_game_act_que.empty()) {
+        auto p = _game_act_que.front();
+        _game_act_que.pop();
+
+        auto iter = _game_objects.find(p.uid);
+        if (iter != _game_objects.end()) {
+            iter->second->pushGameAct(p);
+        }
     }
 }
 

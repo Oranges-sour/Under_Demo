@@ -63,9 +63,9 @@ public:
 
     Quad<GameObject*>& getGameObjects() { return this->_quad_tree; }
 
-    void mainUpdateLogic();
+    void mainUpdate();
 
-    void mainUpdateDraw();
+    void mainUpdateCamera();
 
     Node* getGameMapTarget() { return _game_map_target; }
 
@@ -84,8 +84,13 @@ private:
     void processContact(PhysicsContact& conatct);
     void updateGameObjectPosition();
 
+    void addGameObject();
+
+    void removeGameObject();
+
+    void updateGameAct();
+
 private:
-    float _logic_update_dt;
 
     set<GameObject*> _need_to_remove;
     map < GameObject*, pair<ObjectLayer,Vec2>> _need_to_add;

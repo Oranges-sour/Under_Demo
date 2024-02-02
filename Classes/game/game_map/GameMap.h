@@ -61,7 +61,7 @@ public:
 
     MapTile& get() { return _map; }
 
-    void updateLogic(GameWorld* game_world);
+    void update(GameWorld* game_world);
 
     shared_ptr<MapHelperComponent> getMapHelper() { return this->_map_helper; }
 
