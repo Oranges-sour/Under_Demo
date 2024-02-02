@@ -33,11 +33,10 @@ bool GameScene::init() {
     auto phyw = this->getPhysicsWorld();
     phyw->setGravity(Vec2::ZERO);
     // phyw->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
-    //phyw->setUpdateRate(1);
+    // phyw->setUpdateRate(1);
 
     loading_layer = LoadingLayer::create();
     this->addChild(loading_layer, 1);
-
 
     /*auto refline = RefLineLayer::create();
     this->addChild(refline, 1000);*/
@@ -201,17 +200,17 @@ void GameScene::init_game() {
         visible_size.width - joystick_attack_right, joystick_attack_bottom));
     this->addChild(joystick_attack, 1);
 
-    //this->attack_draw = DrawNode::create();
-    //this->addChild(attack_draw, 1);
+    // this->attack_draw = DrawNode::create();
+    // this->addChild(attack_draw, 1);
     //{
-    //    float radius = 600;
-    //    // 离中心区域的位置没用线
-    //    float radius_1 = 50;
-    //    float r = 60;
-    //    float offset = 90;
-    //    Vec2 direction(DEG::cos(r), DEG::sin(r));
-    //    Vec2 direction_1(DEG::cos(r - offset), DEG::sin(r - offset));
-    //    Vec2 direction_2(DEG::cos(r + offset), DEG::sin(r + offset));
+    //     float radius = 600;
+    //     // 离中心区域的位置没用线
+    //     float radius_1 = 50;
+    //     float r = 60;
+    //     float offset = 90;
+    //     Vec2 direction(DEG::cos(r), DEG::sin(r));
+    //     Vec2 direction_1(DEG::cos(r - offset), DEG::sin(r - offset));
+    //     Vec2 direction_2(DEG::cos(r + offset), DEG::sin(r + offset));
 
     //    attack_draw->drawLine(Vec2(visible_size / 2) + direction_1 * radius_1,
     //                          Vec2(visible_size / 2) + direction_1 * radius,
@@ -279,22 +278,19 @@ void GameScene::init_game() {
     AudioEngine::play2d("11.mp3", true, 0.6);
 }
 
-
 void GameScene::move_upd() {
     const auto stop_move = [this](int x) {
-        /*GameAct act;
-        act.type = act_move_stop;
-        act.uid = "abcdef";
-        act.param1 = x;
-        _frame_manager->pushGameAct(act);*/
+        GameEvent event{GameEventType::control_move_stop, "", 0, 0, 0, ""};
+        event.param1.f_val = x;
+
+        game_world->pushGameEvent(event, "abcdef");
     };
 
     const auto start_move = [this](int x) {
-        /*GameAct act;
-        act.type = act_move_start;
-        act.uid = "abcdef";
-        act.param1 = x;
-        _frame_manager->pushGameAct(act);*/
+        GameEvent event{GameEventType::control_move_start, "", 0, 0, 0, ""};
+        event.param1.f_val = x;
+
+        game_world->pushGameEvent(event, "abcdef");
     };
 
     static struct {
@@ -353,28 +349,24 @@ void GameScene::jump_upd() {
         _can_jump = false;
         this->schedule([&](float) { _can_jump = true; }, 0.7f, "reset_jump");
 
-        /*GameAct act;
-        act.type = act_jump;
-        act.uid = "abcdef";
-        _frame_manager->pushGameAct(act);*/
+        GameEvent event{GameEventType::control_jump, "", 0, 0, 0, ""};
+        game_world->pushGameEvent(event, "abcdef");
     }
 }
 
 void GameScene::attack_upd() {
     const auto stop_attack = [this](int x) {
-        /*GameAct act;
-        act.type = act_attack_stop;
-        act.uid = "abcdef";
-        act.param1 = x;
-        _frame_manager->pushGameAct(act);*/
+        GameEvent event{GameEventType::control_attack_stop, "", 0, 0, 0, ""};
+        event.param1.f_val = x;
+
+        game_world->pushGameEvent(event, "abcdef");
     };
 
     const auto start_attack = [this](int x) {
-        /*GameAct act;
-        act.type = act_attack_start;
-        act.uid = "abcdef";
-        act.param1 = x;
-        _frame_manager->pushGameAct(act);*/
+        GameEvent event{GameEventType::control_attack_start, "", 0, 0, 0, ""};
+        event.param1.f_val = x;
+
+        game_world->pushGameEvent(event, "abcdef");
     };
 
     static struct {
@@ -427,27 +419,25 @@ void GameScene::attack_upd() {
 void GameScene::keyDown(EventKeyboard::KeyCode key) {
     switch (key) {
         case EventKeyboard::KeyCode::KEY_W: {
-            /*GameAct act;
-            act.type = act_jump;
-            act.uid = "abcdef";
-            _frame_manager->pushGameAct(act);*/
+            GameEvent event{
+                GameEventType::control_jump, "", 0, 0, 0, ""};
+            game_world->pushGameEvent(event, "abcdef");
         } break;
         case EventKeyboard::KeyCode::KEY_S: {
         } break;
         case EventKeyboard::KeyCode::KEY_A: {
-            /*GameAct act;
-            act.type = act_move_start;
-            act.uid = "abcdef";
-            act.param1 = -1;
-            _frame_manager->pushGameAct(act);*/
+            GameEvent event{
+                GameEventType::control_move_start, "", 0, 0, 0, ""};
+            event.param1.f_val = -1;
+
+            game_world->pushGameEvent(event, "abcdef");
 
         } break;
         case EventKeyboard::KeyCode::KEY_D: {
-            /*GameAct act;
-            act.type = act_move_start;
-            act.uid = "abcdef";
-            act.param1 = 1;
-            _frame_manager->pushGameAct(act);*/
+            GameEvent event{GameEventType::control_move_start, "", 0, 0, 0, ""};
+            event.param1.f_val = 1;
+
+            game_world->pushGameEvent(event, "abcdef");
         } break;
     }
 }
@@ -459,22 +449,19 @@ void GameScene::keyUp(EventKeyboard::KeyCode key) {
         case EventKeyboard::KeyCode::KEY_S: {
         } break;
         case EventKeyboard::KeyCode::KEY_A: {
-            /*GameAct act;
-            act.type = act_move_stop;
-            act.uid = "abcdef";
-            act.param1 = -1;
-            _frame_manager->pushGameAct(act);*/
+            GameEvent event{GameEventType::control_move_stop, "", 0, 0, 0, ""};
+            event.param1.f_val = -1;
+
+            game_world->pushGameEvent(event, "abcdef");
         } break;
         case EventKeyboard::KeyCode::KEY_D: {
-            /*GameAct act;
-            act.type = act_move_stop;
-            act.uid = "abcdef";
-            act.param1 = 1;
-            _frame_manager->pushGameAct(act);*/
+            GameEvent event{GameEventType::control_move_stop, "", 0, 0, 0, ""};
+            event.param1.f_val = 1;
+
+            game_world->pushGameEvent(event, "abcdef");
         } break;
     }
 }
-
 
 bool LoadingLayer::init() {
     if (!Layer::init()) {

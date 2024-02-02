@@ -111,6 +111,8 @@ public:
 
     shared_ptr<Random> getGlobalRandom() { return this->_global_random; }
 
+    void pushGameEvent(const GameEvent& event, const string& uid);
+
 private:
     void mainUpdateInScreenRect(const Vec2& left_bottom, const Size& size);
 

@@ -216,6 +216,13 @@ void GameWorld::removeGameObject() {
     _need_to_remove.clear();
 }
 
+void GameWorld::pushGameEvent(const GameEvent& event, const string& uid) {
+    auto iter = _game_objects.find(uid);
+    if (iter != _game_objects.end()) {
+        iter->second->pushEvent(event);
+    }    
+}
+
 void GameWorld::mainUpdateInScreenRect(const Vec2& left_bottom,
                                        const Size& size) {
     auto ilb = _game_map->getMapHelper()->convertInMap(left_bottom);
