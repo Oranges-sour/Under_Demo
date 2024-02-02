@@ -1,5 +1,7 @@
 #include "Connection.h"
 
+#if 0
+
 #include "ConnectionStatue.h"
 #include "cocos2d.h"
 
@@ -101,3 +103,5 @@ void Connection::pushStatueEvent(const json& event) {
 
     _cv.notify_one();
 }
+
+#endif

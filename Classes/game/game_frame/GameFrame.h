@@ -1,6 +1,8 @@
 #ifndef __GAME_FRAME_H__
 #define __GAME_FRAME_H__
 
+#if 0
+
 #include <memory>
 #include <queue>
 #include <string>
@@ -72,5 +74,7 @@ class GameFrame {
 public:
     vector<GameAct> _actions;
 };
+
+#endif
 
 #endif

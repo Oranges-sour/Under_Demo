@@ -1,5 +1,7 @@
 #include "ConnectionStatue.h"
 
+#if 0 
+
 #include <vector>
 
 #include "cocos2d.h"
@@ -269,3 +271,5 @@ void ConnectionStatue_StartGame::processEvent(Connection* connection,
         connection->sendMessage(to_string(event));
     }
 }
+
+#endif

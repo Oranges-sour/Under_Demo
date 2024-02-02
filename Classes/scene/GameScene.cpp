@@ -108,11 +108,6 @@ void GameScene::init_game() {
     this->game_world = GameWorld::create();
     this->addChild(game_world);
 
-    this->_frame_manager = make_shared<GameFrameManager>();
-    _frame_manager->init(game_world);
-    this->schedule([&](float) { _frame_manager->update(); },
-                   "frame_manager_upd");
-
     game_map_pre_renderer->afterPreRender(game_world->getGameMapTarget());
 
     game_world->setGameMap(game_map);
@@ -212,50 +207,50 @@ void GameScene::init_game() {
         visible_size.width - joystick_attack_right, joystick_attack_bottom));
     this->addChild(joystick_attack, 1);
 
-    this->attack_draw = DrawNode::create();
-    this->addChild(attack_draw, 1);
-    {
-        float radius = 600;
-        // 离中心区域的位置没用线
-        float radius_1 = 50;
-        float r = 60;
-        float offset = 90;
-        Vec2 direction(DEG::cos(r), DEG::sin(r));
-        Vec2 direction_1(DEG::cos(r - offset), DEG::sin(r - offset));
-        Vec2 direction_2(DEG::cos(r + offset), DEG::sin(r + offset));
+    //this->attack_draw = DrawNode::create();
+    //this->addChild(attack_draw, 1);
+    //{
+    //    float radius = 600;
+    //    // 离中心区域的位置没用线
+    //    float radius_1 = 50;
+    //    float r = 60;
+    //    float offset = 90;
+    //    Vec2 direction(DEG::cos(r), DEG::sin(r));
+    //    Vec2 direction_1(DEG::cos(r - offset), DEG::sin(r - offset));
+    //    Vec2 direction_2(DEG::cos(r + offset), DEG::sin(r + offset));
 
-        attack_draw->drawLine(Vec2(visible_size / 2) + direction_1 * radius_1,
-                              Vec2(visible_size / 2) + direction_1 * radius,
-                              Color4F(0.6, 0.6, 0.6, 1.0));
-        attack_draw->drawLine(Vec2(visible_size / 2) + direction_2 * radius_1,
-                              Vec2(visible_size / 2) + direction_2 * radius,
-                              Color4F(0.6, 0.6, 0.6, 1.0));
+    //    attack_draw->drawLine(Vec2(visible_size / 2) + direction_1 * radius_1,
+    //                          Vec2(visible_size / 2) + direction_1 * radius,
+    //                          Color4F(0.6, 0.6, 0.6, 1.0));
+    //    attack_draw->drawLine(Vec2(visible_size / 2) + direction_2 * radius_1,
+    //                          Vec2(visible_size / 2) + direction_2 * radius,
+    //                          Color4F(0.6, 0.6, 0.6, 1.0));
 
-        Vec2 vv[500];
-        int cnt = 0;
-        for (int i = 0; i < 500; ++i) {
-            vv[i] = Vec2::ZERO;
-        }
-        // 起点
-        vv[cnt] = Vec2(visible_size / 2) + direction_1 * radius_1;
-        cnt += 1;
-        // 大圆弧上
-        for (int an = r - offset; an <= r + offset; an += 5) {
-            vv[cnt] = Vec2(visible_size / 2) +
-                      Vec2(DEG::cos(an), DEG::sin(an)) * radius;
-            cnt += 1;
-        }
-        // 小圆弧上
-       /* for (int an = r + offset; an > r - offset; an -= 5) {
-            vv[cnt] = Vec2(visible_size / 2) +
-                      Vec2(DEG::cos(an), DEG::sin(an)) * radius_1;
-            cnt += 1;
-        }*/
-        // 终点
-         vv[cnt] = Vec2(visible_size / 2) + direction_2 * (radius_1 + 1);
-         cnt += 1;
-        attack_draw->drawSolidPoly(vv, cnt, Color4F(1.0, 1.0, 1.0, 0.1));
-    }
+    //    Vec2 vv[500];
+    //    int cnt = 0;
+    //    for (int i = 0; i < 500; ++i) {
+    //        vv[i] = Vec2::ZERO;
+    //    }
+    //    // 起点
+    //    vv[cnt] = Vec2(visible_size / 2) + direction_1 * radius_1;
+    //    cnt += 1;
+    //    // 大圆弧上
+    //    for (int an = r - offset; an <= r + offset; an += 5) {
+    //        vv[cnt] = Vec2(visible_size / 2) +
+    //                  Vec2(DEG::cos(an), DEG::sin(an)) * radius;
+    //        cnt += 1;
+    //    }
+    //    // 小圆弧上
+    //   /* for (int an = r + offset; an > r - offset; an -= 5) {
+    //        vv[cnt] = Vec2(visible_size / 2) +
+    //                  Vec2(DEG::cos(an), DEG::sin(an)) * radius_1;
+    //        cnt += 1;
+    //    }*/
+    //    // 终点
+    //     vv[cnt] = Vec2(visible_size / 2) + direction_2 * (radius_1 + 1);
+    //     cnt += 1;
+    //    attack_draw->drawSolidPoly(vv, cnt, Color4F(1.0, 1.0, 1.0, 0.1));
+    //}
 
     this->schedule(
         [&](float) {
@@ -264,23 +259,6 @@ void GameScene::init_game() {
             attack_upd();
         },
         0.03f, "control_upd");
-
-    this->schedule(
-        [&](float) {
-            for (auto& it : players) {
-                auto ob = it.second;
-                if (ob->getUID() == "abcdef") {
-                    GameAct act;
-                    act.type = act_position_force_set;
-                    act.uid = ob->getUID();
-                    act.param1 = ob->getPosition().x;
-                    act.param2 = ob->getPosition().y;
-
-                    _frame_manager->pushGameAct(act, false);
-                }
-            }
-        },
-        0.1f, "position_force_set");
 
     this->schedule(
         [&](float) {
@@ -310,19 +288,19 @@ void GameScene::init_game() {
 
 void GameScene::move_upd() {
     const auto stop_move = [this](int x) {
-        GameAct act;
+        /*GameAct act;
         act.type = act_move_stop;
         act.uid = "abcdef";
         act.param1 = x;
-        _frame_manager->pushGameAct(act);
+        _frame_manager->pushGameAct(act);*/
     };
 
     const auto start_move = [this](int x) {
-        GameAct act;
+        /*GameAct act;
         act.type = act_move_start;
         act.uid = "abcdef";
         act.param1 = x;
-        _frame_manager->pushGameAct(act);
+        _frame_manager->pushGameAct(act);*/
     };
 
     static struct {
@@ -381,28 +359,28 @@ void GameScene::jump_upd() {
         _can_jump = false;
         this->schedule([&](float) { _can_jump = true; }, 0.7f, "reset_jump");
 
-        GameAct act;
+        /*GameAct act;
         act.type = act_jump;
         act.uid = "abcdef";
-        _frame_manager->pushGameAct(act);
+        _frame_manager->pushGameAct(act);*/
     }
 }
 
 void GameScene::attack_upd() {
     const auto stop_attack = [this](int x) {
-        GameAct act;
+        /*GameAct act;
         act.type = act_attack_stop;
         act.uid = "abcdef";
         act.param1 = x;
-        _frame_manager->pushGameAct(act);
+        _frame_manager->pushGameAct(act);*/
     };
 
     const auto start_attack = [this](int x) {
-        GameAct act;
+        /*GameAct act;
         act.type = act_attack_start;
         act.uid = "abcdef";
         act.param1 = x;
-        _frame_manager->pushGameAct(act);
+        _frame_manager->pushGameAct(act);*/
     };
 
     static struct {
@@ -455,27 +433,27 @@ void GameScene::attack_upd() {
 void GameScene::keyDown(EventKeyboard::KeyCode key) {
     switch (key) {
         case EventKeyboard::KeyCode::KEY_W: {
-            GameAct act;
+            /*GameAct act;
             act.type = act_jump;
             act.uid = "abcdef";
-            _frame_manager->pushGameAct(act);
+            _frame_manager->pushGameAct(act);*/
         } break;
         case EventKeyboard::KeyCode::KEY_S: {
         } break;
         case EventKeyboard::KeyCode::KEY_A: {
-            GameAct act;
+            /*GameAct act;
             act.type = act_move_start;
             act.uid = "abcdef";
             act.param1 = -1;
-            _frame_manager->pushGameAct(act);
+            _frame_manager->pushGameAct(act);*/
 
         } break;
         case EventKeyboard::KeyCode::KEY_D: {
-            GameAct act;
+            /*GameAct act;
             act.type = act_move_start;
             act.uid = "abcdef";
             act.param1 = 1;
-            _frame_manager->pushGameAct(act);
+            _frame_manager->pushGameAct(act);*/
         } break;
     }
 }
@@ -487,18 +465,18 @@ void GameScene::keyUp(EventKeyboard::KeyCode key) {
         case EventKeyboard::KeyCode::KEY_S: {
         } break;
         case EventKeyboard::KeyCode::KEY_A: {
-            GameAct act;
+            /*GameAct act;
             act.type = act_move_stop;
             act.uid = "abcdef";
             act.param1 = -1;
-            _frame_manager->pushGameAct(act);
+            _frame_manager->pushGameAct(act);*/
         } break;
         case EventKeyboard::KeyCode::KEY_D: {
-            GameAct act;
+            /*GameAct act;
             act.type = act_move_stop;
             act.uid = "abcdef";
             act.param1 = 1;
-            _frame_manager->pushGameAct(act);
+            _frame_manager->pushGameAct(act);*/
         } break;
     }
 }

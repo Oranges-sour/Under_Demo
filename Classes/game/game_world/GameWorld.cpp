@@ -220,7 +220,7 @@ void GameWorld::removeGameObject() {
 }
 
 void GameWorld::updateGameAct() {
-    while (!_game_act_que.empty()) {
+    /*while (!_game_act_que.empty()) {
         auto p = _game_act_que.front();
         _game_act_que.pop();
 
@@ -228,7 +228,7 @@ void GameWorld::updateGameAct() {
         if (iter != _game_objects.end()) {
             iter->second->pushGameAct(p);
         }
-    }
+    }*/
 }
 
 void GameWorld::mainUpdateInScreenRect(const Vec2& left_bottom,

@@ -29,6 +29,10 @@ enum ObjectLayer {
     layer_map_physics,
 };
 
+struct GameAct {
+
+};
+
 class GameWorld : public Node {
 public:
     GameWorld() : _quad_tree({1, 256}, {256, 1}) {}
