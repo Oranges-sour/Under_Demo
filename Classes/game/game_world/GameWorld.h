@@ -85,7 +85,6 @@ private:
     void updateGameObjectPosition();
 
 private:
-    float _logic_update_dt;
 
     set<GameObject*> _need_to_remove;
     map < GameObject*, pair<ObjectLayer,Vec2>> _need_to_add;
