@@ -42,11 +42,9 @@ Player1Physics::Player1Physics(const Vec2& start_pos, float move_speed,
 }
 
 void Player1Physics::receiveEvent(GameObject* ob, const GameEvent& event) {
-    //TODO : 
-    /*string type = event["type"];
-    if (type == "move") {
+    if (event.type == GameEventType::move) {
         if (speed_component) {
-            float x = event["x"];
+            float x = event.param1.f_val;
             x *= move_speed;
 
             auto speed = speed_component->getSpeed();
@@ -75,27 +73,31 @@ void Player1Physics::receiveEvent(GameObject* ob, const GameEvent& event) {
             }
         }
     }
-    if (type == "attack") {
-        float x = event["x"];
-        attack += x;
-        if (abs(attack) > 0.1) {
-            on_attack = true;
-            ob->switchFrameActionStatue(frame_attack_near);
-        } else {
-            if (run) {
-                ob->switchFrameActionStatue(frame_run);
+
+    if (event.type == GameEventType::other_compoment) {
+        if (event.user_type == "attack") {
+            float x = event.param1.f_val;
+            attack += x;
+            if (abs(attack) > 0.1) {
+                on_attack = true;
+                ob->switchFrameActionStatue(frame_attack_near);
             } else {
-                ob->switchFrameActionStatue(frame_stay);
+                if (run) {
+                    ob->switchFrameActionStatue(frame_run);
+                } else {
+                    ob->switchFrameActionStatue(frame_stay);
+                }
+                on_attack = false;
             }
-            on_attack = false;
-        }
-        if (attack < 0) {
-            scaleNow.x = -1;
-        } else if (attack > 0) {
-            scaleNow.x = 1;
+            if (attack < 0) {
+                scaleNow.x = -1;
+            } else if (attack > 0) {
+                scaleNow.x = 1;
+            }
         }
     }
-    if (type == "jump") {
+
+    if (event.type == GameEventType::jump) {
         if (speed_component) {
             ob->switchFrameActionStatue(frame_jump);
 
@@ -104,12 +106,6 @@ void Player1Physics::receiveEvent(GameObject* ob, const GameEvent& event) {
             speed_component->setSpeed(speed);
         }
     }
-    if (type == "position_force_set") {
-        float x = event["x"];
-        float y = event["y"];
-
-        posNow = Vec2(x, y);
-    }*/
 }
 
 void Player1Physics::upd(GameObject* ob) {

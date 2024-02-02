@@ -58,11 +58,10 @@ void MapPhysics1::updateLogic(GameWorld* game_world) {
                     auto uid = make_uid({xx, yy});
                     auto iter = _dirty.find(uid);
                     if (iter != _dirty.end()) {
-                        //TODO
+                        GameEvent event{
+                            GameEventType::other_compoment, "refresh", 0, 0, 0, ""};
 
-                        /*json event;
-                        event["type"] = "refresh";
-                        iter->second->pushEvent(event);*/
+                        iter->second->pushEvent(event);
                     } else {
                         auto sp = game_world->newObject(
                             layer_map_physics,
@@ -70,7 +69,7 @@ void MapPhysics1::updateLogic(GameWorld* game_world) {
                                  (yy - 1) * 64 + 5) /*保证落在格子里*/);
                         sp->initWithSpriteFrameName(
                             "game_map_tile_physics.png");
-                         sp->setVisible(false);
+                        sp->setVisible(false);
 
                         sp->setGameObjectType(object_type_wall);
                         sp->setAnchorPoint(Vec2(0, 0));

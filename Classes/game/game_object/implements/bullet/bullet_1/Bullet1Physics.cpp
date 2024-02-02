@@ -12,33 +12,29 @@ Bullet1Physics::Bullet1Physics(const Vec2& pos, const Vec2& direction,
       direction(direction),
       move_speed(move_speed),
       rotate_speed(rotate_speed) {
-
     this->posNow = pos;
     this->schedule([&](GameObject* ob) { upd(ob); }, 0, "upd");
 }
 
 void Bullet1Physics::receiveEvent(GameObject* ob, const GameEvent& event) {
-    //TODO :
-    //string type = event["type"];
-    //if (type == "contact") {
-    //    long long data = event["object"];
-    //    GameObject* tar = (GameObject*)data;
-    //    auto t = tar->getGameObjectType();
-    //    if (t == object_type_wall) {
-    //        if (is_dead) {
-    //            return;
-    //        }
-    //        is_dead = true;
-    //        ob->setVisible(false);
-    //        ob->removeFromParent();
+    if (event.type == GameEventType::contact) {
+        GameObject* tar = event.param1.p_val;
+        auto t = tar->getGameObjectType();
+        if (t == object_type_wall) {
+            if (is_dead) {
+                return;
+            }
+            is_dead = true;
+            ob->setVisible(false);
+            ob->removeFromParent();
 
-    //        // 创建粒子
-    //        for (int i = 0; i < dead_particle_cnt; ++i) {
-    //            auto world = ob->getGameWorld();
-    //            Particle1::create(world, dead_particle_name, ob->getPosition());
-    //        }
-    //    }
-    //}
+            // 创建粒子
+            for (int i = 0; i < dead_particle_cnt; ++i) {
+                auto world = ob->getGameWorld();
+                Particle1::create(world, dead_particle_name, ob->getPosition());
+            }
+        }
+    }
 }
 
 void Bullet1Physics::upd(GameObject* ob) {

@@ -29,28 +29,36 @@ enum ObjectLayer {
     layer_map_physics,
 };
 
-struct GameEvent final {
-    enum {
-        nothing,
-        //控制杆
-        control_move_start,
-        control_move_stop,
-        control_jump,
-        control_attack_start,
-        control_attack_stop,
+enum GameEventType {
+    nothing,
+    // 控制杆
+    control_move_start,
+    control_move_stop,
+    control_jump,
+    control_attack_start,
+    control_attack_stop,
 
-        //物理碰撞
-        contact,
-        //game_object 组件内的事件
-        other_compoment,
-    }type;
+    // 物理碰撞
+    contact,
+
+    // 常用事件
+    move,
+    rotate,
+    jump,
+
+    // game_object 组件内的自定义事件
+    other_compoment,
+};
+
+struct GameEvent final {
+    GameEventType type;
 
     string user_type;
 
     union {
         float f_val;
         int i_val;
-        void* p_val;
+        GameObject* p_val;
     } param1, param2, param3;
 
     string param4;
@@ -76,8 +84,6 @@ public:
     shared_ptr<GameWorldRenderer> getGameRenderer() {
         return this->_game_renderer;
     }
-
-    //void pushGameAct(const GameAct& act);
 
     virtual void cleanup() override;
 
@@ -114,8 +120,6 @@ private:
     void addGameObject();
 
     void removeGameObject();
-
-    void updateGameAct();
 
 private:
 

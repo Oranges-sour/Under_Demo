@@ -38,12 +38,6 @@ bool GameScene::init() {
     loading_layer = LoadingLayer::create();
     this->addChild(loading_layer, 1);
 
-    /*this->schedule([&](float dt) { Connection::instance()->update(dt * 1000); },
-                   "web_upd");*/
-
-    /*auto listener = make_shared<ConnectionEventListener>(
-        [&](const json& event) { notice(event); });
-    Connection::instance()->addEventListener(listener, "GameScene_listener");*/
 
     /*auto refline = RefLineLayer::create();
     this->addChild(refline, 1000);*/
