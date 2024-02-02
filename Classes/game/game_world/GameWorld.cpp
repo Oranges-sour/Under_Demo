@@ -19,7 +19,7 @@ bool GameWorld::init() {
     this->schedule(
         [&](float) {
             mainUpdateLogic();
-            mainUpdateDraw();
+            mainUpdateCamera();
         },
         "update");
 
@@ -147,7 +147,7 @@ void GameWorld::mainUpdateLogic() {
     _need_to_remove.clear();
 }
 
-void GameWorld::mainUpdateDraw() {
+void GameWorld::mainUpdateCamera() {
     if (_camera_follow_object) {
         _camera_pos_target = _camera_follow_object->getPosition();
     }
