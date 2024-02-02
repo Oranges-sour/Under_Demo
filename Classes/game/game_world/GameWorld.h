@@ -88,6 +88,8 @@ private:
 
     void removeGameObject();
 
+    void updateGameAct();
+
 private:
 
     set<GameObject*> _need_to_remove;

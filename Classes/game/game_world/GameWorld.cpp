@@ -83,15 +83,7 @@ GameObject* GameWorld::newObject(ObjectLayer layer, const Vec2& startPos) {
 void GameWorld::removeObject(GameObject* ob) { _need_to_remove.insert(ob); }
 
 void GameWorld::mainUpdate() {
-    while (!_game_act_que.empty()) {
-        auto p = _game_act_que.front();
-        _game_act_que.pop();
-
-        auto iter = _game_objects.find(p.uid);
-        if (iter != _game_objects.end()) {
-            iter->second->pushGameAct(p);
-        }
-    }
+    this->updateGameAct();
 
     // CCLOG("--frame--");
 
@@ -225,6 +217,18 @@ void GameWorld::removeGameObject() {
         // SpritePool::saveBack(it);
     }
     _need_to_remove.clear();
+}
+
+void GameWorld::updateGameAct() {
+    while (!_game_act_que.empty()) {
+        auto p = _game_act_que.front();
+        _game_act_que.pop();
+
+        auto iter = _game_objects.find(p.uid);
+        if (iter != _game_objects.end()) {
+            iter->second->pushGameAct(p);
+        }
+    }
 }
 
 void GameWorld::mainUpdateInScreenRect(const Vec2& left_bottom,
