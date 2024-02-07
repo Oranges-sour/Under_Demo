@@ -80,12 +80,10 @@ void GameScene::init_map(unsigned seed) {
                 return;
             }
             // x2¼ÓËÙäÖÈ¾
-            game_map_pre_renderer->preRender();
-            game_map_pre_renderer->preRender();
-            game_map_pre_renderer->preRender();
-            game_map_pre_renderer->preRender();
-            game_map_pre_renderer->preRender();
-            game_map_pre_renderer->preRender();
+            for (int i = 1; i <= 10; ++i) {
+                game_map_pre_renderer->preRender();
+
+            }
         },
         "pre_render");
 }
