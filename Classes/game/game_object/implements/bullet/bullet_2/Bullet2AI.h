@@ -10,7 +10,6 @@ public:
               float particle_move_cnt_per_frame);
 
     virtual void updateLogicInScreenRect(GameObject* ob) override {}
-    virtual void updateDraw(GameObject* ob, float rate) override {}
     virtual void receiveEvent(GameObject* ob, const GameEvent& event) override {}
     virtual void updateAfterEvent(GameObject* ob) override {}
 

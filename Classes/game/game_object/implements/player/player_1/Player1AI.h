@@ -8,7 +8,6 @@ public:
     Player1AI();
 
     virtual void updateLogicInScreenRect(GameObject* ob) override {}
-    virtual void updateDraw(GameObject* ob, float rate) override {}
     virtual void receiveEvent(GameObject* ob, const GameEvent& event) override;
     virtual void updateAfterEvent(GameObject* ob) override {}
 };

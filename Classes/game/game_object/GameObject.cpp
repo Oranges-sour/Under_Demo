@@ -28,7 +28,7 @@ void GameObject::pushEvent(const GameEvent& event) {
 void GameObject::mainUpdate() {
     
     for (auto& it : _components) {
-        it->update(this);
+        it->updateSchedule(this);
     }
 
     while (!_component_event_queue.empty()) {
@@ -43,10 +43,6 @@ void GameObject::mainUpdate() {
     }
     for (auto& it : _components) {
         it->updateAfterEvent(this);
-    }
-
-    for (auto& it : _components) {
-        it->updateDraw(this, 1.0f);
     }
 
     if (this->_frame_action) {
@@ -125,7 +121,7 @@ void GameComponent::unschedule(const string& key) {
     _schedule_need_to_erase.push_back(key);
 }
 
-void GameComponent::update(GameObject* ob) {
+void GameComponent::updateSchedule(GameObject* ob) {
     for (auto& it : _schedule_need_to_add) {
         for (auto& m : _schedule_bag) {
             auto iter = m.second.find(it._key);
