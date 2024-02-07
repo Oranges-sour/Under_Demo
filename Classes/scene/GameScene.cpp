@@ -275,7 +275,7 @@ void GameScene::init_game() {
     CCLOG("%s", tex_info.c_str());
 
     // Audio
-    AudioEngine::play2d("11.mp3", true, 0.6);
+    AudioEngine::play2d("11.mp3", true, 0.6f);
 }
 
 void GameScene::move_upd() {

@@ -112,7 +112,7 @@ void Player1Physics::upd(GameObject* ob) {
     if (on_attack) {
         if (speed_component) {
             auto sp1 = dynamic_pointer_cast<Player1Speed>(speed_component);
-            sp1->add_speed_rate(0.1, "attack_rate");
+            sp1->add_speed_rate(0.1f, "attack_rate");
         }
     } else {
         if (speed_component) {
