@@ -83,7 +83,7 @@ public:
     void addWorldLight(const WorldLight& light, const string& key) {
         _world_light.insert({key, light});
     }
-    
+
     void removeWorldLight(const string& key) { _world_light.erase(key); }
 
     WorldLight* getWorldLight(const string& key) {
@@ -110,10 +110,11 @@ public:
 
     GameWorld* getGameWorld() { return this->_game_world; }
 
-    QuadNode<GameObject*> _quad_node;
-
     // Ö¡¶¯»­
     void switchFrameActionStatue(shared_ptr<GameObjectFrameAction> new_action);
+
+public:
+    QuadNode<GameObject*> _quad_node;
 
 private:
     shared_ptr<GameObjectFrameAction> _frame_action;
@@ -122,13 +123,13 @@ private:
 
     GameWorld* _game_world;
 
-    GameObjectType _game_object_type = object_type_unknow;
+    GameObjectType _game_object_type = GameObjectType::object_type_unknow;
 
     map<string, WorldLight> _world_light;
 
-    vector<shared_ptr<GameComponent>> _componets;
+    vector<shared_ptr<GameComponent>> _components;
 
-    queue<GameEvent> _componet_event_queue;
+    queue<GameEvent> _component_event_queue;
 };
 
 class GameComponent {

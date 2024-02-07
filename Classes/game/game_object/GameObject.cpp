@@ -18,33 +18,34 @@ bool GameObject::init(GameWorld* game_world) {
 void GameObject::removeFromParent() { _game_world->removeObject(this); }
 
 void GameObject::addGameComponent(shared_ptr<GameComponent> componet) {
-    _componets.push_back(componet);
+    _components.push_back(componet);
 }
 
 void GameObject::pushEvent(const GameEvent& event) {
-    _componet_event_queue.push(event);
+    _component_event_queue.push(event);
 }
 
 void GameObject::mainUpdate() {
-    for (auto& it : _componets) {
+    
+    for (auto& it : _components) {
         it->updateLogic(this);
     }
 
-    while (!_componet_event_queue.empty()) {
-        const auto& front = _componet_event_queue.front();
+    while (!_component_event_queue.empty()) {
+        const auto& front = _component_event_queue.front();
         
 
-        for (auto& it : _componets) {
+        for (auto& it : _components) {
             it->receiveEvent(this, front);
         }
 
-        _componet_event_queue.pop();
+        _component_event_queue.pop();
     }
-    for (auto& it : _componets) {
+    for (auto& it : _components) {
         it->updateAfterEvent(this);
     }
 
-    for (auto& it : _componets) {
+    for (auto& it : _components) {
         it->updateDraw(this, 1.0f);
     }
 
@@ -54,7 +55,7 @@ void GameObject::mainUpdate() {
 }
 
 void GameObject::mainUpdateInScreenRect() {
-    for (auto& it : _componets) {
+    for (auto& it : _components) {
         it->updateLogicInScreenRect(this);
     }
 }
