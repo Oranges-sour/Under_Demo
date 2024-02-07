@@ -74,7 +74,7 @@ void GameWorldRenderer1::update(const Vec2& left_bottom, const Size& size,
         });
     // 0.2 可以让背景不是全黑
 
-    render->beginWithClear(0.1, 0.1, 0.1, 1);
+    render->beginWithClear(0.1f, 0.1f, 0.1f, 1);
     for (int k = 0; k < 3; ++k) {
         for (int i = 0; i < cnt[k]; ++i) {
             lights[k][i]->visit();

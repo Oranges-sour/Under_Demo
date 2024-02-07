@@ -80,12 +80,10 @@ void GameScene::init_map(unsigned seed) {
                 return;
             }
             // x2¼ÓËÙäÖÈ¾
-            game_map_pre_renderer->preRender();
-            game_map_pre_renderer->preRender();
-            game_map_pre_renderer->preRender();
-            game_map_pre_renderer->preRender();
-            game_map_pre_renderer->preRender();
-            game_map_pre_renderer->preRender();
+            for (int i = 1; i <= 10; ++i) {
+                game_map_pre_renderer->preRender();
+
+            }
         },
         "pre_render");
 }
@@ -277,7 +275,7 @@ void GameScene::init_game() {
     CCLOG("%s", tex_info.c_str());
 
     // Audio
-    AudioEngine::play2d("11.mp3", true, 0.6);
+    AudioEngine::play2d("11.mp3", true, 0.6f);
 }
 
 void GameScene::move_upd() {
