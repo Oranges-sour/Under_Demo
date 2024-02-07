@@ -141,7 +141,7 @@ public:
                       int delay, const string& key);
     void unschedule(const string& key);
 
-    void updateLogic(GameObject* ob);
+    void update(GameObject* ob);
 
     virtual void updateLogicInScreenRect(GameObject* ob) = 0;
     virtual void updateDraw(GameObject* ob, float rate) = 0;

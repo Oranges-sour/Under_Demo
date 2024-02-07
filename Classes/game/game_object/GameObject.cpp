@@ -28,7 +28,7 @@ void GameObject::pushEvent(const GameEvent& event) {
 void GameObject::mainUpdate() {
     
     for (auto& it : _components) {
-        it->updateLogic(this);
+        it->update(this);
     }
 
     while (!_component_event_queue.empty()) {
@@ -125,7 +125,7 @@ void GameComponent::unschedule(const string& key) {
     _schedule_need_to_erase.push_back(key);
 }
 
-void GameComponent::updateLogic(GameObject* ob) {
+void GameComponent::update(GameObject* ob) {
     for (auto& it : _schedule_need_to_add) {
         for (auto& m : _schedule_bag) {
             auto iter = m.second.find(it._key);
