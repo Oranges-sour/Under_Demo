@@ -5,8 +5,7 @@
 .AppleDouble
 .LSOverride
 .idea
-# Icon must end with two \r
-Icon
+
 # Thumbnails
 ._*
 # Files that might appear in the root of a volume
@@ -92,11 +91,12 @@ proj.win32/Release.*/
 # CMake
 *CmakeCache.txt
 *CMakeFiles/
-*cmake/
+# *cmake/
 *cmake_install.cmake
 *.ser
 *Makefile
 lib/
+!cocos2d/**/lib/
 
 ################################################################################
 # 此 .gitignore 文件已由 Microsoft(R) Visual Studio 自动创建。
@@ -128,9 +128,6 @@ mono_crash.*
 x64/
 x86/
 [Ww][Ii][Nn]32/
-!cocos2d/cocos/platform/win32/
-!cocos2d/cocos/audio/win32/
-!cocos2d/external/**/win32/
 [Aa][Rr][Mm]/
 [Aa][Rr][Mm]64/
 bld/
@@ -139,6 +136,9 @@ bld/
 [Oo]ut/
 [Ll]og/
 [Ll]ogs/
+!cocos2d/cocos/platform/win32/
+!cocos2d/cocos/audio/win32/
+!cocos2d/external/**/win32/
 
 # Visual Studio 2015/2017 cache/options directory
 .vs/
