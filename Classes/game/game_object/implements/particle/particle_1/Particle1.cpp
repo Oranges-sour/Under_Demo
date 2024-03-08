@@ -31,7 +31,7 @@ GameObject* Particle1::create(GameWorld* world, const string& json_key,
     float a = ran(*world->getGlobalRandom());
 
     auto ai =
-        make_shared<Particle1AI>(Vec2(cos(a), sin(a)), live_frame, move_speed,
+        make_shared<Particle1AI>(Vec2(DEG::cos(a), DEG::sin(a)), live_frame, move_speed,
                                  rotate_speed, light_decrease_rate);
     auto phy = make_shared<Particle1Physics>(start_pos, scale_decrease_rate,
                                              opacity_decrease_rate);
