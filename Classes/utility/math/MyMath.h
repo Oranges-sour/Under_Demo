@@ -31,6 +31,15 @@ public:
 class MyMath {
 public:
     /**
+     * 角度转弧度
+     */
+    static float degree_to_radian(float x);
+
+    /**
+     * 弧度转角度
+     */
+    static float radian_to_degree(float x);
+    /**
     *从from指向to时,精灵需要的旋转角度
     *@param from:起始点
     *@param to:终点
@@ -112,4 +121,11 @@ inline int MyMath::floatRoundInt(float num) {
     return static_cast<int>(num + 0.5f);
 }
 
+inline float MyMath::degree_to_radian(float x) {
+    return CC_DEGREES_TO_RADIANS(x);
+}
+
+inline float MyMath::radian_to_degree(float x) {
+    return CC_RADIANS_TO_DEGREES(x);
+}
 #endif
